@@ -1,41 +1,62 @@
 # NuvoImage
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/nuvo_image`. To experiment with that code, run `bin/console` for an interactive prompt.
+누보에서 이미지 리사이징을 위해 사용하기 위한 gem 입니다
 
-TODO: Delete this and the text above, and describe your gem
+## Requirement
+
+### cmake
+
+linux
+```
+sudo apt-get install cmake
+```
+mac
+```
+brew install cmake
+```
+
+
+### Opencv 3.1
+
+linux
+
+```
+sudo apt-get install build-essential
+sudo apt-get install git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
+wget https://github.com/Itseez/opencv/archive/3.1.0.zip
+unzip 3.1.0.zip
+cd opencv-3.1.0
+mkdir build
+cd build
+cmake -D CMAKE_BUILD_TYPE=Release ./..
+make
+sudo make install
+```
+
+mac
+```
+brew install opencv3
+```
+
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Gemfile:
 
 ```ruby
-gem 'nuvo_image'
+gem 'nuvo-image', :github => 'crema/nuvo-image'
 ```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install nuvo_image
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+require 'nuvo_image'
 
-## Development
+NuvoImage.Process do |process|
+	test = process.read('test.jpeg')
+    cropped = process.test(test, 100, 100, :center)
+    resized = process.resize(cropped, 50, 50, :area)
+    process.jpeg(resized, 'result.jpg', :high)
+end
 
-After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/nuvo_image. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
-
-
-## License
-
-The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
+```
