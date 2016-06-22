@@ -35,7 +35,7 @@ linux
 ```
 sudo add-apt-repository ppa:amarburg/opencv3
 sudo apt-get update
-sudo apt-get install opencv3
+sudo apt-get install libopencv3
 ```
 or
 ```
