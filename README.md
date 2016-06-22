@@ -8,6 +8,8 @@
 
 linux
 ```
+sudo add-apt-repository ppa:george-edison55/cmake-3.x
+sudo apt-get update
 sudo apt-get install cmake
 ```
 mac
@@ -15,11 +17,27 @@ mac
 brew install cmake
 ```
 
+### gcc6
+linux
+```
+sudo apt-get install gcc-6-base g++-6
+```
 
-### Opencv 3.1
+mac
+```
+brew install gcc
+```
+
+### Opencv 3
 
 linux
 
+```
+sudo add-apt-repository ppa:amarburg/opencv3
+sudo apt-get update
+sudo apt-get install opencv3
+```
+or
 ```
 sudo apt-get install build-essential
 sudo apt-get install git libjpeg-turbo8-dev libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev 
@@ -32,6 +50,7 @@ cmake -D CMAKE_BUILD_TYPE=Release ./..
 make
 sudo make install
 ```
+실제 서비스 머신에서는 직접 빌드하는것을 권장함 
 
 mac
 ```
