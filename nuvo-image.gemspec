@@ -16,7 +16,7 @@ Gem::Specification.new do |spec|
 
   spec.files         = Dir['ext/**/*.cpp', 'ext/**/*.h', 'ext/**/*.rb', 'ext/**/CMakeLists.txt',  'lib/**/*.rb', 'bin/*.rb']
   spec.bindir        = 'bin'
-  spec.extensions    = ['ext/nuvo_image_process/extconf.rb']
+  spec.extensions    = ['ext/nuvo_image/extconf.rb']
 
   spec.add_development_dependency "bundler", "~> 1.12"
   spec.add_development_dependency "rake", "~> 10.0"
