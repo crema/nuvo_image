@@ -5,7 +5,7 @@
 #include "ResizeImageProcess.h"
 #include "JpegImageProcess.h"
 #include "ClearMemoryProcess.h"
-#include "ExitProcess.h"
+#include "CloseProcess.h"
 
 std::shared_ptr<ImageProcess> ImageProcessor::Parse(const std::string & inputString) {
     picojson::value json;
@@ -47,8 +47,8 @@ std::shared_ptr<ImageProcess> ImageProcessor::Parse(const std::string & inputStr
     } else if (processString == "clear") {
         return std::shared_ptr<ImageProcess>(new ClearMemoryProcess(shared_from_this()));
     }
-    else if (processString == "exit") {
-        return std::shared_ptr<ImageProcess>(new ExitProcess(shared_from_this()));
+    else if (processString == "close") {
+        return std::shared_ptr<ImageProcess>(new CloseProcess(shared_from_this()));
     }
 
     throw std::runtime_error("invalid input");

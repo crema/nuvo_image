@@ -1,11 +1,11 @@
-#ifndef NUVO_IMAGE_PROCESS_EXITPROCESS_H
-#define NUVO_IMAGE_PROCESS_EXITPROCESS_H
+#ifndef NUVO_IMAGE_EXITPROCESS_H
+#define NUVO_IMAGE_EXITPROCESS_H
 
 #include "ImageProcess.h"
 
-class ExitProcess : public ImageProcess {
+class CloseProcess : public ImageProcess {
 public:
-    ExitProcess(std::shared_ptr<ImageProcessor> processor)
+    CloseProcess(std::shared_ptr<ImageProcessor> processor)
             :ImageProcess(processor, "", "")
     {}
 
@@ -19,4 +19,4 @@ protected:
 };
 
 
-#endif //NUVO_IMAGE_PROCESS_EXITPROCESS_H
+#endif //NUVO_IMAGE_EXITPROCESS_H

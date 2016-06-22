@@ -1,5 +1,5 @@
-#ifndef NUVO_IMAGE_PROCESS_ENUMS_H
-#define NUVO_IMAGE_PROCESS_ENUMS_H
+#ifndef NUVO_IMAGE_ENUMS_H
+#define NUVO_IMAGE_ENUMS_H
 
 #include <string>
 
@@ -51,4 +51,4 @@ extern const std::string ToString(const Gravity gravity);
 extern const std::string ToString(const Quality quality);
 extern const std::string ToString(const Interpolation interpolation);
 
-#endif //NUVO_IMAGE_PROCESS_ENUMS_H
+#endif //NUVO_IMAGE_ENUMS_H

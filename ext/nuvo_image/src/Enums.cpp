@@ -105,7 +105,7 @@ const std::string ToString(const Interpolation interpolation){
         case Interpolation::Area:
             return "area";
         case Interpolation::Lanczos:
-            return "Lanczos";
+            return "lanczos";
     }
     return "invalid";
 }

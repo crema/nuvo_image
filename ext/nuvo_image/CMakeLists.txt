@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.1)
 set (CMAKE_CXX_STANDARD 11)
 
-project(nuvo_image_process)
+project(nuvo_image)
 find_package( OpenCV 3 REQUIRED )
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin )
@@ -20,6 +20,6 @@ set(SOURCE_FILES src/main.cpp
         src/JpegImageProcess.cpp
         src/ClearMemoryProcess.cpp)
 
-add_executable(nuvo_image_process ${SOURCE_FILES})
-target_link_libraries( nuvo_image_process ${OpenCV_LIBS} )
-install (TARGETS nuvo_image_process DESTINATION bin)
+add_executable(nuvo_image ${SOURCE_FILES})
+target_link_libraries( nuvo_image ${OpenCV_LIBS} )
+install (TARGETS nuvo_image DESTINATION bin)

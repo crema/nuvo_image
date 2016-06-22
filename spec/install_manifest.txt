@@ -1,0 +1,1 @@
+/home/ubuntu/Project/nuvo-image/bin/nuvo_image
