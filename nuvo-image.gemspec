@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'nuvo_image/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "nuvo_image"
+  spec.name          = "nuvo-image"
   spec.version       = NuvoImage::VERSION
   spec.authors       = ["whonz"]
   spec.email         = ["whonzmail@gmail.com"]
