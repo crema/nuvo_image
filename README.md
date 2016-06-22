@@ -35,7 +35,7 @@ sudo make install
 
 mac
 ```
-brew install opencv3
+brew install homebrew/science/opencv3
 ```
 
 
