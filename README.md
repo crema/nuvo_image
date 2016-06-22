@@ -56,7 +56,7 @@ mac
 ```
 brew install homebrew/science/opencv3
 ```
-
+`bundle install` 시 빌드 제대로 안 되면 `brew link opencv3 --force` 후 다시 시도해볼 것
 
 ## Installation
 
