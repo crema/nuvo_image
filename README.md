@@ -53,8 +53,8 @@ gem 'nuvo-image', :github => 'crema/nuvo-image'
 require 'nuvo_image'
 
 NuvoImage.Process do |process|
-	test = process.read('test.jpeg')
-    cropped = process.test(test, 100, 100, :center)
+	read = process.read('test.jpeg')
+    cropped = process.crop(read, 100, 100, :center)
     resized = process.resize(cropped, 50, 50, :area)
     process.jpeg(resized, 'result.jpg', :high)
 end
