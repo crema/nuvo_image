@@ -28,17 +28,17 @@ module NuvoImage
       ReadResult.new(result[:to], result[:width], result[:height], result[:size])
     end
 
-    def crop(image, width, height, gravity)
+    def crop(image, width, height, gravity=:center)
       result = call process: :crop, from: image.name, width: width, height: height, gravity: gravity
       CropResult.new(result[:to], result[:width], result[:height], result[:gravity].to_sym)
     end
 
-    def resize(image, width, height, interpolation)
+    def resize(image, width, height, interpolation=:area)
       result = call process: :resize, from: image.name, width: width, height: height, interpolation: interpolation
       ResizeResult.new(result[:to], result[:width], result[:height], result[:interpolation].to_sym)
     end
 
-    def jpeg(image, filename, quality)
+    def jpeg(image, filename, quality=:high)
       result = call process: :jpeg, from: image.name, to:filename, quality: quality
       JpegResult.new(result[:to], result[:size], result[:quality])
     end
