@@ -14,3 +14,4 @@
 **/*.cmake
 **/Makefile
 **/*.so
+**/bin
