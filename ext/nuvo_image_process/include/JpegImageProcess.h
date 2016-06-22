@@ -1,5 +1,5 @@
-#ifndef NUVO_IMAGE_SAVEJPEGPROCESS_H
-#define NUVO_IMAGE_SAVEJPEGPROCESS_H
+#ifndef NUVO_IMAGE_PROCESS_SAVEJPEGPROCESS_H
+#define NUVO_IMAGE_PROCESS_SAVEJPEGPROCESS_H
 
 #include "ImageProcess.h"
 #include "Enums.h"
@@ -51,4 +51,4 @@ protected:
     JpegQuality jpegQuality;
 };
 
-#endif //NUVO_IMAGE_SAVEJPEGPROCESS_H
+#endif //NUVO_IMAGE_PROCESS_SAVEJPEGPROCESS_H

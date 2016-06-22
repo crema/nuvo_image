@@ -1,5 +1,5 @@
-#ifndef NUVO_IMAGE_IMAGEPROCESS_H
-#define NUVO_IMAGE_IMAGEPROCESS_H
+#ifndef NUVO_IMAGE_PROCESS_IMAGEPROCESS_H
+#define NUVO_IMAGE_PROCESS_IMAGEPROCESS_H
 
 #include <opencv2/core.hpp>
 #include <unordered_map>

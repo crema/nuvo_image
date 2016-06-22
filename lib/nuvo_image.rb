@@ -1,5 +1,8 @@
 require "nuvo_image/version"
+require 'open3'
 
 module NuvoImage
-  # Your code goes here...
+  def self.Process(&_block)
+
+  end
 end
