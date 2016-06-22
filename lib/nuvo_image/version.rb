@@ -1,0 +1,3 @@
+module NuvoImage
+  VERSION = "0.1.0"
+end
