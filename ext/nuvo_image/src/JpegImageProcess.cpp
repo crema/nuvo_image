@@ -13,21 +13,21 @@ int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & 
 
     switch(qualityAdaptive){
         case Quality::Low:
-            targetSSIM = 0.98;
+            targetSSIM = 0.92;
             break;
         case Quality::Medium:
-            targetSSIM = 0.99;
+            targetSSIM = 0.94;
             break;
         case Quality::High:
-            targetSSIM = 0.995;
+            targetSSIM = 0.96;
             break;
         case Quality::VeryHigh:
-            targetSSIM = 0.999;
+            targetSSIM = 0.98;
             break;
     }
 
-    auto minQuality = 50;
-    auto maxQuality = 100;
+    auto minQuality = 51;
+    auto maxQuality = 99;
 
     auto lastQuality = 0;
     auto lastSSIM = 0;
@@ -41,7 +41,7 @@ int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & 
         buffer.clear();
         JpegEncode(image, buffer, currentQuality);
 
-        if(abs(maxQuality - minQuality) <= 2){
+        if(abs(maxQuality - minQuality) <= 5){
             return currentQuality;
         }
 

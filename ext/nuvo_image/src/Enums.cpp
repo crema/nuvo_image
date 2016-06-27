@@ -39,7 +39,7 @@ bool TryParse(const std::string & str, Quality & out) {
         out = Quality::Medium;
     } else if (converted == "high") {
         out = Quality::High;
-    } else if (converted == "very_high" || str == "very high"){
+    } else if (converted == "very_high" || str == "veryhigh"){
         out = Quality::VeryHigh;
     } else{
         out = Quality::InvalidQuality;
