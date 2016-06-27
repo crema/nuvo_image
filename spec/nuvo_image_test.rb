@@ -30,7 +30,7 @@ describe NuvoImage::Process do
     end
 
     it 'crop' do
-      [:center, :north, :south, :east, :west, :north_east, :north_west, :south_east, :south_west].each do |gravity|
+      [:Center, :North, :South, :East, :West, :NorthEast, :NorthWest, :SouthEast, :SouthWest].each do |gravity|
         cropped = subject.crop(@logo, 100, 50, gravity)
         cropped.width.must_equal 100
         cropped.height.must_equal 50
