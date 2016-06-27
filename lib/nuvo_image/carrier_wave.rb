@@ -6,8 +6,8 @@ module NuvoImage
   end
 
   module ClassMethods
-    def read(from, to, auto_orient=true)
-      process read: [from, to, auto_orient]
+    def read(to, auto_orient=true)
+      process read: [to, auto_orient]
     end
 
     def crop(from, to, width, height, gravity=:Center)
@@ -18,8 +18,8 @@ module NuvoImage
       process resize: [from, to, width, height, interpolation]
     end
 
-    def jpeg(from, to, quality=:high)
-      process jpeg: [from, to, quality]
+    def jpeg(from, quality=:high)
+      process jpeg: [from, quality]
     end
   end
 
@@ -36,7 +36,7 @@ module NuvoImage
   end
 
   def read(from, to, auto_orient)
-    nuvo_images[to] = nuvo_image.read(from, auto_orient)
+    nuvo_images[to] = nuvo_image.read(file.path, auto_orient)
   end
 
   def crop(from, to, width, height, gravity)
@@ -48,6 +48,6 @@ module NuvoImage
   end
 
   def jpeg(from, to, quality)
-    nuvo_image.jpeg(nuvo_images[from], to, quality)
+    nuvo_image.jpeg(nuvo_images[from], file.path, quality)
   end
 end
