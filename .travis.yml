@@ -9,7 +9,7 @@ script:
 addons:
   apt:
     packages:
-      - g++-6
+      - cpp-6
       - cmake
       - cmake-data
       - libopencv-dev
