@@ -1,0 +1,23 @@
+sudo: false
+language: ruby
+rvm:
+  - 2.3.1
+cache:
+  directories:
+  - vendor/bundle
+script:
+  - bundle install
+  - bundle exec rubocop
+  - bundle exec rake install
+  - bundle exec rake test
+addons:
+  apt:
+    packages:
+      - gcc-6-base
+      - g++-6
+      - cmake
+      - libopencv3
+    sources:
+      - ubuntu-toolchain-r-test
+      - sourceline: 'ppa:george-edison55/cmake-3.x'
+      - sourceline: 'ppa:amarburg/opencv3'

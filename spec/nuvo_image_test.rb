@@ -1,14 +1,8 @@
 require 'minitest/autorun'
-require '../lib/nuvo_image/process'
+require 'nuvo_image'
 
 describe NuvoImage::Process do
-  before do
-    ext_dir = File.dirname(__FILE__)  + '/../ext/nuvo_image'
-    `cmake #{ext_dir}`
-    `make`
-  end
-
-  subject { NuvoImage::Process.new }
+  subject {NuvoImage::Process.new}
 
   describe '#read' do
     it 'read' do
@@ -98,5 +92,4 @@ describe NuvoImage::Process do
       subject.close.must_equal 0
     end
   end
-
 end

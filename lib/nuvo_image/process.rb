@@ -11,13 +11,13 @@ module NuvoImage
     JpegResult = Struct.new(:name, :size, :quality)
 
     def initialize
-      nuvo_image_process = File.dirname(__FILE__) + "/../../ext/nuvo_image/bin/nuvo_image"
-      @stdin , @stdout, @thread = Open3.popen2(nuvo_image_process)
+      nuvo_image_process = File.dirname(__FILE__) + '/../../ext/nuvo_image/bin/nuvo_image'
+      @stdin, @stdout, @thread = Open3.popen2(nuvo_image_process)
     end
 
     def call(args)
       stdin.puts(args.to_json)
-      line = stdout.readline()
+      line = stdout.readline
       result = JSON.parse(line, symbolize_names: true)
       raise result[:error] unless result[:error].nil?
       result
@@ -39,7 +39,7 @@ module NuvoImage
     end
 
     def jpeg(image, filename, quality=:high)
-      result = call process: :jpeg, from: image.name, to:filename, quality: quality
+      result = call process: :jpeg, from: image.name, to: filename, quality: quality
       JpegResult.new(result[:to], result[:size], result[:quality])
     end
 
