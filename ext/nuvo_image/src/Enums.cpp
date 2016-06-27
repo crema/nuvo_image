@@ -2,26 +2,26 @@
 #include "Enums.h"
 
 bool TryParse(const std::string & str, Gravity & out) {
-    std::string converted;
-    std::transform(str.begin(), str.end(), converted.begin(), tolower);
+    std::string converted = str;
+    std::transform(converted.begin(), converted.end(), converted.begin(), tolower);
 
-    if(str == "center") {
+    if(converted == "center") {
         out = Gravity::Center;
-    } else if (str == "north") {
+    } else if (converted == "north") {
         out = Gravity::North;
-    } else if (str == "south") {
+    } else if (converted == "south") {
         out = Gravity::South;
-    } else if (str == "west"){
+    } else if (converted == "west"){
         out = Gravity::West;
-    } else if (str == "east"){
+    } else if (converted == "east"){
         out = Gravity::East;
-    } else if (str == "north_west" || str =="northwest"){
+    } else if (converted == "north_west" || converted =="northwest"){
         out = Gravity::NorthWest;
-    } else if (str == "north_east" || str =="northeast"){
+    } else if (converted == "north_east" || converted =="northeast"){
         out = Gravity::NorthEast;
-    } else if (str == "south_west" || str =="southwest"){
+    } else if (converted == "south_west" || converted =="southwest"){
         out = Gravity::SouthWest;
-    } else if (str == "south_east" || str =="southeast"){
+    } else if (converted == "south_east" || converted =="southeast"){
         out = Gravity::SouthEast;
     } else{
         out = Gravity::InvalidGravity;
@@ -30,13 +30,16 @@ bool TryParse(const std::string & str, Gravity & out) {
 }
 
 bool TryParse(const std::string & str, Quality & out) {
-    if(str == "low") {
+    std::string converted = str;
+    std::transform(converted.begin(), converted.end(), converted.begin(), tolower);
+
+    if(converted == "low") {
         out = Quality::Low;
-    } else if (str == "medium") {
+    } else if (converted == "medium") {
         out = Quality::Medium;
-    } else if (str == "high") {
+    } else if (converted == "high") {
         out = Quality::High;
-    } else if (str == "very_high" || str == "very high"){
+    } else if (converted == "very_high" || str == "very high"){
         out = Quality::VeryHigh;
     } else{
         out = Quality::InvalidQuality;
@@ -45,15 +48,18 @@ bool TryParse(const std::string & str, Quality & out) {
 }
 
 bool TryParse(const std::string & str, Interpolation & out) {
-    if( str == "nearest") {
+    std::string converted = str;
+    std::transform(converted.begin(), converted.end(), converted.begin(), tolower);
+
+    if( converted == "nearest") {
         out = Interpolation::Nearest;
-    } else if(str == "linear") {
+    } else if(converted == "linear") {
         out = Interpolation::Linear;
-    } else if (str == "cubic") {
+    } else if (converted == "cubic") {
         out = Interpolation::Cubic;
-    } else if (str == "area") {
+    } else if (converted == "area") {
         out = Interpolation::Area;
-    } else if (str == "lanczos"){
+    } else if (converted == "lanczos"){
         out = Interpolation::Lanczos;
     } else{
         out = Interpolation::InvalidInterpolation;

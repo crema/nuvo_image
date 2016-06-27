@@ -28,7 +28,7 @@ module NuvoImage
       ReadResult.new(result[:to], result[:width], result[:height], result[:size])
     end
 
-    def crop(image, width, height, gravity=:center)
+    def crop(image, width, height, gravity=:Center)
       result = call process: :crop, from: image.name, width: width, height: height, gravity: gravity
       CropResult.new(result[:to], result[:width], result[:height], result[:gravity].to_sym)
     end
