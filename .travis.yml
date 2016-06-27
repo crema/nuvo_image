@@ -6,8 +6,8 @@ before_script:
   - sudo ln /dev/null /dev/raw1394
 script:
   - bundle exec rubocop
-  - bundle exec rake install
-  - bundle exec rake test
+  - bundle exec rake install --trace
+  - bundle exec rake test --trace
 addons:
   apt:
     packages:
