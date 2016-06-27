@@ -4,7 +4,7 @@ require 'nuvo_image'
 describe NuvoImage::Process do
   before do
     Dir.chdir(File.dirname(__FILE__) + '/../ext/nuvo_image/') do
-      `cmake`
+      `cmake .`
       `make`
     end
   end
