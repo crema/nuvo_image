@@ -1,12 +1,13 @@
 cmake_minimum_required(VERSION 3.0)
 
 project(nuvo_image)
-find_package(OpenCV 2 REQUIRED)
+find_package(OpenCV REQUIRED)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 
+set (CMAKE_CXX_COMPILER g++-6)
 set (CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_FLAGS '-o4')
+set (CMAKE_CXX_FLAGS '-o4')
 
 include_directories(include)
 
