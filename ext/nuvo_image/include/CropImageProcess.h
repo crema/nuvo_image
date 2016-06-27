@@ -1,6 +1,7 @@
 #ifndef NUVO_IMAGE_CROPIMAGEPROCESS_H
 #define NUVO_IMAGE_CROPIMAGEPROCESS_H
 
+#include "opencv.h"
 #include "ImageProcess.h"
 #include "Enums.h"
 

@@ -1,10 +1,11 @@
 #ifndef NUVO_IMAGE_IMAGEPROCESS_H
 #define NUVO_IMAGE_IMAGEPROCESS_H
 
-#include <opencv2/core.hpp>
 #include <unordered_map>
 #include <string>
 #include <memory>
+
+#include "opencv.h"
 #include "picojson.h"
 #include "Enums.h"
 

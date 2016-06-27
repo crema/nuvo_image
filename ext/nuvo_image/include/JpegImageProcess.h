@@ -1,6 +1,7 @@
 #ifndef NUVO_IMAGE_SAVEJPEGPROCESS_H
 #define NUVO_IMAGE_SAVEJPEGPROCESS_H
 
+#include "opencv.h"
 #include "ImageProcess.h"
 #include "Enums.h"
 

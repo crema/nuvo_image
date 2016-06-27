@@ -1,6 +1,7 @@
 #ifndef NUVO_IMAGE_EXITPROCESS_H
 #define NUVO_IMAGE_EXITPROCESS_H
 
+#include "opencv.h"
 #include "ImageProcess.h"
 
 class CloseProcess : public ImageProcess {

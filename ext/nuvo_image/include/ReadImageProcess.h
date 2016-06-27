@@ -1,6 +1,7 @@
 #ifndef NUVO_IMAGE_READIMAGEPROCESS_H
 #define NUVO_IMAGE_READIMAGEPROCESS_H
 
+#include "opencv.h"
 #include "ImageProcess.h"
 
 

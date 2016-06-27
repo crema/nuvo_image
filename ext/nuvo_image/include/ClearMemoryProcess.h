@@ -1,6 +1,7 @@
 #ifndef NUVO_IMAGE_CLEARMEMORYPROCESS_H
 #define NUVO_IMAGE_CLEARMEMORYPROCESS_H
 
+#include "opencv.h"
 #include "ImageProcess.h"
 
 class ClearMemoryProcess : public ImageProcess {

@@ -1,4 +1,3 @@
-#include <opencv2/imgproc.hpp>
 #include "ResizeImageProcess.h"
 #include "ImageProcessor.h"
 #include "Enums.h"

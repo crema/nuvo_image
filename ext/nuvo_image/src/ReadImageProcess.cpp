@@ -1,5 +1,4 @@
 #include <fstream>
-#include <opencv2/imgcodecs.hpp>
 #include "ReadImageProcess.h"
 #include "ImageProcessor.h"
 #include "exif.h"
