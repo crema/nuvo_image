@@ -33,7 +33,7 @@ int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & 
     auto lastSSIM = 0;
 
     cv::Mat imageGray;
-    cv::cvtColor(image, imageGray, cv::COLOR_RGB2GRAY);
+    cv::cvtColor(image, imageGray, COLOR_RGB2GRAY);
 
     auto currentQuality = 100;
     while(true) {
@@ -45,7 +45,7 @@ int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & 
             return currentQuality;
         }
 
-        auto jpegGray = cv::imdecode(buffer, cv::IMREAD_GRAYSCALE);
+        auto jpegGray = cv::imdecode(buffer, IMREAD_GRAYSCALE);
         auto currentSSIM = GetSIMM(imageGray, jpegGray);
 
         if(currentSSIM < targetSSIM) {
@@ -59,7 +59,7 @@ int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & 
 
 void JpegQuality::JpegEncode(const cv::Mat &image, std::vector<unsigned char> &buffer, int quality) {
     std::vector<int> imageParams;
-    imageParams.push_back(cv::IMWRITE_JPEG_QUALITY); // IMWRITE_JPEG_QUALITY
+    imageParams.push_back(IMWRITE_JPEG_QUALITY); // IMWRITE_JPEG_QUALITY
     imageParams.push_back(quality);
     cv::imencode(".jpg",image, buffer, imageParams);
 }
