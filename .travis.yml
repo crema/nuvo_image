@@ -25,4 +25,4 @@ addons:
       - cmake
     sources:
       - ubuntu-toolchain-r-test
-      - kalakris-cmake
+      - george-edison55-precise-backports
