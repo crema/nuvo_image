@@ -5,7 +5,7 @@ rvm:
 cache:
   directories:
   - opencv
-before-script:
+before_script:
   - ./gitclone git@github.com:Itseez/opencv.git opencv
   - cd opencv
   - git checkout tags/3.1.0 -b 3.1.0
@@ -23,6 +23,7 @@ addons:
       - gcc-6-base
       - g++-6
       - cmake
+      - cmake-data
     sources:
       - ubuntu-toolchain-r-test
       - george-edison55-precise-backports
