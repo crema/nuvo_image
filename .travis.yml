@@ -6,7 +6,7 @@ cache:
   directories:
   - opencv
 before_script:
-  - ./gitclone git@github.com:Itseez/opencv.git opencv
+  - ./gitclone https://github.com/Itseez/opencv.git opencv
   - cd opencv
   - git checkout tags/3.1.0 -b 3.1.0
   - mkdir -p build
