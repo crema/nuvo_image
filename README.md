@@ -20,7 +20,7 @@ brew install cmake
 ### gcc6
 linux
 ```
-sudo apt-get install gcc-6-base g++-6
+sudo apt-get install g++-6
 ```
 
 mac
@@ -46,7 +46,7 @@ unzip 3.1.0.zip
 cd opencv-3.1.0
 mkdir build
 cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_opencv_perf_core=OFF -DBUILD_opencv_ts=OFF -DBUILD_opencv_videoio=OFF -DBUILD_opencv_calib3d=OFF -DBUILD_opencv_calib3d=OFF -DBUILD_opencv_flann=OFF -DBUILD_opencv_photo=OFF -DBUILD_opencv_hal=OFF -DBUILD_opencv_ml=OFF -DBUILD_opencv_videostab=OFF -DBUILD_opencv_superres=OFF -DBUILD_opencv_stitching=OFF -DBUILD_opencv_calib3d=OFF -DBUILD_opencv_objdetect=OFF -DBUILD_opencv_video=OFF -DBUILD_opencv_photo=OFF -DBUILD_opencv_ml=OFF..
+cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_opencv_perf_core=OFF -DBUILD_opencv_ts=OFF -DBUILD_opencv_videoio=OFF -DBUILD_opencv_calib3d=OFF -DBUILD_opencv_calib3d=OFF -DBUILD_opencv_flann=OFF -DBUILD_opencv_photo=OFF -DBUILD_opencv_hal=OFF -DBUILD_opencv_ml=OFF -DBUILD_opencv_videostab=OFF -DBUILD_opencv_superres=OFF -DBUILD_opencv_stitching=OFF -DBUILD_opencv_calib3d=OFF -DBUILD_opencv_objdetect=OFF -DBUILD_opencv_video=OFF -DBUILD_opencv_photo=OFF -DBUILD_opencv_ml=OFF
 make
 sudo make install
 ```
@@ -56,7 +56,7 @@ mac
 ```
 brew install homebrew/science/opencv3
 ```
-`bundle install` 시 빌드 제대로 안 되면 `brew link opencv3 --force` 후 다시 시도해볼 것
+
 
 ## Installation
 
@@ -65,6 +65,12 @@ Gemfile:
 ```ruby
 gem 'nuvo-image', :github => 'crema/nuvo-image'
 ```
+
+```
+bundle install
+```
+
+mac 에서 `bundle install` 시 빌드 제대로 안 되면 `brew link opencv3 --force` 후 다시 시도해볼 것
 
 ## Usage
 
