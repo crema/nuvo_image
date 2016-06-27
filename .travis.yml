@@ -8,8 +8,8 @@ cache:
 script:
   - bundle install
   - bundle exec rubocop
-  - bundle exec rake install
-  - bundle exec rake test
+  - bundle exec rake install --trace
+  - bundle exec rake test --trace
 addons:
   apt:
     packages:
