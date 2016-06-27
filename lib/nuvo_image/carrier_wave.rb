@@ -47,7 +47,7 @@ module NuvoImage
     nuvo_images[to] = nuvo_image.resize(nuvo_images[from], width, height, interpolation)
   end
 
-  def jpeg(from, to, quality)
+  def jpeg(from, quality)
     nuvo_image.jpeg(nuvo_images[from], file.path, quality)
   end
 end
