@@ -1,7 +1,9 @@
-sudo: false
+sudo: true
 language: ruby
 rvm:
   - 2.3.1
+before_script:
+  - sudo ln /dev/null /dev/raw1394
 script:
   - bundle exec rubocop
   - bundle exec rake install

@@ -28,6 +28,15 @@ mac
 brew install gcc
 ```
 
+### libjpeg-turbo
+
+libjpeg를 대체하는 고성능 jpeg 라이브러리. 개발 머신에서는 굳이 설치 하지 않아도 된다
+
+linux
+```
+libjpeg-turbo8-dev
+```
+
 ### Opencv 3
 
 linux
@@ -40,7 +49,6 @@ sudo apt-get install libopencv3
 or
 ```
 sudo apt-get install build-essential
-sudo apt-get install git libjpeg-turbo8-dev libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev 
 wget https://github.com/Itseez/opencv/archive/3.1.0.zip
 unzip 3.1.0.zip
 cd opencv-3.1.0
@@ -50,7 +58,7 @@ cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_opencv_perf_core=OFF -DBUILD_opencv_
 make
 sudo make install
 ```
-실제 서비스 머신에서는 직접 빌드하는것을 권장함 
+실제 서비스 머신에서는 직접 빌드하는것을 권장한다
 
 mac
 ```
@@ -84,4 +92,19 @@ NuvoImage.Process do |process|
     process.jpeg(resized, 'result.jpg', :high)
 end
 
+```
+
+## With Travis
+
+```
+addons:
+  apt:
+    packages:
+      - g++-6
+      - cmake
+      - cmake-data
+      - libopencv-dev
+    sources:
+      - ubuntu-toolchain-r-test
+      - george-edison55-precise-backports
 ```
