@@ -97,6 +97,9 @@ end
 ## With Travis
 
 ```
+sudo: true
+before_script:
+  - sudo ln /dev/null /dev/raw1394  
 addons:
   apt:
     packages:
