@@ -1,6 +1,10 @@
+#include <algorithm>
 #include "Enums.h"
 
 bool TryParse(const std::string & str, Gravity & out) {
+    std::string converted;
+    std::transform(str.begin(), str.end(), converted.begin(), tolower);
+
     if(str == "center") {
         out = Gravity::Center;
     } else if (str == "north") {
@@ -11,13 +15,13 @@ bool TryParse(const std::string & str, Gravity & out) {
         out = Gravity::West;
     } else if (str == "east"){
         out = Gravity::East;
-    } else if (str == "north_west" || str =="north west"){
+    } else if (str == "north_west" || str =="northwest"){
         out = Gravity::NorthWest;
-    } else if (str == "north_east" || str =="north east"){
+    } else if (str == "north_east" || str =="northeast"){
         out = Gravity::NorthEast;
-    } else if (str == "south_west" || str =="south west"){
+    } else if (str == "south_west" || str =="southwest"){
         out = Gravity::SouthWest;
-    } else if (str == "south_east" || str =="south east"){
+    } else if (str == "south_east" || str =="southeast"){
         out = Gravity::SouthEast;
     } else{
         out = Gravity::InvalidGravity;
@@ -60,23 +64,23 @@ bool TryParse(const std::string & str, Interpolation & out) {
 const std::string ToString(const Gravity gravity) {
     switch (gravity){
         case Gravity::Center:
-            return "center";
+            return "Center";
         case Gravity::North:
-            return "north";
+            return "North";
         case Gravity::South:
-            return "south";
+            return "South";
         case Gravity::West:
-            return "west";
+            return "West";
         case Gravity::East:
-            return "east";
+            return "East";
         case Gravity::NorthWest:
-            return "north_west";
+            return "NorthWest";
         case Gravity::NorthEast:
-            return "north_east";
+            return "NorthEast";
         case Gravity::SouthWest:
-            return "south_west";
+            return "SouthWest";
         case Gravity::SouthEast:
-            return "south_east";
+            return "SouthEast";
     }
     return "invalid";
 }
