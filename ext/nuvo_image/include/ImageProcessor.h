@@ -1,7 +1,7 @@
 #ifndef NUVO_IMAGE_IMGAEPROCESSOR_H
 #define NUVO_IMAGE_IMGAEPROCESSOR_H
 
-#include <opencv2/opencv.hpp>
+#include <opencv2/core.hpp>
 #include <unordered_map>
 #include <string>
 #include <memory>

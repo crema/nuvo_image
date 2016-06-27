@@ -1,5 +1,5 @@
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/imgcodecs.hpp>
 
 #include "JpegImageProcess.h"
 #include "ImageProcessor.h"
@@ -62,7 +62,7 @@ int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & 
 
 void JpegQuality::JpegEncode(const cv::Mat &image, std::vector<unsigned char> &buffer, int quality) {
     std::vector<int> imageParams;
-    imageParams.push_back(CV_IMWRITE_JPEG_QUALITY);
+    imageParams.push_back(cv::IMWRITE_JPEG_QUALITY);
     imageParams.push_back(quality);
     cv::imencode(".jpg",image, buffer, imageParams);
 }

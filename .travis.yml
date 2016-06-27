@@ -4,19 +4,25 @@ rvm:
   - 2.3.1
 cache:
   directories:
-  - vendor/bundle
+  - opencv
+before-script:
+  - ./gitclone git@github.com:Itseez/opencv.git opencv
+  - cd opencv
+  - git checkout tags/3.1.0 -b 3.1.0
+  - mkdir -p build
+  - cd build
+  - cmake .. -DBUILD_opencv_perf_core=OFF -DBUILD_opencv_ts=OFF -DBUILD_opencv_videoio=OFF -DBUILD_opencv_calib3d=OFF -DBUILD_opencv_calib3d=OFF -DBUILD_opencv_flann=OFF -DBUILD_opencv_photo=OFF -DBUILD_opencv_hal=OFF -DBUILD_opencv_ml=OFF -DBUILD_opencv_videostab=OFF -DBUILD_opencv_superres=OFF -DBUILD_opencv_stitching=OFF -DBUILD_opencv_calib3d=OFF -DBUILD_opencv_objdetect=OFF -DBUILD_opencv_video=OFF -DBUILD_opencv_photo=OFF -DBUILD_opencv_ml=OFF
+  - make install
 script:
-  - bundle install
-  - bundle exec rubocop
-  - bundle exec rake install --trace
-  - bundle exec rake test --trace
+  - cd ./ext/nuvo_image
+  - cmake .
+  - make
 addons:
   apt:
     packages:
       - gcc-6-base
       - g++-6
       - cmake
-      - libopencv-dev
     sources:
       - ubuntu-toolchain-r-test
       - kalakris-cmake

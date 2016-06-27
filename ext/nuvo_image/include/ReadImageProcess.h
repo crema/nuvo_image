@@ -2,8 +2,6 @@
 #define NUVO_IMAGE_READIMAGEPROCESS_H
 
 #include "ImageProcess.h"
-#include <string>
-#include <tuple>
 
 
 class ReadImageProcess:public ImageProcess {
