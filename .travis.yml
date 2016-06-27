@@ -16,7 +16,6 @@ addons:
       - gcc-6-base
       - g++-6
       - cmake
-      - libopencv-core2.4
       - libopencv-dev
     sources:
       - ubuntu-toolchain-r-test
