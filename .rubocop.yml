@@ -6,9 +6,6 @@ AllCops:
     - '**/bin/*'
   TargetRubyVersion: 2.3
 
-Rails:
-  Enabled: true
-
 Lint/UnusedMethodArgument:
   Enabled: true
   IgnoreEmptyMethods: false
