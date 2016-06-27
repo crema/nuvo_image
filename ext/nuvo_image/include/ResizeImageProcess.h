@@ -1,7 +1,7 @@
 #ifndef NUVO_IMAGE_RESIZEIMAGEPROCESS_H
 #define NUVO_IMAGE_RESIZEIMAGEPROCESS_H
 
-#include <opencv2/imgproc.hpp>
+#include <opencv2/opencv.hpp>
 #include "Enums.h"
 #include "ImageProcess.h"
 

@@ -23,8 +23,8 @@ module NuvoImage
       result
     end
 
-    def read(filename)
-      result = call process: :read, from: filename
+    def read(filename, auto_orient=true)
+      result = call process: :read, from: filename, auto_orient: auto_orient
       ReadResult.new(result[:to], result[:width], result[:height], result[:size])
     end
 

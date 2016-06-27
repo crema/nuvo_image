@@ -16,8 +16,8 @@ addons:
       - gcc-6-base
       - g++-6
       - cmake
-      - libopencv3
+      - libopencv-core2.4
+      - libopencv-dev
     sources:
       - ubuntu-toolchain-r-test
-      - sourceline: 'ppa:george-edison55/cmake-3.x'
-      - sourceline: 'ppa:amarburg/opencv3'
+      - kalakris-cmake

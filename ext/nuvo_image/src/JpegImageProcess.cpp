@@ -1,4 +1,5 @@
-#include <opencv2/opencv.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 
 #include "JpegImageProcess.h"
 #include "ImageProcessor.h"
@@ -43,7 +44,7 @@ int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & 
         buffer.clear();
         JpegEncode(image, buffer, currentQuality);
 
-        if(cv::abs(maxQuality - minQuality) <= 2){
+        if(abs(maxQuality - minQuality) <= 2){
             return currentQuality;
         }
 

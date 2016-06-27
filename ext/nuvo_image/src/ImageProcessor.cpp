@@ -1,4 +1,4 @@
-#include <cv.hpp>
+#include <opencv2/opencv.hpp>
 #include "ImageProcessor.h"
 #include "ReadImageProcess.h"
 #include "CropImageProcess.h"
