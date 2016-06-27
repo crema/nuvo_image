@@ -5,7 +5,7 @@
 
 const ImageProcessInput ReadImageProcess::Process(const ImageProcessInput &input, picojson::object &result) {
     auto buffer = input.GetBuffer();
-    auto image = cv::imdecode(buffer, cv::IMREAD_COLOR);
+    auto image = cv::imdecode(buffer, 1); // IMREAD_COLOR
     auto orientation = 0;
 
     result["width"] = picojson::value((double)image.cols);

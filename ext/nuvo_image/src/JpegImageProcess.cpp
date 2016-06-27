@@ -59,7 +59,7 @@ int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & 
 
 void JpegQuality::JpegEncode(const cv::Mat &image, std::vector<unsigned char> &buffer, int quality) {
     std::vector<int> imageParams;
-    imageParams.push_back(cv::IMWRITE_JPEG_QUALITY);
+    imageParams.push_back(1); // IMWRITE_JPEG_QUALITY
     imageParams.push_back(quality);
     cv::imencode(".jpg",image, buffer, imageParams);
 }

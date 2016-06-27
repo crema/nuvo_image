@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 
 project(nuvo_image)
 find_package(OpenCV REQUIRED)
+add_definitions(-DOPENCV_VERSION_MAJOR=${OpenCV_VERSION_MAJOR})
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 
