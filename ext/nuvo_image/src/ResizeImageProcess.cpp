@@ -10,5 +10,5 @@ const ImageProcessInput ResizeImageProcess::Process(const ImageProcessInput &inp
     result["width"] = picojson::value((double)width);
     result["height"] = picojson::value((double)height);
     result["interpolation"] = picojson::value(ToString(interpolation));
-    return input;
+    return ImageProcessInput(resized);
 }
