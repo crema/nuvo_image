@@ -24,8 +24,9 @@ std::shared_ptr<ImageProcess> ImageProcessor::Parse(const std::string & inputStr
 
     if(processString == "read") {
         auto autoOrient = GetMember<bool>(object,"auto_orient", false);
+        auto flatten = GetMember<Flatten>(object,"flatten", Flatten::None);
 
-        return std::shared_ptr<ImageProcess>(new ReadImageProcess(shared_from_this(), from, to,  autoOrient));
+        return std::shared_ptr<ImageProcess>(new ReadImageProcess(shared_from_this(), from, to,  autoOrient, flatten));
     } else if (processString == "crop") {
         auto width = (int)GetMember<double>(object, "width");
         auto height = (int)GetMember<double>(object, "height");

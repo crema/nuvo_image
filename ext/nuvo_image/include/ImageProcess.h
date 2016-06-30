@@ -14,7 +14,7 @@ class ImageProcessor;
 class ImageProcessInput {
 public:
     ImageProcessInput()
-        :type(None)
+        :type(InvalidInput)
     {}
 
     ImageProcessInput(const std::vector<unsigned char> & buffer)
@@ -50,8 +50,8 @@ protected:
     virtual const ProcessInputType GetFromType() = 0;
     virtual const ProcessInputType GetToType() = 0;
 
-    bool RequireFrom() { return GetFromType() != ProcessInputType::None;}
-    bool RequireTo() { return GetToType() != ProcessInputType::None; }
+    bool RequireFrom() { return GetFromType() != ProcessInputType::InvalidInput;}
+    bool RequireTo() { return GetToType() != ProcessInputType::InvalidInput; }
     bool HasFrom() { return !from.empty();}
     bool HasTo() { return !to.empty(); }
 

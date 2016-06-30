@@ -18,8 +18,6 @@ Gem::Specification.new do |spec|
   spec.bindir        = 'bin'
   spec.extensions    = ['ext/nuvo_image/extconf.rb']
 
-  spec.add_runtime_dependency 'activesupport', '~> 4.2.3'
-
   spec.add_development_dependency "bundler", "~> 1.12"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency 'rubocop', '~> 0.35.0'

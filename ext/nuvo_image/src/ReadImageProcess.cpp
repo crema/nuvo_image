@@ -5,7 +5,25 @@
 
 const ImageProcessInput ReadImageProcess::Process(const ImageProcessInput &input, picojson::object &result) {
     auto buffer = input.GetBuffer();
-    auto image = cv::imdecode(buffer, IMREAD_COLOR);
+    cv::Mat image;
+
+    if(flatten == Flatten::None) {
+        image = cv::imdecode(buffer, IMREAD_COLOR);
+    } else {
+        image = cv::imdecode(buffer, IMREAD_UNCHANGED);
+
+        if(image.depth() != CV_8U || image.channels() != 3){
+            cv::Mat flattend;
+
+            if(TryFlatten(image, flattend)) {
+                image = flattend;
+                result["flatten"] = picojson::value(ToString(flatten));
+            } else {
+                image = cv::imdecode(buffer, IMREAD_COLOR);
+            }
+        }
+    }
+
     auto orientation = 0;
 
     result["width"] = picojson::value((double)image.cols);
@@ -21,7 +39,41 @@ const ImageProcessInput ReadImageProcess::Process(const ImageProcessInput &input
     return ImageProcessInput(image);
 }
 
+bool ReadImageProcess::TryFlatten(const cv::Mat &src, cv::Mat &dest) {
+    if(src.depth() == CV_8U && src.channels() == 4) {
+        dest = cv::Mat(src.size(), CV_8UC3);
+        cv::Scalar backgroundPixel;
+        cv::Scalar destPixel;
 
+        switch(flatten){
+            case Flatten::Black:
+                backgroundPixel = cv::Scalar(0,0,0,1);
+                break;
+            case Flatten::White:
+                backgroundPixel = cv::Scalar(1,1,1,1);
+                break;
+        }
+
+        for (int y = 0; y < src.rows; ++y) {
+            unsigned  char * srcPtr = src.data + src.step * y;
+            unsigned  char * destPtr = dest.data + dest.step * y;
+
+            for(int x = 0; x < src.cols; ++x) {
+                cv::Scalar srcPixel(srcPtr[0] / 255.0, srcPtr[1] / 255.0,srcPtr[2] / 255.0, srcPtr[3] / 255.0);
+                cv::addWeighted(srcPixel, srcPixel[3], backgroundPixel, 1 - srcPixel[3], 0, destPixel);
+
+                destPtr[0] = (unsigned char)(destPixel[0] * 255);
+                destPtr[1] = (unsigned char)(destPixel[1] * 255);
+                destPtr[2] = (unsigned char)(destPixel[2] * 255);
+
+                destPtr+= dest.channels();
+                srcPtr+= src.channels();
+            }
+        }
+        return true;
+    }
+    return false;
+}
 
 bool ReadImageProcess::TryReadExifOrientation(const std::vector<unsigned char> &buffer, int & orientation) {
     easyexif::EXIFInfo exif;

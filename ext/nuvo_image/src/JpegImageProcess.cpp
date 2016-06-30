@@ -1,7 +1,6 @@
 #include "JpegImageProcess.h"
 #include "ImageProcessor.h"
 
-
 int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & buffer) {
     if(qualityType == QualityType::Fixed){
         buffer.clear();
@@ -13,30 +12,27 @@ int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & 
 
     switch(qualityAdaptive){
         case Quality::Low:
-            targetSSIM = 0.92;
+            targetSSIM = 0.95;
             break;
         case Quality::Medium:
-            targetSSIM = 0.94;
+            targetSSIM = 0.97;
             break;
         case Quality::High:
-            targetSSIM = 0.96;
+            targetSSIM = 0.99;
             break;
         case Quality::VeryHigh:
-            targetSSIM = 0.98;
+            targetSSIM = 0.999;
             break;
     }
 
-    auto minQuality = 51;
+    auto minQuality = 70;
     auto maxQuality = 99;
-
-    auto lastQuality = 0;
-    auto lastSSIM = 0;
 
     cv::Mat imageGray;
     cv::cvtColor(image, imageGray, COLOR_RGB2GRAY);
 
     auto currentQuality = 100;
-    while(true) {
+    for(int i=0; i< 5 ; ++i) {
         currentQuality = (minQuality + maxQuality) / 2;
         buffer.clear();
         JpegEncode(image, buffer, currentQuality);
@@ -54,6 +50,7 @@ int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & 
             maxQuality = currentQuality;
         }
     }
+
     return currentQuality;
 }
 
@@ -68,7 +65,7 @@ void JpegQuality::JpegEncode(const cv::Mat &image, std::vector<unsigned char> &b
 double JpegQuality::GetSIMM(const cv::Mat &source, const cv::Mat &dest) {
     const double C1 = 6.5025, C2 = 58.5225;
     /***************************** INITS **********************************/
-    int d = CV_32F;
+    int d = CV_32FC1;
 
     cv::Mat I1, I2;
     source.convertTo(I1, d);            // cannot calculate on one byte large values

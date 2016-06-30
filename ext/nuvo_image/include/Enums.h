@@ -38,11 +38,16 @@ enum Interpolation{
 };
 
 enum ProcessInputType{
-    None = -1,
+    InvalidInput = -1,
     File,
     Memory
 };
 
+enum Flatten {
+    None = -1,
+    White,
+    Black
+};
 
 enum ImreadModes {
     IMREAD_UNCHANGED = -1,
@@ -274,9 +279,11 @@ enum ColorConversionCodes {
     COLOR_COLORCVT_MAX = 139
 };
 
+extern bool TryParse(const std::string & str, Flatten & out);
 extern bool TryParse(const std::string & str, Gravity & out);
 extern bool TryParse(const std::string & str, Quality & out);
 extern bool TryParse(const std::string & str, Interpolation & out);
+extern const std::string ToString(const Flatten flatten);
 extern const std::string ToString(const Gravity gravity);
 extern const std::string ToString(const Quality quality);
 extern const std::string ToString(const Interpolation interpolation);

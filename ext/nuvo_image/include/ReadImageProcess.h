@@ -7,8 +7,8 @@
 
 class ReadImageProcess:public ImageProcess {
 public:
-    ReadImageProcess(std::shared_ptr<ImageProcessor> processor, const std::string & from, const std::string & to, bool autoOrient)
-        :ImageProcess(processor, from, to ), autoOrient(autoOrient)
+    ReadImageProcess(std::shared_ptr<ImageProcessor> processor, const std::string & from, const std::string & to, bool autoOrient, Flatten flatten)
+        :ImageProcess(processor, from, to ), autoOrient(autoOrient), flatten(flatten)
     {}
 
 protected:
@@ -18,9 +18,11 @@ protected:
     const ProcessInputType GetToType() { return ProcessInputType::Memory; }
 
 private:
+    bool TryFlatten(const cv::Mat & src, cv::Mat & dest);
     bool TryReadExifOrientation(const std::vector<unsigned char> & buffer, int & orientation);
     bool TryRotateOrientation(const cv::Mat & src, cv::Mat & dest, const int orientation);
     bool autoOrient;
+    Flatten flatten;
 };
 
 #endif

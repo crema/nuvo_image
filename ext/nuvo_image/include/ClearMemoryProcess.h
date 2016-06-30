@@ -13,8 +13,8 @@ public:
 protected:
     const ImageProcessInput Process(const ImageProcessInput &input, picojson::object & result);
     const std::string GetName() { return "clear";}
-    const ProcessInputType GetFromType() { return ProcessInputType::None; }
-    const ProcessInputType GetToType() { return ProcessInputType::None; }
+    const ProcessInputType GetFromType() { return ProcessInputType::InvalidInput; }
+    const ProcessInputType GetToType() { return ProcessInputType::InvalidInput; }
 };
 
 

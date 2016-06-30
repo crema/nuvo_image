@@ -68,7 +68,13 @@ private:
     std::unordered_map<std::string, cv::Mat> data;
 };
 
-
+template <>
+inline bool ImageProcessor::TryGet<Flatten>(const picojson::value & value, Flatten & out) {
+    if(!value.is<std::string>()) {
+        return false;
+    }
+    return TryParse(value.get<std::string>(), out);
+}
 
 template <>
 inline bool ImageProcessor::TryGet<Gravity>(const picojson::value & value, Gravity & out) {

@@ -15,8 +15,8 @@ protected:
         exit(0);
     }
     const std::string GetName() { return "exit";}
-    const ProcessInputType GetFromType() { return ProcessInputType::None; }
-    const ProcessInputType GetToType() { return ProcessInputType::None; }
+    const ProcessInputType GetFromType() { return ProcessInputType::InvalidInput; }
+    const ProcessInputType GetToType() { return ProcessInputType::InvalidInput; }
 };
 
 

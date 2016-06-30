@@ -31,7 +31,7 @@ describe NuvoImage::Process do
 
     it 'crop' do
       [:Center, :North, :South, :East, :West, :NorthEast, :NorthWest, :SouthEast, :SouthWest].each do |gravity|
-        cropped = subject.crop(@logo, 100, 50, gravity)
+        cropped = subject.crop(@logo, 100, 50, gravity: gravity)
         cropped.width.must_equal 100
         cropped.height.must_equal 50
         cropped.gravity.must_equal gravity
@@ -50,7 +50,7 @@ describe NuvoImage::Process do
 
     it 'resize' do
       [:nearest, :linear, :cubic, :area, :lanczos].each do |interpolation|
-        resized = subject.resize(@logo, 100, 50, interpolation)
+        resized = subject.resize(@logo, 100, 50, interpolation: interpolation)
         resized.width.must_equal 100
         resized.height.must_equal 50
         resized.interpolation.must_equal interpolation
@@ -71,7 +71,7 @@ describe NuvoImage::Process do
       @low_size = 0
       @low_quality = 0
       [:low, :medium, :high, :very_high].each do |quality|
-        jpeg = subject.jpeg(@logo, File.dirname(__FILE__) + "/images/test/#{quality}.jpg", quality)
+        jpeg = subject.jpeg(@logo, File.dirname(__FILE__) + "/images/test/#{quality}.jpg", quality: quality)
         assert jpeg.size >= @low_size, 'must less size'
         assert jpeg.quality >= @low_quality, 'must less quality'
         @low_size = jpeg.size

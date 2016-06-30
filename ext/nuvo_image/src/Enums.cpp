@@ -1,6 +1,23 @@
 #include <algorithm>
 #include "Enums.h"
 
+bool TryParse(const std::string & str, Flatten & out) {
+    std::string converted = str;
+    std::transform(converted.begin(), converted.end(), converted.begin(), tolower);
+
+    if(converted == "none") {
+        out = Flatten::None;
+    } else if(converted == "white") {
+        out = Flatten::White;
+    } else if (converted == "black") {
+        out = Flatten::Black;
+    } else {
+        out = Flatten::None;
+        return false;
+    }
+    return true;
+}
+
 bool TryParse(const std::string & str, Gravity & out) {
     std::string converted = str;
     std::transform(converted.begin(), converted.end(), converted.begin(), tolower);
@@ -65,6 +82,17 @@ bool TryParse(const std::string & str, Interpolation & out) {
         out = Interpolation::InvalidInterpolation;
     }
     return out != Interpolation::InvalidInterpolation;
+}
+
+const std::string ToString(const Flatten flatten) {
+    switch (flatten) {
+        case Flatten::White:
+            return "white";
+        case Flatten::Black:
+            return "Black";
+        default:
+            return "none";
+    }
 }
 
 const std::string ToString(const Gravity gravity) {
