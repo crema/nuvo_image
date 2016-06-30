@@ -10,19 +10,24 @@ public:
     enum QualityType {
         InvalidType = -1,
         Adaptive,
+        Ssim,
         Fixed,
     };
 
     JpegQuality()
-        :qualityFixed(-1), qualityAdaptive(Quality::InvalidQuality), qualityType(QualityType::InvalidType)
+        :qualityFixed(0), qualityAdaptive(Quality::InvalidQuality), qualitySSIM(0), qualityType(QualityType::InvalidType)
     {}
 
     JpegQuality(Quality quality)
-        :qualityFixed(-1), qualityAdaptive(quality), qualityType(Adaptive)
+        :qualityFixed(0), qualityAdaptive(quality), qualitySSIM(0), qualityType(QualityType::Adaptive)
     {}
 
     JpegQuality(int quality)
-        :qualityFixed(quality), qualityAdaptive(Quality::InvalidQuality), qualityType(QualityType::Fixed)
+        :qualityFixed(quality), qualityAdaptive(Quality::InvalidQuality), qualitySSIM(0), qualityType(Fixed)
+    {}
+
+    JpegQuality(double quality)
+            :qualityFixed(0), qualityAdaptive(Quality::InvalidQuality), qualitySSIM(quality), qualityType(QualityType::Ssim)
     {}
 
     int GetQuality(const cv::Mat & image, std::vector<unsigned char> & buffer);
@@ -33,6 +38,7 @@ private:
 
     Quality  qualityAdaptive;
     int qualityFixed;
+    double qualitySSIM;
     QualityType qualityType;
 };
 

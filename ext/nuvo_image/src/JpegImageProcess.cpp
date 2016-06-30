@@ -7,22 +7,22 @@ int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & 
         JpegEncode(image, buffer, qualityFixed);
         return qualityFixed;
     }
+    if(qualityType == QualityType::Adaptive){
 
-    auto targetSSIM = 1.0;
-
-    switch(qualityAdaptive){
-        case Quality::Low:
-            targetSSIM = 0.95;
-            break;
-        case Quality::Medium:
-            targetSSIM = 0.97;
-            break;
-        case Quality::High:
-            targetSSIM = 0.99;
-            break;
-        case Quality::VeryHigh:
-            targetSSIM = 0.999;
-            break;
+        switch(qualityAdaptive){
+            case Quality::Low:
+                qualitySSIM = 0.93;
+                break;
+            case Quality::Medium:
+                qualitySSIM = 0.96;
+                break;
+            case Quality::High:
+                qualitySSIM = 0.98;
+                break;
+            case Quality::VeryHigh:
+                qualitySSIM = 0.999;
+                break;
+        }
     }
 
     auto minQuality = 70;
@@ -44,7 +44,7 @@ int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & 
         auto jpegGray = cv::imdecode(buffer, IMREAD_GRAYSCALE);
         auto currentSSIM = GetSIMM(imageGray, jpegGray);
 
-        if(currentSSIM < targetSSIM) {
+        if(currentSSIM < qualitySSIM) {
             minQuality = currentQuality;
         } else {
             maxQuality = currentQuality;

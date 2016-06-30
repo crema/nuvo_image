@@ -103,8 +103,15 @@ inline bool ImageProcessor::TryGet<JpegQuality>(const picojson::value & value, J
             return true;
         }
     } else if(value.is<double>()) {
-        out = JpegQuality((int)value.get<double>());
-        return true;
+        auto quality = value.get<double>();
+
+        if(quality >=0 && quality <= 1) {
+            out = JpegQuality(quality);
+            return true;
+        } else if(quality > 1 && quality <= 100){
+            out = JpegQuality((int)quality);
+            return true;
+        }
     }
     return false;
 }
