@@ -42,8 +42,10 @@ std::shared_ptr<ImageProcess> ImageProcessor::Parse(const std::string & inputStr
     } else if (processString == "jpeg") {
         auto skipIfBigger = GetMember<bool>(object, "skip_if_bigger", false);
         auto jpegQuality = GetMember<JpegQuality>(object, "quality", JpegQuality(95));
+        auto min = (int)GetMember<double>(object, "min", 55);
+        auto max = (int)GetMember<double>(object, "min", 95);
 
-        return std::shared_ptr<ImageProcess>(new JepegImageProcess(shared_from_this(), from, to, jpegQuality));
+        return std::shared_ptr<ImageProcess>(new JepegImageProcess(shared_from_this(), from, to, jpegQuality, min, max));
     } else if (processString == "clear") {
         return std::shared_ptr<ImageProcess>(new ClearMemoryProcess(shared_from_this()));
     }

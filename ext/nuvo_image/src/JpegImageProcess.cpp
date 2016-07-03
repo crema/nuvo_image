@@ -1,97 +1,39 @@
 #include "JpegImageProcess.h"
 #include "ImageProcessor.h"
 
-int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & buffer) {
-    if(qualityType == QualityType::Fixed){
-        buffer.clear();
-        JpegEncode(image, buffer, qualityFixed);
-        return qualityFixed;
-    }
-    if(qualityType == QualityType::Adaptive){
+SIMMData::SIMMData(const cv::Mat &mat) {
+    mat.convertTo(image, CV_32FC1);
 
-        switch(qualityAdaptive){
-            case Quality::Low:
-                qualitySSIM = 0.93;
-                break;
-            case Quality::Medium:
-                qualitySSIM = 0.96;
-                break;
-            case Quality::High:
-                qualitySSIM = 0.98;
-                break;
-            case Quality::VeryHigh:
-                qualitySSIM = 0.999;
-                break;
-        }
-    }
+    imageSquare = image.mul(image);
+    GaussianBlur(image, imageBlur, cv::Size(11, 11), 1.5);
+    imageBlurSquare = imageBlur.mul(imageBlur);
 
-    auto minQuality = 70;
-    auto maxQuality = 99;
-
-    cv::Mat imageGray;
-    cv::cvtColor(image, imageGray, COLOR_RGB2GRAY);
-
-    auto currentQuality = 100;
-    for(int i=0; i< 5 ; ++i) {
-        currentQuality = (minQuality + maxQuality) / 2;
-        buffer.clear();
-        JpegEncode(image, buffer, currentQuality);
-
-        if(abs(maxQuality - minQuality) <= 5){
-            return currentQuality;
-        }
-
-        auto jpegGray = cv::imdecode(buffer, IMREAD_GRAYSCALE);
-        auto currentSSIM = GetSIMM(imageGray, jpegGray);
-
-        if(currentSSIM < qualitySSIM) {
-            minQuality = currentQuality;
-        } else {
-            maxQuality = currentQuality;
-        }
-    }
-
-    return currentQuality;
+    GaussianBlur(imageSquare, sigma, cv::Size(11, 11), 1.5);
+    sigma -= imageBlurSquare;
 }
 
-void JpegQuality::JpegEncode(const cv::Mat &image, std::vector<unsigned char> &buffer, int quality) {
-    std::vector<int> imageParams;
-    imageParams.push_back(IMWRITE_JPEG_QUALITY); // IMWRITE_JPEG_QUALITY
-    imageParams.push_back(quality);
-    cv::imencode(".jpg",image, buffer, imageParams);
-}
-
-
-double JpegQuality::GetSIMM(const cv::Mat &source, const cv::Mat &dest) {
+double SIMMData::GetSIMM(const SIMMData &a, const SIMMData &b) {
     const double C1 = 6.5025, C2 = 58.5225;
-    /***************************** INITS **********************************/
-    int d = CV_32FC1;
 
-    cv::Mat I1, I2;
-    source.convertTo(I1, d);            // cannot calculate on one byte large values
-    dest.convertTo(I2, d);
+    auto & I1   = a.image;
+    auto & I2   = b.image;
 
-    cv::Mat I2_2   = I2.mul(I2);        // I2^2
-    cv::Mat I1_2   = I1.mul(I1);        // I1^2
+    auto & I1_2   = a.imageSquare;
+    auto & I2_2   = b.imageSquare;
     cv::Mat I1_I2  = I1.mul(I2);        // I1 * I2
 
     /*************************** END INITS **********************************/
 
-    cv::Mat mu1, mu2;                   // PRELIMINARY COMPUTING
-    GaussianBlur(I1, mu1, cv::Size(11, 11), 1.5);
-    GaussianBlur(I2, mu2, cv::Size(11, 11), 1.5);
+    auto & mu1 = a.imageBlur;
+    auto & mu2 = b.imageBlur;
 
-    cv::Mat mu1_2   =   mu1.mul(mu1);
-    cv::Mat mu2_2   =   mu2.mul(mu2);
-    cv::Mat mu1_mu2 =   mu1.mul(mu2);
+    auto & mu1_2 = a.imageBlurSquare;
+    auto & mu2_2 = b.imageBlurSquare;
+    cv::Mat mu1_mu2 = mu1.mul(mu2);
 
-    cv::Mat sigma1_2, sigma2_2, sigma12;
-
-    GaussianBlur(I1_2, sigma1_2, cv::Size(11, 11), 1.5);
-    sigma1_2 -= mu1_2;
-
-    GaussianBlur(I2_2, sigma2_2, cv::Size(11, 11), 1.5);
-    sigma2_2 -= mu2_2;
+    auto & sigma1_2 = a.sigma;
+    auto & sigma2_2 = b.sigma;
+    cv::Mat sigma12;
 
     GaussianBlur(I1_I2, sigma12, cv::Size(11, 11), 1.5);
     sigma12 -= mu1_mu2;
@@ -114,13 +56,77 @@ double JpegQuality::GetSIMM(const cv::Mat &source, const cv::Mat &dest) {
     return mssim[0];
 }
 
+int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & buffer, const int minQuality, const int maxQuality) {
+    if(qualityType == QualityType::Fixed) {
+        buffer.clear();
+        JpegEncode(image, buffer, qualityFixed);
+        return qualityFixed;
+    }
+
+    if(qualityType == QualityType::Adaptive) {
+        switch(qualityAdaptive){
+            case Quality::Low:
+                qualitySIMM = 0.93;
+                break;
+            case Quality::Medium:
+                qualitySIMM = 0.96;
+                break;
+            case Quality::High:
+                qualitySIMM = 0.98;
+                break;
+            case Quality::VeryHigh:
+                qualitySIMM = 0.999;
+                break;
+        }
+    }
+
+    cv::Mat imageGray;
+    cv::cvtColor(image, imageGray, COLOR_RGB2GRAY);
+    SIMMData imageSIMMData(imageGray);
+
+    auto min = minQuality;
+    auto max = maxQuality;
+    auto current = max;
+
+    while(true) {
+        auto current = (min + max) / 2;
+
+        buffer.clear();
+        auto currentSIMM = GetSimmByJpegQuality(imageSIMMData, image, buffer, current);
+
+        if(max - min < 5 || std::abs(qualitySIMM - currentSIMM) < 0.005){
+            return current;
+        }
+
+        if (qualitySIMM > currentSIMM){
+            min = current;
+        } else {
+            max = current;
+        }
+    }
+}
+
+double JpegQuality::GetSimmByJpegQuality(const SIMMData & simmData, const cv::Mat & image, std::vector<unsigned char> & buffer, int quality) {
+    JpegEncode(image, buffer, quality);
+    auto jpegGray = cv::imdecode(buffer, IMREAD_GRAYSCALE);
+    SIMMData jpegSIMMData(jpegGray);
+    return SIMMData::GetSIMM(simmData, jpegSIMMData);
+}
+
+void JpegQuality::JpegEncode(const cv::Mat &image, std::vector<unsigned char> &buffer, int quality) {
+    std::vector<int> imageParams;
+    imageParams.push_back(IMWRITE_JPEG_QUALITY); // IMWRITE_JPEG_QUALITY
+    imageParams.push_back(quality);
+    cv::imencode(".jpg",image, buffer, imageParams);
+}
+
 
 const ImageProcessInput JepegImageProcess::Process(const ImageProcessInput & input, picojson::object & result) {
     auto image = input.GetMat();
 
     std::vector<unsigned char> buffer;
 
-    auto quality = jpegQuality.GetQuality(image, buffer);
+    auto quality = jpegQuality.GetQuality(image, buffer, min, max);
 
     result["quality"] = picojson::value((double)quality);
 
