@@ -30,7 +30,7 @@ brew install gcc
 
 ### libjpeg-turbo
 
-libjpeg를 대체하는 고성능 jpeg 라이브러리. 개발 머신에서는 굳이 설치 하지 않아도 된다
+libjpeg를 대체하는 고성능 jpeg 라이브러리. opencv 는 기본적으로 libjpeg 를 쓰는데 libjpeg-turbo 는 이보다 5 배 이상 빠르다 
 
 linux
 ```
@@ -54,11 +54,17 @@ unzip 3.1.0.zip
 cd opencv-3.1.0
 mkdir build
 cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_opencv_perf_core=OFF -DBUILD_opencv_ts=OFF -DBUILD_opencv_videoio=OFF -DBUILD_opencv_calib3d=OFF -DBUILD_opencv_calib3d=OFF -DBUILD_opencv_flann=OFF -DBUILD_opencv_photo=OFF -DBUILD_opencv_hal=OFF -DBUILD_opencv_ml=OFF -DBUILD_opencv_videostab=OFF -DBUILD_opencv_superres=OFF -DBUILD_opencv_stitching=OFF -DBUILD_opencv_calib3d=OFF -DBUILD_opencv_objdetect=OFF -DBUILD_opencv_video=OFF -DBUILD_opencv_photo=OFF -DBUILD_opencv_ml=OFF
+cmake .. -DCMAKE_BUILD_TYPE=Release 
 make
 sudo make install
 ```
-실제 서비스 머신에서는 직접 빌드하는것을 권장한다
+실제 서비스 머신에서는 직접 빌드하는것을 권장한다.
+nuvo-image 실행에 필요한 컴포넌트만 설치하려면 cmake 실행시 다음 옵션을 사용하자 
+```
+cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_opencv_perf_core=OFF -DBUILD_opencv_ts=OFF -DBUILD_opencv_videoio=OFF -DBUILD_opencv_calib3d=OFF -DBUILD_opencv_calib3d=OFF -DBUILD_opencv_flann=OFF -DBUILD_opencv_photo=OFF -DBUILD_opencv_hal=OFF -DBUILD_opencv_ml=OFF -DBUILD_opencv_videostab=OFF -DBUILD_opencv_superres=OFF -DBUILD_opencv_stitching=OFF -DBUILD_opencv_calib3d=OFF -DBUILD_opencv_objdetect=OFF -DBUILD_opencv_video=OFF -DBUILD_opencv_photo=OFF -DBUILD_opencv_ml=OFF
+
+```
+cmake 실행시 libjpeg-turbo 를 사용하는지 꼭 확인하자. 사용하지 않을경우 -DJPEG_LIBRARY= 를 통해서 직접 설정해 주자 
 
 mac
 ```
