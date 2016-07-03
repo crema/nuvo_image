@@ -78,7 +78,11 @@ cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_opencv_perf_core=OFF -DBUILD_opencv_
 ```
 cmake 실행시 libjpeg-turbo 를 사용하는지 꼭 확인하자. 사용하지 않을경우 아래 와같이 직접 설정해 주자 
 ```
-cmake .. -DWITH_JPEG=ON -DBUILD_JPEG=OFF -DJPEG_INCLUDE_DIR=/usr/include  -DJPEG_LIBRARY=/usr/lib/x86_64-linux-gnu/libjpeg.so
+cmake .. -DCMAKE_BUILD_TYPE=Release -DWITH_JPEG=ON -DBUILD_JPEG=OFF -DJPEG_INCLUDE_DIR=/usr/include  -DJPEG_LIBRARY=/usr/lib/x86_64-linux-gnu/libjpeg.so
+```
+mozjpeg 를 사용하려면 아래와 같이 설정해 주자 
+```
+cmake .. -DCMAKE_BUILD_TYPE=Release -DWITH_JPEG=ON -DBUILD_JPEG=OFF -DJPEG_INCLUDE_DIR=/opt/mozjpeg/include/ -DJPEG_LIBRARY=/opt/mozjpeg/lib64/libjpeg.so
 ```
 
 mac
