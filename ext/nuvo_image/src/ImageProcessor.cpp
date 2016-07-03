@@ -43,7 +43,7 @@ std::shared_ptr<ImageProcess> ImageProcessor::Parse(const std::string & inputStr
         auto skipIfBigger = GetMember<bool>(object, "skip_if_bigger", false);
         auto jpegQuality = GetMember<JpegQuality>(object, "quality", JpegQuality(95));
         auto min = (int)GetMember<double>(object, "min", 55);
-        auto max = (int)GetMember<double>(object, "min", 95);
+        auto max = (int)GetMember<double>(object, "max", 95);
         auto search = (int)GetMember<double>(object, "search", 5);
 
         return std::shared_ptr<ImageProcess>(new JepegImageProcess(shared_from_this(), from, to, jpegQuality, min, max, search));
