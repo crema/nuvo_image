@@ -1,6 +1,12 @@
 #include "JpegImageProcess.h"
 #include "ImageProcessor.h"
 
+
+int QualitySIMM::InterpolationTargetSIMM(const QualitySIMM &min, const QualitySIMM &max, const double targetSIMM) {
+    auto slope = (max.quality - min.quality) / (max.simm - min.simm);
+    return (int)(slope * (targetSIMM - min.simm)) + min.quality;
+}
+
 SIMMData::SIMMData(const cv::Mat &mat) {
     mat.convertTo(image, CV_32FC1);
 
@@ -66,13 +72,13 @@ int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & 
     if(qualityType == QualityType::Adaptive) {
         switch(qualityAdaptive){
             case Quality::Low:
-                qualitySIMM = 0.93;
+                qualitySIMM = 0.90;
                 break;
             case Quality::Medium:
-                qualitySIMM = 0.96;
+                qualitySIMM = 0.93;
                 break;
             case Quality::High:
-                qualitySIMM = 0.98;
+                qualitySIMM = 0.96;
                 break;
             case Quality::VeryHigh:
                 qualitySIMM = 0.999;
@@ -84,24 +90,32 @@ int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & 
     cv::cvtColor(image, imageGray, COLOR_RGB2GRAY);
     SIMMData imageSIMMData(imageGray);
 
-    auto min = minQuality;
-    auto max = maxQuality;
-    auto current = max;
+    QualitySIMM min(minQuality, GetSimmByJpegQuality(imageSIMMData, image, buffer, minQuality));
+    if(min.simm >= qualitySIMM) {
+        return min.quality;
+    }
 
-    for(int i; i< searchCount; ++i) {
-        auto current = (min + max) / 2;
-        auto currentSIMM = GetSimmByJpegQuality(imageSIMMData, image, buffer, current);
+    QualitySIMM max(maxQuality, GetSimmByJpegQuality(imageSIMMData, image, buffer, maxQuality));
+    if(max.simm <= qualitySIMM) {
+        return max.quality;
+    }
 
-        if(max - min < 5 || std::abs(qualitySIMM - currentSIMM) < 0.005){
-            return current;
+    QualitySIMM current(maxQuality, 0);
+    for(int i = 0; i< searchCount; ++i) {
+        current.quality = QualitySIMM::InterpolationTargetSIMM(min, max, qualitySIMM);
+        current.simm = GetSimmByJpegQuality(imageSIMMData, image, buffer, current.quality);
+
+        if(max.quality - min.quality < 1 || std::abs(qualitySIMM - current.simm) < 0.005) {
+            return current.quality;
         }
 
-        if (qualitySIMM > currentSIMM){
+        if (qualitySIMM > current.simm){
             min = current;
         } else {
             max = current;
         }
     }
+    return current.quality;
 }
 
 double JpegQuality::GetSimmByJpegQuality(const SIMMData & simmData, const cv::Mat & image, std::vector<unsigned char> & buffer, const int quality) {

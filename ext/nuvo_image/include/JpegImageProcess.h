@@ -5,7 +5,19 @@
 #include "ImageProcess.h"
 #include "Enums.h"
 
-class SIMMData {
+struct QualitySIMM {
+public:
+    QualitySIMM(const int quality, const double simm)
+        :quality(quality), simm(simm)
+    {}
+
+    static int InterpolationTargetSIMM(const QualitySIMM & min, const QualitySIMM & max, const double targetSIMM);
+
+    int quality;
+    double simm;
+};
+
+struct SIMMData {
 public:
     SIMMData(const cv::Mat & mat);
 

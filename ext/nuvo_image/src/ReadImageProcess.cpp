@@ -1,7 +1,7 @@
 #include <fstream>
 #include "ReadImageProcess.h"
 #include "ImageProcessor.h"
-#include "exif.h"
+
 
 const ImageProcessInput ReadImageProcess::Process(const ImageProcessInput &input, picojson::object &result) {
     auto buffer = input.GetBuffer();
@@ -29,12 +29,16 @@ const ImageProcessInput ReadImageProcess::Process(const ImageProcessInput &input
     result["width"] = picojson::value((double)image.cols);
     result["height"] = picojson::value((double)image.rows);
 
-    if(autoOrient && TryReadExifOrientation(buffer, orientation)) {
-        cv::Mat oriented;
-        if(TryRotateOrientation(image, oriented, orientation)){
-            image = oriented;
+    easyexif::EXIFInfo exif;
+
+    if(TryReadExif(buffer, exif)) {
+        if(autoOrient) {
+            cv::Mat oriented;
+            if(TryRotateOrientation(image, oriented, orientation)){
+                image = oriented;
+            }
+            result["orientation"] = picojson::value((double)orientation);
         }
-        result["orientation"] = picojson::value((double)orientation);
     }
     return ImageProcessInput(image);
 }
@@ -75,14 +79,12 @@ bool ReadImageProcess::TryFlatten(const cv::Mat &src, cv::Mat &dest) {
     return false;
 }
 
-bool ReadImageProcess::TryReadExifOrientation(const std::vector<unsigned char> &buffer, int & orientation) {
-    easyexif::EXIFInfo exif;
+bool ReadImageProcess::TryReadExif(const std::vector<unsigned char> &buffer, easyexif::EXIFInfo & exif) {
     int code = exif.parseFrom(buffer.data(),(int)buffer.size());
     if (code) {
-        orientation = exif.Orientation;
-        return true;
+        return false;
     }
-    return false;
+    return true;
 }
 
 bool ReadImageProcess::TryRotateOrientation(const cv::Mat &src, cv::Mat & oriented, int orientation) {

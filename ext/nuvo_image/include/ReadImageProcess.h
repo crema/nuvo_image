@@ -3,7 +3,7 @@
 
 #include "opencv.h"
 #include "ImageProcess.h"
-
+#include "exif.h"
 
 class ReadImageProcess:public ImageProcess {
 public:
@@ -19,7 +19,7 @@ protected:
 
 private:
     bool TryFlatten(const cv::Mat & src, cv::Mat & dest);
-    bool TryReadExifOrientation(const std::vector<unsigned char> & buffer, int & orientation);
+    bool TryReadExif(const std::vector<unsigned char> & buffer, easyexif::EXIFInfo & exif);
     bool TryRotateOrientation(const cv::Mat & src, cv::Mat & dest, const int orientation);
     bool autoOrient;
     Flatten flatten;

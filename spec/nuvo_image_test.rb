@@ -13,10 +13,10 @@ describe NuvoImage::Process do
 
   describe '#read' do
     it 'read' do
-      @logo = subject.read(File.dirname(__FILE__) + '/images/main_cremalogo.png')
-      @logo.width.must_equal 335
-      @logo.height.must_equal 78
-      @logo.size.must_equal 6660
+      @logo = subject.read(File.dirname(__FILE__) + '/images/sushi.jpg')
+      @logo.width.must_equal 960
+      @logo.height.must_equal 960
+      @logo.size.must_equal 116306
     end
 
     after do
@@ -26,7 +26,7 @@ describe NuvoImage::Process do
 
   describe '#crop' do
     before do
-      @logo = subject.read(File.dirname(__FILE__) + '/images/main_cremalogo.png')
+      @logo = subject.read(File.dirname(__FILE__) + '/images/sushi.jpg')
     end
 
     it 'crop' do
@@ -45,7 +45,7 @@ describe NuvoImage::Process do
 
   describe '#resize' do
     before do
-      @logo = subject.read(File.dirname(__FILE__) + '/images/main_cremalogo.png')
+      @logo = subject.read(File.dirname(__FILE__) + '/images/sushi.jpg')
     end
 
     it 'resize' do
@@ -64,13 +64,13 @@ describe NuvoImage::Process do
 
   describe '#jpeg' do
     before do
-      @logo = subject.read(File.dirname(__FILE__) + '/images/main_cremalogo.png')
+      @logo = subject.read(File.dirname(__FILE__) + '/images/sushi.jpg')
     end
 
     it 'jpeg' do
       @low_size = 0
       @low_quality = 0
-      [:low, :medium, :high, :very_high].each do |quality|
+      [:low, :medium, :high, :very_high ].each do |quality|
         jpeg = subject.jpeg(@logo, File.dirname(__FILE__) + "/images/test/#{quality}.jpg", quality: quality)
         assert jpeg.size >= @low_size, 'must less size'
         assert jpeg.quality >= @low_quality, 'must less quality'
