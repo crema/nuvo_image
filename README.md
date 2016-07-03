@@ -37,6 +37,19 @@ linux
 libjpeg-turbo8-dev
 ```
 
+
+### mozjpeg
+libjpeg-turbo 보다 느리지만 퀄리티는 더 좋다. 성능보다 퀄리티를 원하면 mozjpeg 를 사용하자 
+
+linux 
+```
+wget https://github.com/mozilla/mozjpeg/releases/download/v3.1/mozjpeg-3.1-release-source.tar.gz
+tar -xvf mozjpeg-3.1-release-source.tar.gz
+cd mozjpeg
+./configure
+sudo make install
+```
+
 ### Opencv 3
 
 linux
@@ -55,7 +68,6 @@ cd opencv-3.1.0
 mkdir build
 cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release 
-make
 sudo make install
 ```
 실제 서비스 머신에서는 직접 빌드하는것을 권장한다.
