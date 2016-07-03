@@ -16,7 +16,7 @@ describe NuvoImage::Process do
       @logo = subject.read(File.dirname(__FILE__) + '/images/sushi.jpg')
       @logo.width.must_equal 960
       @logo.height.must_equal 960
-      @logo.size.must_equal 116306
+      @logo.size.must_equal 116_306
     end
 
     after do
@@ -70,7 +70,7 @@ describe NuvoImage::Process do
     it 'jpeg' do
       @low_size = 0
       @low_quality = 0
-      [:low, :medium, :high, :very_high ].each do |quality|
+      [:low, :medium, :high, :very_high].each do |quality|
         jpeg = subject.jpeg(@logo, File.dirname(__FILE__) + "/images/test/#{quality}.jpg", quality: quality)
         assert jpeg.size >= @low_size, 'must less size'
         assert jpeg.quality >= @low_quality, 'must less quality'
