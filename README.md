@@ -64,7 +64,10 @@ nuvo-image 실행에 필요한 컴포넌트만 설치하려면 cmake 실행시 �
 cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_opencv_perf_core=OFF -DBUILD_opencv_ts=OFF -DBUILD_opencv_videoio=OFF -DBUILD_opencv_calib3d=OFF -DBUILD_opencv_calib3d=OFF -DBUILD_opencv_flann=OFF -DBUILD_opencv_photo=OFF -DBUILD_opencv_hal=OFF -DBUILD_opencv_ml=OFF -DBUILD_opencv_videostab=OFF -DBUILD_opencv_superres=OFF -DBUILD_opencv_stitching=OFF -DBUILD_opencv_calib3d=OFF -DBUILD_opencv_objdetect=OFF -DBUILD_opencv_video=OFF -DBUILD_opencv_photo=OFF -DBUILD_opencv_ml=OFF
 
 ```
-cmake 실행시 libjpeg-turbo 를 사용하는지 꼭 확인하자. 사용하지 않을경우 -DJPEG_LIBRARY= 를 통해서 직접 설정해 주자 
+cmake 실행시 libjpeg-turbo 를 사용하는지 꼭 확인하자. 사용하지 않을경우 아래 와같이 직접 설정해 주자 
+```
+cmake .. -DWITH_JPEG=ON -DBUILD_JPEG=OFF -DJPEG_INCLUDE_DIR=/usr/include  -DJPEG_LIBRARY=/usr/lib/x86_64-linux-gnu/libjpeg.so
+```
 
 mac
 ```
