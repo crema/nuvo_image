@@ -56,7 +56,7 @@ double SIMMData::GetSIMM(const SIMMData &a, const SIMMData &b) {
     return mssim[0];
 }
 
-int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & buffer, const int minQuality, const int maxQuality) {
+int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & buffer, const int minQuality, const int maxQuality, const int searchCount) {
     if(qualityType == QualityType::Fixed) {
         buffer.clear();
         JpegEncode(image, buffer, qualityFixed);
@@ -88,10 +88,8 @@ int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & 
     auto max = maxQuality;
     auto current = max;
 
-    while(true) {
+    for(int i; i< searchCount; ++i) {
         auto current = (min + max) / 2;
-
-        buffer.clear();
         auto currentSIMM = GetSimmByJpegQuality(imageSIMMData, image, buffer, current);
 
         if(max - min < 5 || std::abs(qualitySIMM - currentSIMM) < 0.005){
@@ -106,14 +104,15 @@ int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & 
     }
 }
 
-double JpegQuality::GetSimmByJpegQuality(const SIMMData & simmData, const cv::Mat & image, std::vector<unsigned char> & buffer, int quality) {
+double JpegQuality::GetSimmByJpegQuality(const SIMMData & simmData, const cv::Mat & image, std::vector<unsigned char> & buffer, const int quality) {
     JpegEncode(image, buffer, quality);
     auto jpegGray = cv::imdecode(buffer, IMREAD_GRAYSCALE);
     SIMMData jpegSIMMData(jpegGray);
     return SIMMData::GetSIMM(simmData, jpegSIMMData);
 }
 
-void JpegQuality::JpegEncode(const cv::Mat &image, std::vector<unsigned char> &buffer, int quality) {
+void JpegQuality::JpegEncode(const cv::Mat &image, std::vector<unsigned char> &buffer, const int quality) {
+    buffer.clear();
     std::vector<int> imageParams;
     imageParams.push_back(IMWRITE_JPEG_QUALITY); // IMWRITE_JPEG_QUALITY
     imageParams.push_back(quality);
@@ -126,7 +125,7 @@ const ImageProcessInput JepegImageProcess::Process(const ImageProcessInput & inp
 
     std::vector<unsigned char> buffer;
 
-    auto quality = jpegQuality.GetQuality(image, buffer, min, max);
+    auto quality = jpegQuality.GetQuality(image, buffer, min, max, search);
 
     result["quality"] = picojson::value((double)quality);
 

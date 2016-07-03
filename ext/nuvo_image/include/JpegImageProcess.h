@@ -43,12 +43,12 @@ public:
             :qualityFixed(0), qualityAdaptive(Quality::InvalidQuality), qualitySIMM(quality), qualityType(QualityType::Simm)
     {}
 
-    int GetQuality(const cv::Mat & image, std::vector<unsigned char> & buffer, const int min, const int max);
+    int GetQuality(const cv::Mat & image, std::vector<unsigned char> & buffer, const int min, const int max, const int searchCount);
 
 private:
 
-    double GetSimmByJpegQuality(const SIMMData & simmData, const cv::Mat & image, std::vector<unsigned char> & buffer, int quality);
-    void JpegEncode(const cv::Mat &source,std::vector<unsigned char> & buffer, int quality);
+    double GetSimmByJpegQuality(const SIMMData & simmData, const cv::Mat & image, std::vector<unsigned char> & buffer, const int quality);
+    void JpegEncode(const cv::Mat &source,std::vector<unsigned char> & buffer, const int quality);
 
     Quality  qualityAdaptive;
     int qualityFixed;
@@ -58,8 +58,8 @@ private:
 
 class JepegImageProcess: public ImageProcess {
 public:
-    JepegImageProcess(std::shared_ptr<ImageProcessor> processor, const std::string & from, const std::string & to, const JpegQuality & jpegQuality, const int min, const int max)
-        :ImageProcess(processor, from, to), jpegQuality(jpegQuality), min(min), max(max)
+    JepegImageProcess(std::shared_ptr<ImageProcessor> processor, const std::string & from, const std::string & to, const JpegQuality & jpegQuality, const int min, const int max, const int search)
+        :ImageProcess(processor, from, to), jpegQuality(jpegQuality), min(min), max(max), search(search)
     {}
 
 private:
@@ -71,6 +71,7 @@ private:
     JpegQuality jpegQuality;
     int min;
     int max;
+    int search;
 };
 
 #endif //NUVO_IMAGE_SAVEJPEGPROCESS_H
