@@ -3,13 +3,13 @@
 #include "ImageProcessor.h"
 
 
-int QualitySIMM::InterpolationTargetSIMM(const QualitySIMM &min, const QualitySIMM &max, const double targetSIMM) {
-    auto slope = (max.quality - min.quality) / (max.simm - min.simm);
-    return (int)round(slope * (targetSIMM - min.simm)) + min.quality;
+int QualitySSIM::InterpolationTargetSSIM(const QualitySSIM &min, const QualitySSIM &max, const double targetSSIM) {
+    auto slope = (max.quality - min.quality) / (max.ssim - min.ssim);
+    return (int)round(slope * (targetSSIM - min.ssim)) + min.quality;
 }
 
-SIMMData::SIMMData(const cv::Mat &mat) {
-    mat.convertTo(image, CV_32FC1);
+SSIMData::SSIMData(const cv::Mat &mat) {
+    mat.convertTo(image, CV_32F);
 
     imageSquare = image.mul(image);
     GaussianBlur(image, imageBlur, cv::Size(11, 11), 1.5);
@@ -19,7 +19,7 @@ SIMMData::SIMMData(const cv::Mat &mat) {
     sigma -= imageBlurSquare;
 }
 
-double SIMMData::GetSIMM(const SIMMData &a, const SIMMData &b) {
+double SSIMData::GetSSIM(const SSIMData &a, const SSIMData &b) {
     const double C1 = 6.5025, C2 = 58.5225;
 
     auto & I1   = a.image;
@@ -60,10 +60,16 @@ double SIMMData::GetSIMM(const SIMMData &a, const SIMMData &b) {
     divide(t3, t1, ssim_map);        // ssim_map =  t3./t1;
 
     cv::Scalar mssim = mean(ssim_map);   // mssim = average of ssim map
-    return mssim[0];
+
+    if(mssim[1] == 0 && mssim[2] == 0 && mssim[3] == 0){
+        return mssim[0];
+    } else {
+        auto ssim = (mssim[0] + mssim[1] + mssim[2]) / 3;
+        return ssim;
+    }
 }
 
-int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & buffer, const int minQuality, const int maxQuality, const int searchCount) {
+int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & buffer, const int minQuality, const int maxQuality, const int searchCount, const bool graySSIM) {
     if(qualityType == QualityType::Fixed) {
         buffer.clear();
         JpegEncode(image, buffer, qualityFixed);
@@ -73,44 +79,50 @@ int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & 
     if(qualityType == QualityType::Adaptive) {
         switch(qualityAdaptive){
             case Quality::Low:
-                qualitySIMM = 0.90;
+                qualitySSIM = 0.90;
                 break;
             case Quality::Medium:
-                qualitySIMM = 0.93;
+                qualitySSIM = 0.93;
                 break;
             case Quality::High:
-                qualitySIMM = 0.96;
+                qualitySSIM = 0.96;
                 break;
             case Quality::VeryHigh:
-                qualitySIMM = 0.999;
+                qualitySSIM = 0.999;
                 break;
         }
     }
 
-    cv::Mat imageGray;
-    cv::cvtColor(image, imageGray, COLOR_RGB2GRAY);
-    SIMMData imageSIMMData(imageGray);
+    SSIMData imageSSIMData;
 
-    QualitySIMM min(minQuality, GetSimmByJpegQuality(imageSIMMData, image, buffer, minQuality));
-    if(min.simm >= qualitySIMM) {
+    if(graySSIM) {
+        cv::Mat imageGray;
+        cv::cvtColor(image, imageGray, COLOR_RGB2GRAY);
+        imageSSIMData = SSIMData(imageGray);
+    } else {
+        imageSSIMData = SSIMData(image);
+    }
+
+    QualitySSIM min(minQuality, GetSimmByJpegQuality(imageSSIMData, image, buffer, minQuality, graySSIM));
+    if(min.ssim >= qualitySSIM) {
         return min.quality;
     }
 
-    QualitySIMM max(maxQuality, GetSimmByJpegQuality(imageSIMMData, image, buffer, maxQuality));
-    if(max.simm <= qualitySIMM) {
+    QualitySSIM max(maxQuality, GetSimmByJpegQuality(imageSSIMData, image, buffer, maxQuality, graySSIM));
+    if(max.ssim <= qualitySSIM) {
         return max.quality;
     }
 
-    QualitySIMM current(maxQuality, 0);
+    QualitySSIM current(maxQuality, 0);
     for(int i = 0; i< searchCount; ++i) {
-        current.quality = QualitySIMM::InterpolationTargetSIMM(min, max, qualitySIMM);
-        current.simm = GetSimmByJpegQuality(imageSIMMData, image, buffer, current.quality);
+        current.quality = QualitySSIM::InterpolationTargetSSIM(min, max, qualitySSIM);
+        current.ssim = GetSimmByJpegQuality(imageSSIMData, image, buffer, current.quality, graySSIM);
 
-        if(max.quality - min.quality < 1 || std::abs(qualitySIMM - current.simm) < 0.001) {
+        if(max.quality - min.quality < 1 || std::abs(qualitySSIM - current.ssim) < 0.001) {
             return current.quality;
         }
 
-        if (qualitySIMM > current.simm){
+        if (qualitySSIM > current.ssim){
             min = current;
         } else {
             max = current;
@@ -119,17 +131,22 @@ int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & 
     return current.quality;
 }
 
-double JpegQuality::GetSimmByJpegQuality(const SIMMData & simmData, const cv::Mat & image, std::vector<unsigned char> & buffer, const int quality) {
+double JpegQuality::GetSimmByJpegQuality(const SSIMData & ssimData, const cv::Mat & image, std::vector<unsigned char> & buffer, const int quality, const bool graySSIM) {
     JpegEncode(image, buffer, quality);
-    auto jpegGray = cv::imdecode(buffer, IMREAD_GRAYSCALE);
-    SIMMData jpegSIMMData(jpegGray);
-    return SIMMData::GetSIMM(simmData, jpegSIMMData);
+    cv::Mat jpeg;
+    if(graySSIM) {
+        jpeg = cv::imdecode(buffer, IMREAD_GRAYSCALE);
+    } else {
+        jpeg = cv::imdecode(buffer, IMREAD_COLOR);
+    }
+    SSIMData jpegSSIMData(jpeg);
+    return SSIMData::GetSSIM(ssimData, jpegSSIMData);
 }
 
 void JpegQuality::JpegEncode(const cv::Mat &image, std::vector<unsigned char> &buffer, const int quality) {
     buffer.clear();
     std::vector<int> imageParams;
-    imageParams.push_back(IMWRITE_JPEG_QUALITY); // IMWRITE_JPEG_QUALITY
+    imageParams.push_back(IMWRITE_JPEG_QUALITY);
     imageParams.push_back(quality);
     cv::imencode(".jpg",image, buffer, imageParams);
 }
@@ -140,7 +157,7 @@ const ImageProcessInput JepegImageProcess::Process(const ImageProcessInput & inp
 
     std::vector<unsigned char> buffer;
 
-    auto quality = jpegQuality.GetQuality(image, buffer, min, max, search);
+    auto quality = jpegQuality.GetQuality(image, buffer, min, max, search, graySSIM);
 
     result["quality"] = picojson::value((double)quality);
 

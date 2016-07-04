@@ -40,13 +40,13 @@ std::shared_ptr<ImageProcess> ImageProcessor::Parse(const std::string & inputStr
 
         return std::shared_ptr<ImageProcess>(new ResizeImageProcess(shared_from_this(), from, to, width, height, interpolation));
     } else if (processString == "jpeg") {
-        auto skipIfBigger = GetMember<bool>(object, "skip_if_bigger", false);
         auto jpegQuality = GetMember<JpegQuality>(object, "quality", JpegQuality(95));
         auto min = (int)GetMember<double>(object, "min", 55);
         auto max = (int)GetMember<double>(object, "max", 95);
         auto search = (int)GetMember<double>(object, "search", 5);
+        auto graySSIM = (int)GetMember<bool>(object, "gray_ssim", true);
 
-        return std::shared_ptr<ImageProcess>(new JepegImageProcess(shared_from_this(), from, to, jpegQuality, min, max, search));
+        return std::shared_ptr<ImageProcess>(new JepegImageProcess(shared_from_this(), from, to, jpegQuality, min, max, search, graySSIM));
     } else if (processString == "clear") {
         return std::shared_ptr<ImageProcess>(new ClearMemoryProcess(shared_from_this()));
     }

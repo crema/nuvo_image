@@ -38,8 +38,8 @@ module NuvoImage
       ResizeResult.new(result[:to], result[:width], result[:height], result[:interpolation].to_sym)
     end
 
-    def jpeg(image, filename, quality: :high, min: 50, max: 100, search: 3)
-      result = call process: :jpeg, from: image.name, to: filename, quality: quality, min: min, max: max, search: search
+    def jpeg(image, filename, quality: :high, min: 50, max: 100, search: 3, gray_ssim: true)
+      result = call process: :jpeg, from: image.name, to: filename, quality: quality, min: min, max: max, search: search, gray_ssim: gray_ssim
       JpegResult.new(result[:to], result[:size], result[:quality])
     end
 

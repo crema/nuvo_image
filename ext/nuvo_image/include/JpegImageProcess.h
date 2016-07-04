@@ -5,23 +5,24 @@
 #include "ImageProcess.h"
 #include "Enums.h"
 
-struct QualitySIMM {
+struct QualitySSIM {
 public:
-    QualitySIMM(const int quality, const double simm)
-        :quality(quality), simm(simm)
+    QualitySSIM(const int quality, const double ssim)
+        :quality(quality), ssim(ssim)
     {}
 
-    static int InterpolationTargetSIMM(const QualitySIMM & min, const QualitySIMM & max, const double targetSIMM);
+    static int InterpolationTargetSSIM(const QualitySSIM & min, const QualitySSIM & max, const double targetSSIM);
 
     int quality;
-    double simm;
+    double ssim;
 };
 
-struct SIMMData {
+struct SSIMData {
 public:
-    SIMMData(const cv::Mat & mat);
+    SSIMData() {}
+    SSIMData(const cv::Mat & mat);
 
-    static double GetSIMM(const SIMMData & a, const SIMMData & b);
+    static double GetSSIM(const SSIMData & a, const SSIMData & b);
 private:
     cv::Mat image;
     cv::Mat imageSquare;
@@ -35,43 +36,43 @@ public:
     enum QualityType {
         InvalidType = -1,
         Adaptive,
-        Simm,
+        Ssim,
         Fixed,
     };
 
     JpegQuality()
-        :qualityFixed(0), qualityAdaptive(Quality::InvalidQuality), qualitySIMM(0), qualityType(QualityType::InvalidType)
+        :qualityFixed(0), qualityAdaptive(Quality::InvalidQuality), qualitySSIM(0), qualityType(QualityType::InvalidType)
     {}
 
     JpegQuality(Quality quality)
-        :qualityFixed(0), qualityAdaptive(quality), qualitySIMM(0), qualityType(QualityType::Adaptive)
+        :qualityFixed(0), qualityAdaptive(quality), qualitySSIM(0), qualityType(QualityType::Adaptive)
     {}
 
     JpegQuality(int quality)
-        :qualityFixed(quality), qualityAdaptive(Quality::InvalidQuality), qualitySIMM(0), qualityType(Fixed)
+        :qualityFixed(quality), qualityAdaptive(Quality::InvalidQuality), qualitySSIM(0), qualityType(Fixed)
     {}
 
     JpegQuality(double quality)
-            :qualityFixed(0), qualityAdaptive(Quality::InvalidQuality), qualitySIMM(quality), qualityType(QualityType::Simm)
+            :qualityFixed(0), qualityAdaptive(Quality::InvalidQuality), qualitySSIM(quality), qualityType(QualityType::Ssim)
     {}
 
-    int GetQuality(const cv::Mat & image, std::vector<unsigned char> & buffer, const int min, const int max, const int searchCount);
+    int GetQuality(const cv::Mat & image, std::vector<unsigned char> & buffer, const int min, const int max, const int searchCount, const bool graySSIM);
 
 private:
 
-    double GetSimmByJpegQuality(const SIMMData & simmData, const cv::Mat & image, std::vector<unsigned char> & buffer, const int quality);
+    double GetSimmByJpegQuality(const SSIMData & ssimData, const cv::Mat & image, std::vector<unsigned char> & buffer, const int quality, const bool graySSIM);
     void JpegEncode(const cv::Mat &source,std::vector<unsigned char> & buffer, const int quality);
 
     Quality  qualityAdaptive;
     int qualityFixed;
-    double qualitySIMM;
+    double qualitySSIM;
     QualityType qualityType;
 };
 
 class JepegImageProcess: public ImageProcess {
 public:
-    JepegImageProcess(std::shared_ptr<ImageProcessor> processor, const std::string & from, const std::string & to, const JpegQuality & jpegQuality, const int min, const int max, const int search)
-        :ImageProcess(processor, from, to), jpegQuality(jpegQuality), min(min), max(max), search(search)
+    JepegImageProcess(std::shared_ptr<ImageProcessor> processor, const std::string & from, const std::string & to, const JpegQuality & jpegQuality, const int min, const int max, const int search, const bool graySSIM)
+        :ImageProcess(processor, from, to), jpegQuality(jpegQuality), min(min), max(max), search(search), graySSIM(graySSIM)
     {}
 
 private:
@@ -84,6 +85,7 @@ private:
     int min;
     int max;
     int search;
+    bool graySSIM;
 };
 
 #endif //NUVO_IMAGE_SAVEJPEGPROCESS_H
