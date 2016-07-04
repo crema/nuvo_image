@@ -1,10 +1,11 @@
+#include <cmath>
 #include "JpegImageProcess.h"
 #include "ImageProcessor.h"
 
 
 int QualitySIMM::InterpolationTargetSIMM(const QualitySIMM &min, const QualitySIMM &max, const double targetSIMM) {
     auto slope = (max.quality - min.quality) / (max.simm - min.simm);
-    return (int)(slope * (targetSIMM - min.simm)) + min.quality;
+    return (int)round(slope * (targetSIMM - min.simm)) + min.quality;
 }
 
 SIMMData::SIMMData(const cv::Mat &mat) {
@@ -105,7 +106,7 @@ int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & 
         current.quality = QualitySIMM::InterpolationTargetSIMM(min, max, qualitySIMM);
         current.simm = GetSimmByJpegQuality(imageSIMMData, image, buffer, current.quality);
 
-        if(max.quality - min.quality < 1 || std::abs(qualitySIMM - current.simm) < 0.005) {
+        if(max.quality - min.quality < 1 || std::abs(qualitySIMM - current.simm) < 0.001) {
             return current.quality;
         }
 
