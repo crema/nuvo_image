@@ -34,7 +34,7 @@ libjpeg를 대체하는 고성능 jpeg 라이브러리. opencv 는 기본적으�
 
 linux
 ```
-libjpeg-turbo8-dev
+sudo apt-get install libjpeg-turbo8-dev
 ```
 
 
