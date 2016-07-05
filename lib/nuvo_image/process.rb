@@ -5,10 +5,10 @@ module NuvoImage
   class Process
     attr_reader :stdin, :stdout, :thread
 
-    ReadResult = Struct.new(:name, :width, :height, :size)
-    CropResult = Struct.new(:name, :width, :height, :gravity)
-    ResizeResult = Struct.new(:name, :width, :height, :interpolation)
-    JpegResult = Struct.new(:name, :size, :quality)
+    ReadResult = Struct.new(:id, :width, :height, :size)
+    CropResult = Struct.new(:id, :width, :height, :gravity)
+    ResizeResult = Struct.new(:id, :width, :height, :interpolation)
+    JpegResult = Struct.new(:id, :size, :quality)
 
     def initialize
       nuvo_image_process = File.dirname(__FILE__) + '/../../ext/nuvo_image/bin/nuvo_image'
@@ -29,17 +29,17 @@ module NuvoImage
     end
 
     def crop(image, width, height, gravity: :Center)
-      result = call process: :crop, from: image.name, width: width, height: height, gravity: gravity
+      result = call process: :crop, from: image.id, width: width, height: height, gravity: gravity
       CropResult.new(result[:to], result[:width], result[:height], result[:gravity].to_sym)
     end
 
     def resize(image, width, height, interpolation: :area)
-      result = call process: :resize, from: image.name, width: width, height: height, interpolation: interpolation
+      result = call process: :resize, from: image.id, width: width, height: height, interpolation: interpolation
       ResizeResult.new(result[:to], result[:width], result[:height], result[:interpolation].to_sym)
     end
 
     def jpeg(image, filename, quality: :high, min: 50, max: 100, search: 3, gray_ssim: true)
-      result = call process: :jpeg, from: image.name, to: filename, quality: quality, min: min, max: max, search: search, gray_ssim: gray_ssim
+      result = call process: :jpeg, from: image.id, to: filename, quality: quality, min: min, max: max, search: search, gray_ssim: gray_ssim
       JpegResult.new(result[:to], result[:size], result[:quality])
     end
 
