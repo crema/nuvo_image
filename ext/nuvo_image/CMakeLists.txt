@@ -4,7 +4,7 @@ project(nuvo_image)
 find_package(OpenCV REQUIRED)
 add_definitions(-DOPENCV_VERSION_MAJOR=${OpenCV_VERSION_MAJOR})
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build/bin)
 
 set (CMAKE_CXX_COMPILER g++-6)
 set (CMAKE_CXX_STANDARD 11)
@@ -25,3 +25,4 @@ set(SOURCE_FILES src/main.cpp
 
 add_executable(nuvo_image ${SOURCE_FILES})
 target_link_libraries( nuvo_image ${OpenCV_LIBS} )
+install (TARGETS nuvo_image DESTINATION bin)
