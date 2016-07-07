@@ -25,4 +25,3 @@ set(SOURCE_FILES src/main.cpp
 
 add_executable(nuvo_image ${SOURCE_FILES})
 target_link_libraries( nuvo_image ${OpenCV_LIBS} )
-install (TARGETS nuvo_image DESTINATION bin)
