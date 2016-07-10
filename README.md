@@ -20,7 +20,7 @@ brew install cmake
 ### gcc6
 **linux**
 ```
-sudo add-apt-repository ppa:Ubuntu-toolchain-r/test  
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test  
 sudo apt-get update  
 sudo apt-get install g++-6
 ```
