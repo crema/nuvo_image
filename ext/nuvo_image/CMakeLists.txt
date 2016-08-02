@@ -5,6 +5,7 @@ project(nuvo_image)
 
 if(UNIX AND NOT APPLE)
     set (CMAKE_CXX_COMPILER g++-6)
+    set (WITH_MOZJPEG ON)
 endif()
 
 set (CMAKE_CXX_STANDARD 11)
@@ -24,13 +25,15 @@ ExternalProject_Add(
         BUILD_IN_SOURCE 1
 )
 
-ExternalProject_Add(
-        mozjpeg
-        URL https://github.com/mozilla/mozjpeg/releases/download/v3.1/mozjpeg-3.1-release-source.tar.gz
-        SOURCE_DIR ${EXTERNAL_SRC_DIR}/mozjpeg
-        CONFIGURE_COMMAND ${EXTERNAL_SRC_DIR}/mozjpeg/configure --with-pic --prefix=${EXTERNAL_LIB_DIR}/mozjpeg
-        BUILD_IN_SOURCE 1
-)
+if(WITH_MOZJPEG)
+    ExternalProject_Add(
+            mozjpeg
+            URL https://github.com/mozilla/mozjpeg/releases/download/v3.1/mozjpeg-3.1-release-source.tar.gz
+            SOURCE_DIR ${EXTERNAL_SRC_DIR}/mozjpeg
+            CONFIGURE_COMMAND ${EXTERNAL_SRC_DIR}/mozjpeg/configure --with-pic --prefix=${EXTERNAL_LIB_DIR}/mozjpeg
+            BUILD_IN_SOURCE 1
+    )
+endif()
 
 set(FFMPEG_CONFIGURE
         --disable-audiotoolbox
@@ -112,11 +115,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build/bin)
 include_directories(include
         ${OpenCV_INCLUDE_DIR}
         ${EXTERNAL_LIB_DIR}/giflib-5.1.4/include
-        ${EXTERNAL_LIB_DIR}/mozjpeg/include
         ${EXTERNAL_LIB_DIR}/opencv3.1.0/include)
 
 set(SOURCE_FILES
-        ${GIF_SRC}
         src/main.cpp
         src/exif.cpp
         src/Gif.cpp
@@ -133,20 +134,21 @@ set(SOURCE_FILES
 
 add_executable(nuvo_image ${SOURCE_FILES})
 
-add_dependencies(opencv mozjpeg ffmpeg)
+if(WITH_MOZJPEG)
+    add_dependencies(opencv mozjpeg)
+endif()
+
+add_dependencies(opencv ffmpeg)
 add_dependencies(nuvo_image giflib opencv)
 
 set(GIF_LIBRARIES ${EXTERNAL_LIB_DIR}/giflib-5.1.4/lib/${CMAKE_STATIC_LIBRARY_PREFIX}gif${CMAKE_STATIC_LIBRARY_SUFFIX})
-set(MOZJPEG_LIBRARIES ${EXTERNAL_LIB_DIR}/mozjpeg/lib/${CMAKE_SHARED_LIBRARY_PREFIX}jpeg${CMAKE_SHARED_LIBRARY_SUFFIX})
 set(OPENCV_CORE_LIBRARIES ${EXTERNAL_LIB_DIR}/opencv3.1.0/lib/${CMAKE_SHARED_LIBRARY_PREFIX}opencv_core${CMAKE_SHARED_LIBRARY_SUFFIX})
 set(OPENCV_IMGPROC_LIBRARIES ${EXTERNAL_LIB_DIR}/opencv3.1.0/lib/${CMAKE_SHARED_LIBRARY_PREFIX}opencv_imgproc${CMAKE_SHARED_LIBRARY_SUFFIX})
 set(OPENCV_IMGCODECS_LIBRARIES ${EXTERNAL_LIB_DIR}/opencv3.1.0/lib/${CMAKE_SHARED_LIBRARY_PREFIX}opencv_imgcodecs${CMAKE_SHARED_LIBRARY_SUFFIX})
 set(OPENCV_VIDEOIO_LIBRARIES ${EXTERNAL_LIB_DIR}/opencv3.1.0/lib/${CMAKE_SHARED_LIBRARY_PREFIX}opencv_videoio${CMAKE_SHARED_LIBRARY_SUFFIX})
 
-
 target_link_libraries(nuvo_image
         ${GIF_LIBRARIES}
-        ${MOZJPEG_LIBRARIES}
         ${OPENCV_CORE_LIBRARIES}
         ${OPENCV_IMGPROC_LIBRARIES}
         ${OPENCV_IMGCODECS_LIBRARIES}

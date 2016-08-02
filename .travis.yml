@@ -10,17 +10,17 @@ script:
 addons:
   apt:
     packages:
+      - build-essential
       - g++-6
       - cmake
       - cmake-data
-      - build-essential
       - nasm
-      - libwebp-dev
-      - libjpeg-dev
-      - libjpeg-turbo8-dev
+      - yasm
+      - libqt4-dev
       - libpng12-dev
       - libtiff4-dev
       - libjasper-dev
+      - libwebp-dev
       - libx264-dev
       - libvpx-dev
     sources:

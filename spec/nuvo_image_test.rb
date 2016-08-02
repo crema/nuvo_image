@@ -138,8 +138,8 @@ describe NuvoImage::Process do
       webp_size = 0
       webp_quality = 0
       [:low, :medium, :high, :very_high].each do |quality|
-        jpeg = subject.lossy(@sushi, File.dirname(__FILE__) + '/images/test/#{quality}.jpg', format: :jpeg, quality: quality)
-        webp = subject.lossy(@sushi, File.dirname(__FILE__) + '/images/test/#{quality}.webp', format: :webp, quality: quality)
+        jpeg = subject.lossy(@sushi, File.dirname(__FILE__) + "/images/test/#{quality}.jpg", format: :jpeg, quality: quality)
+        webp = subject.lossy(@sushi, File.dirname(__FILE__) + "/images/test/#{quality}.webp", format: :webp, quality: quality)
         assert jpeg.size >= jpeg_size, 'must less size'
         assert jpeg.quality >= jpeg_quality, 'must less quality'
         assert webp.size >= webp_size, 'must less size'
