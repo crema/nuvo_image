@@ -1,5 +1,5 @@
 #include <cmath>
-#include "JpegImageProcess.h"
+#include "LossyImageProcess.h"
 #include "ImageProcessor.h"
 
 
@@ -69,15 +69,17 @@ double SSIMData::GetSSIM(const SSIMData &a, const SSIMData &b) {
     }
 }
 
-int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & buffer, const int minQuality, const int maxQuality, const int searchCount, const bool graySSIM) {
-    if(qualityType == QualityType::Fixed) {
-        buffer.clear();
-        JpegEncode(image, buffer, qualityFixed);
-        return qualityFixed;
+int LossyImageProcess::GetQuality(const std::shared_ptr<std::vector<unsigned char>> & buffer, const cv::Mat & image) {
+    if(imageQuality.GetQualityType() == ImageQuality::QualityType::Fixed) {
+        buffer->clear();
+        Encode(buffer, image, imageQuality.GetQualityFixed());
+        return imageQuality.GetQualityFixed();
     }
 
-    if(qualityType == QualityType::Adaptive) {
-        switch(qualityAdaptive){
+    auto qualitySSIM = imageQuality.GetQualitySSIM();
+
+    if(imageQuality.GetQualityType() == ImageQuality::QualityType::Adaptive) {
+        switch(imageQuality.GetQualityAdaptive()){
             case Quality::Low:
                 qualitySSIM = 0.90;
                 break;
@@ -93,22 +95,14 @@ int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & 
         }
     }
 
-    SSIMData imageSSIMData;
+    SSIMData imageSSIMData = SSIMData(image);
 
-    if(graySSIM) {
-        cv::Mat imageGray;
-        cv::cvtColor(image, imageGray, COLOR_RGB2GRAY);
-        imageSSIMData = SSIMData(imageGray);
-    } else {
-        imageSSIMData = SSIMData(image);
-    }
-
-    QualitySSIM min(minQuality, GetSimmByJpegQuality(imageSSIMData, image, buffer, minQuality, graySSIM));
+    QualitySSIM min(minQuality, GetSimmByQuality(buffer, imageSSIMData, image, minQuality));
     if(min.ssim >= qualitySSIM) {
         return min.quality;
     }
 
-    QualitySSIM max(maxQuality, GetSimmByJpegQuality(imageSSIMData, image, buffer, maxQuality, graySSIM));
+    QualitySSIM max(maxQuality, GetSimmByQuality(buffer, imageSSIMData, image, maxQuality));
     if(max.ssim <= qualitySSIM) {
         return max.quality;
     }
@@ -116,7 +110,7 @@ int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & 
     QualitySSIM current(maxQuality, 0);
     for(int i = 0; i< searchCount; ++i) {
         current.quality = QualitySSIM::InterpolationTargetSSIM(min, max, qualitySSIM);
-        current.ssim = GetSimmByJpegQuality(imageSSIMData, image, buffer, current.quality, graySSIM);
+        current.ssim = GetSimmByQuality(buffer, imageSSIMData, image, current.quality);
 
         if(max.quality - min.quality < 1 || std::abs(qualitySSIM - current.ssim) < 0.001) {
             return current.quality;
@@ -131,35 +125,41 @@ int JpegQuality::GetQuality(const cv::Mat & image, std::vector<unsigned char> & 
     return current.quality;
 }
 
-double JpegQuality::GetSimmByJpegQuality(const SSIMData & ssimData, const cv::Mat & image, std::vector<unsigned char> & buffer, const int quality, const bool graySSIM) {
-    JpegEncode(image, buffer, quality);
-    cv::Mat jpeg;
-    if(graySSIM) {
-        jpeg = cv::imdecode(buffer, IMREAD_GRAYSCALE);
-    } else {
-        jpeg = cv::imdecode(buffer, IMREAD_COLOR);
-    }
-    SSIMData jpegSSIMData(jpeg);
-    return SSIMData::GetSSIM(ssimData, jpegSSIMData);
+double LossyImageProcess::GetSimmByQuality(const std::shared_ptr<std::vector<unsigned char>> & buffer, const SSIMData &ssimData, const cv::Mat &image, const int quality) {
+    Encode(buffer, image, quality);
+    cv::Mat lossy = cv::imdecode(*buffer, cv::IMREAD_COLOR);
+    SSIMData lossySSIMData(lossy);
+    return SSIMData::GetSSIM(ssimData, lossySSIMData);
 }
 
-void JpegQuality::JpegEncode(const cv::Mat &image, std::vector<unsigned char> &buffer, const int quality) {
-    buffer.clear();
+void LossyImageProcess::Encode(const std::shared_ptr<std::vector<unsigned char>> & buffer, const cv::Mat &image, const int quality) {
+    buffer->clear();
     std::vector<int> imageParams;
-    imageParams.push_back(IMWRITE_JPEG_QUALITY);
-    imageParams.push_back(quality);
-    cv::imencode(".jpg",image, buffer, imageParams);
+    if(format == LossyImageFormat::Jpeg){
+        imageParams.push_back(cv::IMWRITE_JPEG_QUALITY);
+        imageParams.push_back(quality);
+        cv::imencode(".jpg",image, *buffer, imageParams);
+    } else if (format == LossyImageFormat::WebP){
+        imageParams.push_back(cv::IMWRITE_WEBP_QUALITY);
+        imageParams.push_back(quality);
+        cv::imencode(".webp",image, *buffer, imageParams);
+    } else {
+        throw std::runtime_error("invalid image format");
+    }
 }
 
+const ImageProcessInput LossyImageProcess::Process(const ImageProcessInput & input, picojson::object & result) {
+    std::shared_ptr<std::vector<unsigned char>> buffer(new std::vector<unsigned char>());
+    int quality = maxQuality;
 
-const ImageProcessInput JepegImageProcess::Process(const ImageProcessInput & input, picojson::object & result) {
-    auto image = input.GetMat();
-
-    std::vector<unsigned char> buffer;
-
-    auto quality = jpegQuality.GetQuality(image, buffer, min, max, search, graySSIM);
+    if(input.GetType() == ProcessInputType::Image){
+        quality = GetQuality(buffer, input.GetMat());
+    } else if(input.GetType() == ProcessInputType::Animation) {
+        quality = GetQuality(buffer, input.GetGif().GetFrame(0).GetMat());
+    } else {
+        throw std::runtime_error("invalid lossy input");
+    }
 
     result["quality"] = picojson::value((double)quality);
-
-    return ImageProcessInput(std::move(buffer));
+    return ImageProcessInput(buffer);
 }

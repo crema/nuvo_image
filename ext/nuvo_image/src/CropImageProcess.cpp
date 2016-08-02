@@ -2,10 +2,9 @@
 #include <cmath>
 
 const ImageProcessInput CropImageProcess::Process(const ImageProcessInput &input, picojson::object &result) {
-    auto image = input.GetMat();
 
-    auto inputWidth = image.cols;
-    auto inputHeight = image.rows;
+    auto inputWidth = input.GetWidth();
+    auto inputHeight = input.GetHeight();
 
     auto outputWidth = inputWidth < width ? inputWidth: width;
     auto outputHeight = inputHeight < height ? inputHeight: height;
@@ -28,13 +27,26 @@ const ImageProcessInput CropImageProcess::Process(const ImageProcessInput &input
         outputLeft = (int)std::round((inputWidth - outputWidth)/2.0);
     }
 
-    auto croped = image(cv::Rect(outputLeft, outputTop, outputWidth, outputHeight));
-
     result["gravity"] = picojson::value(ToString(gravity));
     result["top"] = picojson::value((double)outputTop);
     result["left"] = picojson::value((double)outputLeft);
     result["width"] = picojson::value((double)outputWidth);
     result["height"] = picojson::value((double)outputHeight);
 
-    return ImageProcessInput(croped);
+
+    auto rect = cv::Rect(outputLeft, outputTop, outputWidth, outputHeight);
+    if(!input.GetGif().Empty()){
+        const auto gif = input.GetGif();
+        Gif cropped;
+
+        for(int i = 0; i < gif.GetFrameCount(); ++i){
+            auto frame = gif.GetFrame(i);
+            cropped.AddFrame(Gif::GifFrame(frame.GetMat()(rect), frame.GetDelay()));
+        }
+
+        result["frames"] = picojson::value((double)gif.GetFrameCount());
+        return ImageProcessInput(cropped);
+    } else {
+        return ImageProcessInput(input.GetMat()(rect));
+    }
 }

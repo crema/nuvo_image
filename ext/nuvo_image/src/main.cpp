@@ -1,8 +1,6 @@
 #include <iostream>
 #include <memory>
-
 #include "ImageProcessor.h"
-#include "ImageProcess.h"
 
 void PrintJson(const picojson::object & object) {
     auto outputString = picojson::value(object).serialize();

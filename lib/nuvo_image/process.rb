@@ -5,10 +5,12 @@ module NuvoImage
   class Process
     attr_reader :stdin, :stdout, :thread
 
-    ReadResult = Struct.new(:id, :width, :height, :size)
-    CropResult = Struct.new(:id, :width, :height, :gravity)
-    ResizeResult = Struct.new(:id, :width, :height, :interpolation)
-    JpegResult = Struct.new(:id, :size, :quality)
+    ReadResult = Struct.new(:id, :width, :height, :size, :frames)
+    CropResult = Struct.new(:id, :left, :top, :width, :height, :gravity, :frames)
+    ResizeResult = Struct.new(:id, :width, :height, :interpolation, :frames)
+    FrameResult = Struct.new(:id, :width, :height, :frame, :frames)
+    LossyResult = Struct.new(:id, :size, :quality, :format)
+    VideoResult = Struct.new(:id, :size, :format)
 
     def initialize
       nuvo_image_process = File.dirname(__FILE__) + '/../../ext/nuvo_image/bin/nuvo_image'
@@ -25,22 +27,32 @@ module NuvoImage
 
     def read(filename, auto_orient: true, flatten: :white)
       result = call process: :read, from: filename, auto_orient: auto_orient, flatten: flatten
-      ReadResult.new(result[:to], result[:width], result[:height], result[:size])
+      ReadResult.new(result[:to], result[:width], result[:height], result[:size], result[:frames])
     end
 
     def crop(image, width, height, gravity: :Center)
       result = call process: :crop, from: image.id, width: width, height: height, gravity: gravity
-      CropResult.new(result[:to], result[:width], result[:height], result[:gravity].to_sym)
+      CropResult.new(result[:to], result[:left], result[:top], result[:width], result[:height], result[:gravity].to_sym, result[:frames])
     end
 
     def resize(image, width, height, interpolation: :area)
       result = call process: :resize, from: image.id, width: width, height: height, interpolation: interpolation
-      ResizeResult.new(result[:to], result[:width], result[:height], result[:interpolation].to_sym)
+      ResizeResult.new(result[:to], result[:width], result[:height], result[:interpolation].to_sym, result[:frames])
     end
 
-    def jpeg(image, filename, quality: :high, min: 50, max: 100, search: 3, gray_ssim: true)
-      result = call process: :jpeg, from: image.id, to: filename, quality: quality, min: min, max: max, search: search, gray_ssim: gray_ssim
-      JpegResult.new(result[:to], result[:size], result[:quality])
+    def lossy(image, filename, format: :jpeg, quality: :high, min: 50, max: 100, search: 3)
+      result = call process: :lossy, from: image.id, to: filename, format: format, quality: quality, min: min, max: max, search: search
+      LossyResult.new(result[:to], result[:size], result[:quality], result[:format])
+    end
+
+    def frame(image, frame)
+      result = call process: :frame, from: image.id, frame: frame
+      FrameResult.new(result[:to], result[:width], result[:height], result[:frame], result[:frames])
+    end
+
+    def video(image, filename, format: :mp4)
+      result = call process: :video, from: image.id, to: filename, format: format
+      VideoResult.new(result[:to], result[:size], result[:format])
     end
 
     def clear

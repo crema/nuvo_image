@@ -1,7 +1,7 @@
 #ifndef NUVO_IMAGE_RESIZEIMAGEPROCESS_H
 #define NUVO_IMAGE_RESIZEIMAGEPROCESS_H
 
-#include "opencv.h"
+#include "OpenCV.h"
 #include "Enums.h"
 #include "ImageProcess.h"
 
@@ -16,9 +16,11 @@ public:
 protected:
     const ImageProcessInput Process(const ImageProcessInput &input, picojson::object & result);
     const std::string GetName() { return "resize";}
-    const ProcessInputType GetFromType() { return ProcessInputType::Memory; }
-    const ProcessInputType GetToType() { return ProcessInputType::Memory; }
+    const int GetFromType() { return ProcessInputType::Image | ProcessInputType::Animation; }
+    const int GetToType() { return ProcessInputType::Image | ProcessInputType::Animation; }
 private:
+
+    const cv::Mat ResizeMat(const cv::Mat &mat);
 
     int width;
     int height;

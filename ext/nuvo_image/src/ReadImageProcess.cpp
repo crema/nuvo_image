@@ -1,16 +1,17 @@
 #include <fstream>
 #include "ReadImageProcess.h"
 #include "ImageProcessor.h"
-
+#include "Gif.h"
 
 const ImageProcessInput ReadImageProcess::Process(const ImageProcessInput &input, picojson::object &result) {
     auto buffer = input.GetBuffer();
+
     cv::Mat image;
 
     if(flatten == Flatten::None) {
-        image = cv::imdecode(buffer, IMREAD_COLOR);
+        image = cv::imdecode(*buffer, cv::IMREAD_COLOR);
     } else {
-        image = cv::imdecode(buffer, IMREAD_UNCHANGED);
+        image = cv::imdecode(*buffer, cv::IMREAD_UNCHANGED);
 
         if(image.depth() != CV_8U || image.channels() != 3){
             cv::Mat flattend;
@@ -19,28 +20,42 @@ const ImageProcessInput ReadImageProcess::Process(const ImageProcessInput &input
                 image = flattend;
                 result["flatten"] = picojson::value(ToString(flatten));
             } else {
-                image = cv::imdecode(buffer, IMREAD_COLOR);
+                image = cv::imdecode(*buffer, cv::IMREAD_COLOR);
             }
         }
     }
 
-    auto orientation = 0;
+    if(!image.empty()) {
+        auto orientation = 0;
 
-    result["width"] = picojson::value((double)image.cols);
-    result["height"] = picojson::value((double)image.rows);
+        result["width"] = picojson::value((double)image.cols);
+        result["height"] = picojson::value((double)image.rows);
 
-    easyexif::EXIFInfo exif;
+        easyexif::EXIFInfo exif;
 
-    if(TryReadExif(buffer, exif)) {
-        if(autoOrient) {
-            cv::Mat oriented;
-            if(TryRotateOrientation(image, oriented, orientation)){
-                image = oriented;
+        if(TryReadExif(buffer, exif)) {
+            if(autoOrient) {
+                cv::Mat oriented;
+                if(TryRotateOrientation(image, oriented, orientation)){
+                    image = oriented;
+                }
+                result["orientation"] = picojson::value((double)orientation);
             }
-            result["orientation"] = picojson::value((double)orientation);
         }
+        return ImageProcessInput(image);
     }
-    return ImageProcessInput(image);
+
+    Gif gif;
+
+    if(!Gif::TryReadFromBuffer(buffer, gif, flatten)){
+        throw std::runtime_error("cant open file: " + to);
+    }
+
+    result["width"] = picojson::value((double)gif.GetWidth());
+    result["height"] = picojson::value((double)gif.GetHeight());
+    result["flatten"] = picojson::value(ToString(flatten));
+    result["frames"] = picojson::value((double)gif.GetFrameCount());
+    return ImageProcessInput(gif);
 }
 
 bool ReadImageProcess::TryFlatten(const cv::Mat &src, cv::Mat &dest) {
@@ -79,8 +94,8 @@ bool ReadImageProcess::TryFlatten(const cv::Mat &src, cv::Mat &dest) {
     return false;
 }
 
-bool ReadImageProcess::TryReadExif(const std::vector<unsigned char> &buffer, easyexif::EXIFInfo & exif) {
-    int code = exif.parseFrom(buffer.data(),(int)buffer.size());
+bool ReadImageProcess::TryReadExif(const std::shared_ptr<std::vector<unsigned char>> &buffer, easyexif::EXIFInfo & exif) {
+    int code = exif.parseFrom(buffer->data(),(int)buffer->size());
     if (code) {
         return false;
     }

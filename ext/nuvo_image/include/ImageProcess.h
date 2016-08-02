@@ -5,9 +5,10 @@
 #include <string>
 #include <memory>
 
-#include "opencv.h"
+#include "OpenCV.h"
 #include "picojson.h"
 #include "Enums.h"
+#include "Gif.h"
 
 class ImageProcessor;
 
@@ -17,22 +18,62 @@ public:
         :type(InvalidInput)
     {}
 
-    ImageProcessInput(const std::vector<unsigned char> & buffer)
-        :buffer(buffer),type(File)
+    ImageProcessInput(const std::shared_ptr<std::vector<unsigned char>> & buffer, const bool written)
+        :buffer(buffer),type(File), written(written)
+    {}
+
+    ImageProcessInput(const std::shared_ptr<std::vector<unsigned char>> & buffer)
+        :buffer(buffer),type(File), written(false)
     {}
 
     ImageProcessInput(const cv::Mat & mat)
-        :mat(mat), type(Memory)
+        :mat(mat), type(Image)
     {}
 
-    const std::vector<unsigned char> & GetBuffer() const { return buffer; }
-    const cv::Mat & GetMat() const { return mat; }
+    ImageProcessInput(const Gif & gif)
+            :gif(gif), type(Animation)
+    {}
 
-    ProcessInputType GetType() { return type; }
+    const std::shared_ptr<std::vector<unsigned char>> & GetBuffer() const { return buffer; }
+    const cv::Mat & GetMat() const { return mat; }
+    const Gif & GetGif() const { return gif; }
+
+    const ProcessInputType GetType() const { return type; }
+
+    bool Empty() const {
+        ( buffer != nullptr && buffer->empty()) && mat.empty() && gif.Empty();
+    }
+
+    const int GetWidth() const {
+        if(!gif.Empty())
+            return gif.GetWidth();
+
+        if(!mat.empty())
+            return mat.cols;
+
+        return -1;
+    }
+
+    const int GetHeight() const {
+        if(!gif.Empty())
+            return gif.GetHeight();
+
+        if(!mat.empty())
+            return mat.rows;
+
+        return -1;
+    }
+
+    const bool IsWritten() const {
+        return written;
+    }
 private:
+
     ProcessInputType type;
-    std::vector<unsigned char> buffer;
+    std::shared_ptr<std::vector<unsigned char>> buffer;
     cv::Mat mat;
+    Gif gif;
+    bool written;
 };
 
 
@@ -47,8 +88,8 @@ public:
 protected:
     virtual const ImageProcessInput Process(const ImageProcessInput & input, picojson::object & result) = 0;
     virtual const std::string GetName() = 0;
-    virtual const ProcessInputType GetFromType() = 0;
-    virtual const ProcessInputType GetToType() = 0;
+    virtual const int GetFromType() = 0;
+    virtual const int GetToType() = 0;
 
     bool RequireFrom() { return GetFromType() != ProcessInputType::InvalidInput;}
     bool RequireTo() { return GetToType() != ProcessInputType::InvalidInput; }

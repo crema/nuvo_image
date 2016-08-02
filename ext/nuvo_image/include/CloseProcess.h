@@ -1,7 +1,7 @@
 #ifndef NUVO_IMAGE_EXITPROCESS_H
 #define NUVO_IMAGE_EXITPROCESS_H
 
-#include "opencv.h"
+#include "OpenCV.h"
 #include "ImageProcess.h"
 
 class CloseProcess : public ImageProcess {
@@ -14,9 +14,9 @@ protected:
     const ImageProcessInput Process(const ImageProcessInput &input, picojson::object & result){
         exit(0);
     }
-    const std::string GetName() { return "exit";}
-    const ProcessInputType GetFromType() { return ProcessInputType::InvalidInput; }
-    const ProcessInputType GetToType() { return ProcessInputType::InvalidInput; }
+    const std::string GetName() { return "close";}
+    const int GetFromType() { return ProcessInputType::InvalidInput; }
+    const int GetToType() { return ProcessInputType::InvalidInput; }
 };
 
 
