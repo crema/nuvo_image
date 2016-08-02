@@ -41,7 +41,7 @@ public:
     const ProcessInputType GetType() const { return type; }
 
     bool Empty() const {
-        ( buffer != nullptr && buffer->empty()) && mat.empty() && gif.Empty();
+        return ( buffer == nullptr || buffer->empty()) && mat.empty() && gif.Empty();
     }
 
     const int GetWidth() const {

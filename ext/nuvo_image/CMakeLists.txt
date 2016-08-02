@@ -28,20 +28,25 @@ ExternalProject_Add(
         mozjpeg
         URL https://github.com/mozilla/mozjpeg/releases/download/v3.1/mozjpeg-3.1-release-source.tar.gz
         SOURCE_DIR ${EXTERNAL_SRC_DIR}/mozjpeg
-        CONFIGURE_COMMAND ${EXTERNAL_SRC_DIR}/mozjpeg/configure --prefix=${EXTERNAL_LIB_DIR}/mozjpeg
+        CONFIGURE_COMMAND ${EXTERNAL_SRC_DIR}/mozjpeg/configure --with-pic --prefix=${EXTERNAL_LIB_DIR}/mozjpeg
         BUILD_IN_SOURCE 1
 )
 
 set(FFMPEG_CONFIGURE
+        --disable-audiotoolbox
+        --disable-videotoolbox
+        --disable-vda
+        --disable-iconv
         --disable-bzlib
+        --disable-doc
         --enable-nonfree
         --enable-pic
-        --disable-doc
         --enable-gpl
+        --enable-static
+        --disable-shared
         --enable-avresample
         --enable-libvpx
         --enable-libx264)
-
 
 set(FFMPEG_CONFIGURE ${FFMPEG_CONFIGURE}
         --disable-decoders)
@@ -96,7 +101,8 @@ ExternalProject_Add(
         opencv
         URL https://github.com/Itseez/opencv/archive/3.1.0.zip
         SOURCE_DIR ${EXTERNAL_SRC_DIR}/opencv3.1.0
-        CMAKE_ARGS -C${EXTERNAL_DIR}/opencv_config.gch
+        PATCH_COMMAND cat ${EXTERNAL_DIR}/opencv_patch.cmake >> ${EXTERNAL_SRC_DIR}/opencv3.1.0/cmake/OpenCVFindLibsVideo.cmake
+        CMAKE_ARGS -C${EXTERNAL_DIR}/opencv_config.cmake
         BUILD_IN_SOURCE 1
 )
 
@@ -130,21 +136,13 @@ add_executable(nuvo_image ${SOURCE_FILES})
 add_dependencies(opencv mozjpeg ffmpeg)
 add_dependencies(nuvo_image giflib opencv)
 
-find_library(GIF_LIBRARIES NAMES libgif.a
-        HINTS ${EXTERNAL_LIB_DIR}/giflib-5.1.4/lib)
-find_library(MOZJPEG_LIBRARIES jpeg
-        HINTS ${EXTERNAL_LIB_DIR}/mozjpeg/lib)
-find_library(OPENCV_CORE_LIBRARIES NAMES opencv_core
-        HINTS ${EXTERNAL_LIB_DIR}/opencv3.1.0/lib)
-find_library(OPENCV_IMGPROC_LIBRARIES NAMES opencv_imgproc
-        HINTS ${EXTERNAL_LIB_DIR}/opencv3.1.0/lib)
-find_library(OPENCV_IMGCODECS_LIBRARIES NAMES opencv_imgcodecs
-        HINTS ${EXTERNAL_LIB_DIR}/opencv3.1.0/lib)
-find_library(OPENCV_VIDEOIO_LIBRARIES NAMES opencv_videoio
-        HINTS ${EXTERNAL_LIB_DIR}/opencv3.1.0/lib)
+set(GIF_LIBRARIES ${EXTERNAL_LIB_DIR}/giflib-5.1.4/lib/${CMAKE_STATIC_LIBRARY_PREFIX}gif${CMAKE_STATIC_LIBRARY_SUFFIX})
+set(MOZJPEG_LIBRARIES ${EXTERNAL_LIB_DIR}/mozjpeg/lib/${CMAKE_SHARED_LIBRARY_PREFIX}jpeg${CMAKE_SHARED_LIBRARY_SUFFIX})
+set(OPENCV_CORE_LIBRARIES ${EXTERNAL_LIB_DIR}/opencv3.1.0/lib/${CMAKE_SHARED_LIBRARY_PREFIX}opencv_core${CMAKE_SHARED_LIBRARY_SUFFIX})
+set(OPENCV_IMGPROC_LIBRARIES ${EXTERNAL_LIB_DIR}/opencv3.1.0/lib/${CMAKE_SHARED_LIBRARY_PREFIX}opencv_imgproc${CMAKE_SHARED_LIBRARY_SUFFIX})
+set(OPENCV_IMGCODECS_LIBRARIES ${EXTERNAL_LIB_DIR}/opencv3.1.0/lib/${CMAKE_SHARED_LIBRARY_PREFIX}opencv_imgcodecs${CMAKE_SHARED_LIBRARY_SUFFIX})
+set(OPENCV_VIDEOIO_LIBRARIES ${EXTERNAL_LIB_DIR}/opencv3.1.0/lib/${CMAKE_SHARED_LIBRARY_PREFIX}opencv_videoio${CMAKE_SHARED_LIBRARY_SUFFIX})
 
-find_library(X264_LIBRARIES x264)
-find_library(VPX_LIBRARIES vpx)
 
 target_link_libraries(nuvo_image
         ${GIF_LIBRARIES}
@@ -152,8 +150,6 @@ target_link_libraries(nuvo_image
         ${OPENCV_CORE_LIBRARIES}
         ${OPENCV_IMGPROC_LIBRARIES}
         ${OPENCV_IMGCODECS_LIBRARIES}
-        ${OPENCV_VIDEOIO_LIBRARIES}
-        ${X264_LIBRARIES}
-        ${VPX_LIBRARIES})
+        ${OPENCV_VIDEOIO_LIBRARIES})
 
 install (TARGETS nuvo_image DESTINATION bin)

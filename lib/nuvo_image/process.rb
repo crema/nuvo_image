@@ -13,8 +13,13 @@ module NuvoImage
     VideoResult = Struct.new(:id, :size, :format)
 
     def initialize
-      nuvo_image_process = File.dirname(__FILE__) + '/../../ext/nuvo_image/bin/nuvo_image'
-      @stdin, @stdout, @thread = Open3.popen2(nuvo_image_process)
+      nuvo_image_process = File.join(File.dirname(__FILE__), '/../../ext/nuvo_image/bin/nuvo_image')
+      library_path = File.join(File.dirname(__FILE__), '../../ext/nuvo_image/external/lib/opencv3.1.0/lib')
+      library_path << ';'
+      library_path = File.join(File.dirname(__FILE__), '../../ext/nuvo_image/external/lib/mozjpeg/lib')
+      
+      env = RUBY_PLATFORM.include?('darwin') ? {'DYLD_LIBRARY_PATH'=>library_path} : {'LD_LIBRARY_PATH'=>library_path}
+      @stdin, @stdout, @thread = Open3.popen2(env, nuvo_image_process)
     end
 
     def call(args)

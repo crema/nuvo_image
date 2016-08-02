@@ -139,8 +139,9 @@ const std::string ToString(const Gravity gravity) {
             return "SouthWest";
         case Gravity::SouthEast:
             return "SouthEast";
+        default:
+            return "invalid";
     }
-    return "invalid";
 }
 
 const std::string ToString(const Quality quality) {
@@ -153,8 +154,9 @@ const std::string ToString(const Quality quality) {
             return "high";
         case Quality::VeryHigh:
             return "very_high";
+        default:
+            return "invalid";
     }
-    return "invalid";
 }
 
 const std::string ToString(const Interpolation interpolation){
@@ -169,8 +171,9 @@ const std::string ToString(const Interpolation interpolation){
             return "area";
         case Interpolation::Lanczos:
             return "lanczos";
+        default:
+            return "invalid";
     }
-    return "invalid";
 }
 
 const std::string ToString(const LossyImageFormat format){
@@ -179,8 +182,9 @@ const std::string ToString(const LossyImageFormat format){
             return "Jpeg";
         case LossyImageFormat::WebP:
             return "WebP";
+        default:
+            return "invalid";
     }
-    return "invalid";
 }
 
 
@@ -190,6 +194,7 @@ const std::string ToString(const VideoFormat format){
             return "Mp4";
         case VideoFormat::WebM:
             return "WebM";
+        default:
+            return "invalid";
     }
-    return "invalid";
 }

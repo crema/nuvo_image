@@ -92,6 +92,8 @@ int LossyImageProcess::GetQuality(const std::shared_ptr<std::vector<unsigned cha
             case Quality::VeryHigh:
                 qualitySSIM = 0.999;
                 break;
+            default:
+                throw std::runtime_error("invalid quality");
         }
     }
 

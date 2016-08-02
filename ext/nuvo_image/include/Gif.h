@@ -7,7 +7,6 @@
 
 #include "gif_lib.h"
 #include <vector>
-#include <malloc.h>
 #include <memory>
 #include "OpenCV.h"
 #include "Enums.h"

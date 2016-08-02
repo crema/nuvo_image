@@ -71,6 +71,8 @@ bool ReadImageProcess::TryFlatten(const cv::Mat &src, cv::Mat &dest) {
             case Flatten::White:
                 backgroundPixel = cv::Scalar(1,1,1,1);
                 break;
+            default:
+                return false;
         }
 
         for (int y = 0; y < src.rows; ++y) {

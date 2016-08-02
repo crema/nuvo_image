@@ -1,5 +1,5 @@
 #include "Gif.h"
-
+#include <cstring>
 
 bool Gif::TryReadFromBuffer(const std::shared_ptr<std::vector<unsigned char>> & buffer, Gif & gif,Flatten flatten) {
     GifBuffer readBuffer(buffer->data(), buffer->size());
@@ -94,7 +94,7 @@ int Gif::GifBuffer::Read(GifByteType* bytes, int size){
     if (length - position < size)
         size = length - position;
 
-    memcpy(bytes, buffer + position, size);
+    std::memcpy(bytes, buffer + position, size);
     position += size;
     return size;
 }

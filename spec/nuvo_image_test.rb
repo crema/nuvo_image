@@ -165,8 +165,8 @@ describe NuvoImage::Process do
     it 'should work' do
       mp4 = subject.video(@todd, File.dirname(__FILE__) + '/images/test/todd.mp4', format: :mp4)
       wemb = subject.video(@todd, File.dirname(__FILE__) + '/images/test/todd.webm', format: :webm)
-      mp4.size.wont_be_empty
-      wemb.size.wont_be_empty
+      assert mp4.size > 0, 'must greater than 0'
+      assert wemb.size > 0, 'must greater than 0'
     end
 
     after do
