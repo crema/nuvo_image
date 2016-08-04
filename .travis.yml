@@ -1,20 +1,33 @@
 sudo: true
-language: ruby
+dist: trusty
+language: ruby c++
 rvm:
   - 2.3.1
 before_script:
   - sudo ln /dev/null /dev/raw1394
 script:
-  - bundle exec rubocop
   - bundle exec rake build --trace
+  - cd ext/nuvo_image/build
+  - bundle exec ruby extconf.rb
+  - make
+  - cd ../../..
   - bundle exec rake test --trace
 addons:
   apt:
     packages:
+      - build-essential
       - g++-6
       - cmake
       - cmake-data
-      - libopencv-dev
+      - nasm
+      - yasm
+      - libgtk2.0-dev
+      - libpng12-dev
+      - libtiff4-dev
+      - libjasper-dev
+      - libwebp-dev
+      - libx264-dev
+      - libvpx-dev
     sources:
       - ubuntu-toolchain-r-test
       - george-edison55-precise-backports

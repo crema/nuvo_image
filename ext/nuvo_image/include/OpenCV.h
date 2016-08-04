@@ -7,12 +7,7 @@
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-
-#if OPENCV_VERSION_MAJOR == 2
-#include <opencv2/highgui/highgui.hpp>
-#elif OPENCV_VERSION_MAJOR == 3
+#include <opencv2/videoio/videoio.hpp>
 #include <opencv2/imgcodecs.hpp>
-#endif
-
 
 #endif //NUVO_IMAGE_OPENCV_H

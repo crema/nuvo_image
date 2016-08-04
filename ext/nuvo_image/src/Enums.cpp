@@ -84,6 +84,30 @@ bool TryParse(const std::string & str, Interpolation & out) {
     return out != Interpolation::InvalidInterpolation;
 }
 
+bool TryParse(const std::string & str, LossyImageFormat & out) {
+    std::string converted = str;
+    std::transform(converted.begin(), converted.end(), converted.begin(), tolower);
+
+    if( converted == "jpg" || converted == "jpeg") {
+        out = LossyImageFormat::Jpeg;
+    } else if(converted == "webp") {
+        out = LossyImageFormat::WebP;
+    }
+    return out != LossyImageFormat::InvalidImageFormat;
+}
+
+bool TryParse(const std::string & str, VideoFormat & out) {
+    std::string converted = str;
+    std::transform(converted.begin(), converted.end(), converted.begin(), tolower);
+
+    if( converted == "mp4") {
+        out = VideoFormat::Mp4;
+    } else if(converted == "webm") {
+        out = VideoFormat::WebM;
+    }
+    return out != VideoFormat ::InvalidVideoFormat;
+}
+
 const std::string ToString(const Flatten flatten) {
     switch (flatten) {
         case Flatten::White:
@@ -115,8 +139,9 @@ const std::string ToString(const Gravity gravity) {
             return "SouthWest";
         case Gravity::SouthEast:
             return "SouthEast";
+        default:
+            return "invalid";
     }
-    return "invalid";
 }
 
 const std::string ToString(const Quality quality) {
@@ -129,9 +154,11 @@ const std::string ToString(const Quality quality) {
             return "high";
         case Quality::VeryHigh:
             return "very_high";
+        default:
+            return "invalid";
     }
-    return "invalid";
 }
+
 const std::string ToString(const Interpolation interpolation){
     switch (interpolation){
         case Interpolation::Nearest:
@@ -144,6 +171,30 @@ const std::string ToString(const Interpolation interpolation){
             return "area";
         case Interpolation::Lanczos:
             return "lanczos";
+        default:
+            return "invalid";
     }
-    return "invalid";
+}
+
+const std::string ToString(const LossyImageFormat format){
+    switch (format){
+        case LossyImageFormat::Jpeg:
+            return "Jpeg";
+        case LossyImageFormat::WebP:
+            return "WebP";
+        default:
+            return "invalid";
+    }
+}
+
+
+const std::string ToString(const VideoFormat format){
+    switch (format){
+        case VideoFormat::Mp4:
+            return "Mp4";
+        case VideoFormat::WebM:
+            return "WebM";
+        default:
+            return "invalid";
+    }
 }

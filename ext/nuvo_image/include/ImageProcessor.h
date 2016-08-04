@@ -5,10 +5,10 @@
 #include <string>
 #include <memory>
 
-#include "opencv.h"
+#include "OpenCV.h"
 #include "picojson.h"
 #include "Enums.h"
-#include "JpegImageProcess.h"
+#include "LossyImageProcess.h"
 #include "CropImageProcess.h"
 
 
@@ -22,8 +22,9 @@ public:
 
     std::shared_ptr<ImageProcess> Parse(const std::string & inputString);
 
-    bool TryGet(const std::string & name,cv::Mat & outMat);
-    void Insert(const std::string & name, const cv::Mat & mat);
+    bool TryGet(const std::string & name, ImageProcessInput & input);
+    void Insert(const std::string & name, const ImageProcessInput & input);
+
     void Clear();
     const std::string GetTempName() { return "temp-" + std::to_string(tempCount++); }
 
@@ -64,8 +65,7 @@ private:
         return TryGet(value, out);
     }
 
-
-    std::unordered_map<std::string, cv::Mat> data;
+    std::unordered_map<std::string, ImageProcessInput> data;
 };
 
 template <>
@@ -93,23 +93,39 @@ inline bool ImageProcessor::TryGet<Interpolation>(const picojson::value & value,
     return TryParse(value.get<std::string>(), out);
 }
 
+template <>
+inline bool ImageProcessor::TryGet<LossyImageFormat>(const picojson::value & value, LossyImageFormat & out) {
+    if(!value.is<std::string>()) {
+        return false;
+    }
+    return TryParse(value.get<std::string>(), out);
+}
 
 template <>
-inline bool ImageProcessor::TryGet<JpegQuality>(const picojson::value & value, JpegQuality & out) {
+inline bool ImageProcessor::TryGet<VideoFormat>(const picojson::value & value, VideoFormat & out) {
+    if(!value.is<std::string>()) {
+        return false;
+    }
+    return TryParse(value.get<std::string>(), out);
+}
+
+
+template <>
+inline bool ImageProcessor::TryGet<ImageQuality>(const picojson::value & value, ImageQuality & out) {
     if(value.is<std::string>()) {
         Quality quality;
         if(TryParse(value.get<std::string>(), quality)) {
-            out = JpegQuality(quality);
+            out = ImageQuality(quality);
             return true;
         }
     } else if(value.is<double>()) {
         auto quality = value.get<double>();
 
         if(quality >=0 && quality <= 1) {
-            out = JpegQuality(quality);
+            out = ImageQuality(quality);
             return true;
         } else if(quality > 1 && quality <= 100){
-            out = JpegQuality((int)quality);
+            out = ImageQuality((int)quality);
             return true;
         }
     }

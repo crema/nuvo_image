@@ -2,7 +2,9 @@
 #include "ReadImageProcess.h"
 #include "CropImageProcess.h"
 #include "ResizeImageProcess.h"
-#include "JpegImageProcess.h"
+#include "LossyImageProcess.h"
+#include "FrameImageProcess.h"
+#include "VideoImageProcess.h"
 #include "ClearMemoryProcess.h"
 #include "CloseProcess.h"
 
@@ -39,14 +41,21 @@ std::shared_ptr<ImageProcess> ImageProcessor::Parse(const std::string & inputStr
         auto interpolation = GetMember<Interpolation>(object, "interpolation", Interpolation::Area);
 
         return std::shared_ptr<ImageProcess>(new ResizeImageProcess(shared_from_this(), from, to, width, height, interpolation));
-    } else if (processString == "jpeg") {
-        auto jpegQuality = GetMember<JpegQuality>(object, "quality", JpegQuality(95));
+    } else if (processString == "lossy") {
+        auto format = GetMember<LossyImageFormat >(object, "format", LossyImageFormat::Jpeg);
+        auto quality = GetMember<ImageQuality>(object, "quality", ImageQuality(95));
         auto min = (int)GetMember<double>(object, "min", 55);
         auto max = (int)GetMember<double>(object, "max", 95);
         auto search = (int)GetMember<double>(object, "search", 5);
-        auto graySSIM = (int)GetMember<bool>(object, "gray_ssim", true);
 
-        return std::shared_ptr<ImageProcess>(new JepegImageProcess(shared_from_this(), from, to, jpegQuality, min, max, search, graySSIM));
+        return std::shared_ptr<ImageProcess>(new LossyImageProcess(shared_from_this(), from, to, format, quality, min, max, search));
+    } else if(processString == "frame") {
+        auto frame = (int)GetMember<double>(object, "frame", 0);
+
+        return std::shared_ptr<ImageProcess>(new FrameImageProcess(shared_from_this(), from, to, frame));
+    } else if(processString == "video") {
+        auto format = GetMember<VideoFormat>(object, "format", VideoFormat::Mp4);
+        return std::shared_ptr<ImageProcess>(new VideoImageProcess(shared_from_this(), from, to, format));
     } else if (processString == "clear") {
         return std::shared_ptr<ImageProcess>(new ClearMemoryProcess(shared_from_this()));
     }
@@ -57,18 +66,18 @@ std::shared_ptr<ImageProcess> ImageProcessor::Parse(const std::string & inputStr
     throw std::runtime_error("invalid input");
 }
 
-bool ImageProcessor::TryGet(const std::string &name, cv::Mat & outMat) {
+bool ImageProcessor::TryGet(const std::string &name, ImageProcessInput &input) {
     auto findData = data.find(name);
 
     if(findData == data.end())
         return false;
 
-    outMat = findData->second;
+    input = findData->second;
     return true;
 }
 
-void ImageProcessor::Insert(const std::string &name, const cv::Mat &mat) {
-    data.insert(std::make_pair(name, mat));
+void ImageProcessor::Insert(const std::string &name, const ImageProcessInput &input) {
+    data.insert(std::make_pair(name, input));
 }
 
 void ImageProcessor::Clear() {

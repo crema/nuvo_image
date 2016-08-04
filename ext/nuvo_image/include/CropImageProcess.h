@@ -1,7 +1,7 @@
 #ifndef NUVO_IMAGE_CROPIMAGEPROCESS_H
 #define NUVO_IMAGE_CROPIMAGEPROCESS_H
 
-#include "opencv.h"
+#include "OpenCV.h"
 #include "ImageProcess.h"
 #include "Enums.h"
 
@@ -14,11 +14,10 @@ public:
 protected:
     const ImageProcessInput Process(const ImageProcessInput &input, picojson::object & result);
     const std::string GetName() { return "crop";}
-    const ProcessInputType GetFromType() { return ProcessInputType::Memory; }
-    const ProcessInputType GetToType() { return ProcessInputType::Memory; }
+    const int GetFromType() { return ProcessInputType::Image | ProcessInputType::Animation; }
+    const int GetToType() { return ProcessInputType::Image | ProcessInputType::Animation; }
 
 private:
-
     bool IsWest() { return gravity & West; }
     bool IsEast() { return gravity & East; }
 

@@ -1,7 +1,7 @@
 #ifndef NUVO_IMAGE_READIMAGEPROCESS_H
 #define NUVO_IMAGE_READIMAGEPROCESS_H
 
-#include "opencv.h"
+#include "OpenCV.h"
 #include "ImageProcess.h"
 #include "exif.h"
 
@@ -14,12 +14,13 @@ public:
 protected:
     const ImageProcessInput Process(const ImageProcessInput &input, picojson::object & result);
     const std::string GetName() { return "read";}
-    const ProcessInputType GetFromType() { return ProcessInputType::File; }
-    const ProcessInputType GetToType() { return ProcessInputType::Memory; }
+    const int GetFromType() { return ProcessInputType::File; }
+    const int GetToType() { return ProcessInputType::Image | ProcessInputType::Animation; }
 
 private:
+
     bool TryFlatten(const cv::Mat & src, cv::Mat & dest);
-    bool TryReadExif(const std::vector<unsigned char> & buffer, easyexif::EXIFInfo & exif);
+    bool TryReadExif(const std::shared_ptr<std::vector<unsigned char>> & buffer, easyexif::EXIFInfo & exif);
     bool TryRotateOrientation(const cv::Mat & src, cv::Mat & dest, const int orientation);
     bool autoOrient;
     Flatten flatten;

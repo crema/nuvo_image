@@ -1,6 +1,5 @@
 /.bundle/
 /.yardoc
-/Gemfile.lock
 /_yardoc/
 /coverage/
 /doc/
@@ -10,8 +9,14 @@
 *.gem
 **/.idea
 **/CMakeFiles/
+**/install_manifest.txt
+**/cmake_install.cmake
 **/CMakeCache.txt
-**/*.cmake
 **/Makefile
 **/*.so
 **/bin
+**/*.a
+**/*.o
+**/*-prefix
+**/external/lib
+**/external/src
