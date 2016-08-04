@@ -46,12 +46,12 @@ brew install nasm yasm
 
 **linux**
 ```
-sudo apt-get install libqt4-dev libpng12-dev libtiff4-dev libjasper-dev libwebp-dev libx264-dev libvpx-dev
+sudo apt-get install libgtk-3-dev libpng12-dev libtiff4-dev libjasper-dev libwebp-dev libx264-dev libvpx-dev
 ```
 
 **mac**
 ```
-brew install  jpeg png tiff jasper webp x264 vpx
+brew install gtk+ jpeg png tiff jasper webp x264 vpx
 ```
 
 ## Installation
@@ -81,7 +81,7 @@ addons:
       - cmake-data
       - nasm
       - yasm
-      - libqt4-dev
+      - libgtk-3-dev
       - libpng12-dev 
       - libtiff4-dev 
       - libjasper-dev 

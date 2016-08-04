@@ -19,18 +19,26 @@ set(EXTERNAL_LIB_DIR ${EXTERNAL_DIR}/lib)
 
 ExternalProject_Add(
         giflib
-        URL http://downloads.sourceforge.net/project/giflib/giflib-5.1.4.tar.bz2
+        URL ${EXTERNAL_DIR}/giflib-5.1.4.tar.bz2
         SOURCE_DIR ${EXTERNAL_SRC_DIR}/giflib-5.1.4
         CONFIGURE_COMMAND ${EXTERNAL_SRC_DIR}/giflib-5.1.4/configure --prefix=${EXTERNAL_LIB_DIR}/giflib-5.1.4
         BUILD_IN_SOURCE 1
 )
 
 if(WITH_MOZJPEG)
+
+    set(MOZJPEG_CONFIGURE
+            --enable-shared=no
+            --without-turbojpeg
+            --without-java
+            --with-pic
+            --prefix=${EXTERNAL_LIB_DIR}/mozjpeg-3.1)
+
     ExternalProject_Add(
             mozjpeg
             URL https://github.com/mozilla/mozjpeg/releases/download/v3.1/mozjpeg-3.1-release-source.tar.gz
-            SOURCE_DIR ${EXTERNAL_SRC_DIR}/mozjpeg
-            CONFIGURE_COMMAND ${EXTERNAL_SRC_DIR}/mozjpeg/configure --with-pic --prefix=${EXTERNAL_LIB_DIR}/mozjpeg
+            SOURCE_DIR ${EXTERNAL_SRC_DIR}/mozjpeg-3.1
+            CONFIGURE_COMMAND ${EXTERNAL_SRC_DIR}/mozjpeg-3.1/configure ${MOZJPEG_CONFIGURE}
             BUILD_IN_SOURCE 1
     )
 endif()
@@ -40,6 +48,11 @@ set(FFMPEG_CONFIGURE
         --disable-videotoolbox
         --disable-vda
         --disable-iconv
+        --disable-network
+        --disable-zlib
+        --disable-xlib
+        --disable-lzma
+        --disable-sdl
         --disable-bzlib
         --disable-doc
         --enable-nonfree
@@ -69,9 +82,9 @@ set(FFMPEG_CONFIGURE ${FFMPEG_CONFIGURE}
 
 set(FFMPEG_CONFIGURE ${FFMPEG_CONFIGURE}
         --disable-muxers
+        --enable-muxer=mp4
         --enable-muxer=h264
-        --enable-muxer=webm
-        --enable-muxer=mp4)
+        --enable-muxer=webm)
 
 set(FFMPEG_CONFIGURE ${FFMPEG_CONFIGURE}
         --disable-protocols
