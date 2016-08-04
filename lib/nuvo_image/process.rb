@@ -43,7 +43,7 @@ module NuvoImage
       ResizeResult.new(result[:to], result[:width], result[:height], result[:interpolation].to_sym, result[:frames])
     end
 
-    def lossy(image, filename, format: :jpeg, quality: :high, min: 50, max: 100, search: 3)
+    def lossy(image, filename, format: :jpeg, quality: :high, min: 50, max: 95, search: 3)
       result = call process: :lossy, from: image.id, to: filename, format: format, quality: quality, min: min, max: max, search: search
       LossyResult.new(result[:to], result[:size], result[:quality], result[:format])
     end

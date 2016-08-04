@@ -146,13 +146,19 @@ describe NuvoImage::Process do
             medium: 0.933,
             high: 0.966,
             very_high: 0.999,
-          }.each do |quality, simm|
+          }.each do |quality, ssim|
             lossy_by_quality = subject.lossy(image, File.dirname(__FILE__) + "/images/test/#{name}_#{quality}.#{format}", format: format, quality: quality)
-            lossy_by_simm = subject.lossy(image, File.dirname(__FILE__) + "/images/test/#{name}_#{simm}.#{format}", format: format, quality: simm)
+            lossy_by_ssim = subject.lossy(image, File.dirname(__FILE__) + "/images/test/#{name}_#{ssim}.#{format}", format: format, quality: ssim)
             assert lossy_by_quality.size >= lossy_size, 'must less size'
             assert lossy_by_quality.quality >= lossy_quality, 'must less quality'
 
-            assert lossy_by_quality.quality = lossy_by_simm.quality, 'must equal'
+            lossy_by_fixed_quality = subject.lossy(image, File.dirname(__FILE__) + "/images/test/#{name}_#{lossy_by_quality.quality}.#{format}", format: format, quality: quality)
+
+            lossy_by_quality.quality.must_equal lossy_by_ssim.quality
+            lossy_by_quality.size.must_equal lossy_by_ssim.size
+
+            lossy_by_quality.quality.must_equal lossy_by_fixed_quality.quality
+            lossy_by_quality.size.must_equal lossy_by_fixed_quality.size
 
             lossy_size = lossy_by_quality.size
             lossy_quality = lossy_by_quality.quality

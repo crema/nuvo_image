@@ -52,7 +52,7 @@ public:
         :qualityFixed(quality), qualityAdaptive(Quality::InvalidQuality), qualitySSIM(0), qualityType(Fixed)
     {}
 
-    ImageQuality(double quality, int min, int max, int search)
+    ImageQuality(double quality)
             :qualityFixed(0), qualityAdaptive(Quality::InvalidQuality), qualitySSIM(quality), qualityType(QualityType::Ssim)
     {}
 
