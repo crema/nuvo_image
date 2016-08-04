@@ -70,6 +70,7 @@ bundle install
 다음의 내용을 추가하자
 ```
 sudo: true
+dist: trusty
 before_script:
   - sudo ln /dev/null /dev/raw1394  
 addons:
