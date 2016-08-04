@@ -130,25 +130,34 @@ describe NuvoImage::Process do
   describe '#lossy' do
     before do
       @sushi = subject.read(File.dirname(__FILE__) + '/images/sushi.jpg')
+      @miku = subject.read(File.dirname(__FILE__) + '/images/miku.gif')
     end
 
     it 'should work' do
-      jpeg_size = 0
-      jpeg_quality = 0
-      webp_size = 0
-      webp_quality = 0
-      [:low, :medium, :high, :very_high].each do |quality|
-        jpeg = subject.lossy(@sushi, File.dirname(__FILE__) + "/images/test/#{quality}.jpg", format: :jpeg, quality: quality)
-        webp = subject.lossy(@sushi, File.dirname(__FILE__) + "/images/test/#{quality}.webp", format: :webp, quality: quality)
-        assert jpeg.size >= jpeg_size, 'must less size'
-        assert jpeg.quality >= jpeg_quality, 'must less quality'
-        assert webp.size >= webp_size, 'must less size'
-        assert webp.quality >= webp_quality, 'must less quality'
+      {
+        sush: @sushi,
+        miku: @miku
+      }.each do |name, image|
+        [ :jpeg, :webp].each do |format|
+          lossy_size = 0
+          lossy_quality = 0
+          {
+            low: 0.90,
+            medium: 0.933,
+            high: 0.966,
+            very_high: 0.999,
+          }.each do |quality, simm|
+            lossy_by_quality = subject.lossy(image, File.dirname(__FILE__) + "/images/test/#{name}_#{quality}.#{format}", format: format, quality: quality)
+            lossy_by_simm = subject.lossy(image, File.dirname(__FILE__) + "/images/test/#{name}_#{simm}.#{format}", format: format, quality: simm)
+            assert lossy_by_quality.size >= lossy_size, 'must less size'
+            assert lossy_by_quality.quality >= lossy_quality, 'must less quality'
 
-        jpeg_size = jpeg.size
-        jpeg_quality = jpeg.quality
-        webp_size = webp.size
-        webp_quality = webp.quality
+            assert lossy_by_quality.quality = lossy_by_simm.quality, 'must equal'
+
+            lossy_size = lossy_by_quality.size
+            lossy_quality = lossy_by_quality.quality
+          end
+        end
       end
     end
 
@@ -160,11 +169,17 @@ describe NuvoImage::Process do
   describe '#video' do
     before do
       @todd = subject.read(File.dirname(__FILE__) + '/images/todd.gif')
+      @miku = subject.read(File.dirname(__FILE__) + '/images/miku.gif')
     end
 
     it 'should work' do
       mp4 = subject.video(@todd, File.dirname(__FILE__) + '/images/test/todd.mp4', format: :mp4)
       wemb = subject.video(@todd, File.dirname(__FILE__) + '/images/test/todd.webm', format: :webm)
+      assert mp4.size > 0, 'must greater than 0'
+      assert wemb.size > 0, 'must greater than 0'
+
+      mp4 = subject.video(@miku, File.dirname(__FILE__) + '/images/test/miku.mp4', format: :mp4)
+      wemb = subject.video(@miku, File.dirname(__FILE__) + '/images/test/miku.webm', format: :webm)
       assert mp4.size > 0, 'must greater than 0'
       assert wemb.size > 0, 'must greater than 0'
     end

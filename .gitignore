@@ -6,6 +6,7 @@
 /pkg/
 /spec/reports/
 /tmp/
+/spec/images/test
 *.gem
 **/.idea
 **/CMakeFiles/

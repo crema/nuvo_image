@@ -84,10 +84,10 @@ int LossyImageProcess::GetQuality(const std::shared_ptr<std::vector<unsigned cha
                 qualitySSIM = 0.90;
                 break;
             case Quality::Medium:
-                qualitySSIM = 0.93;
+                qualitySSIM = 0.933;
                 break;
             case Quality::High:
-                qualitySSIM = 0.96;
+                qualitySSIM = 0.966;
                 break;
             case Quality::VeryHigh:
                 qualitySSIM = 0.999;
