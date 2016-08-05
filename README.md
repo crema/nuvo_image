@@ -51,7 +51,7 @@ sudo apt-get install libgtk2.0-dev libpng12-dev libtiff4-dev libjasper-dev libwe
 
 **mac**
 ```
-brew install gtk+ jpeg png tiff jasper webp x264 vpx
+brew install gtk+ jpeg libpng libtiff jasper webp x264 libvpx
 ```
 
 ## Installation
