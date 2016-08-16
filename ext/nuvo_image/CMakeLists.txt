@@ -36,7 +36,7 @@ if(WITH_MOZJPEG)
 
     ExternalProject_Add(
             mozjpeg
-            URL https://github.com/mozilla/mozjpeg/releases/download/v3.1/mozjpeg-3.1-release-source.tar.gz
+            URL ${EXTERNAL_DIR}/mozjpeg-3.1-release-source.tar.gz
             SOURCE_DIR ${EXTERNAL_SRC_DIR}/mozjpeg-3.1
             CONFIGURE_COMMAND ${EXTERNAL_SRC_DIR}/mozjpeg-3.1/configure ${MOZJPEG_CONFIGURE}
             BUILD_IN_SOURCE 1
@@ -107,7 +107,7 @@ set(FFMPEG_CONFIGURE ${FFMPEG_CONFIGURE}
 
 ExternalProject_Add(
         ffmpeg
-        URL http://ffmpeg.org/releases/ffmpeg-3.1.1.tar.bz2
+        URL ${EXTERNAL_DIR}/ffmpeg-3.1.1.tar.bz2
         SOURCE_DIR ${EXTERNAL_SRC_DIR}/ffmpeg-3.1.1
         CONFIGURE_COMMAND ${EXTERNAL_SRC_DIR}/ffmpeg-3.1.1/configure ${FFMPEG_CONFIGURE}
         BUILD_IN_SOURCE 1
@@ -115,7 +115,7 @@ ExternalProject_Add(
 
 ExternalProject_Add(
         opencv
-        URL https://github.com/Itseez/opencv/archive/3.1.0.zip
+        URL ${EXTERNAL_DIR}/3.1.0.zip
         SOURCE_DIR ${EXTERNAL_SRC_DIR}/opencv3.1.0
         PATCH_COMMAND cat ${EXTERNAL_DIR}/opencv_patch.cmake >> ${EXTERNAL_SRC_DIR}/opencv3.1.0/cmake/OpenCVFindLibsVideo.cmake
         CMAKE_ARGS -C${EXTERNAL_DIR}/opencv_config.cmake

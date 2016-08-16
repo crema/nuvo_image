@@ -1,5 +1,4 @@
 sudo: true
-dist: trusty
 language: ruby c++
 rvm:
   - 2.3.1
