@@ -10,7 +10,7 @@ script:
   - bundle exec ruby extconf.rb
   - make
   - cd ../../..
-  - bundle exec rake test --trace
+  - bundle exec rake test
 addons:
   apt:
     packages:
