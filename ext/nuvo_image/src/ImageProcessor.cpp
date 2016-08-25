@@ -7,6 +7,7 @@
 #include "VideoImageProcess.h"
 #include "ClearMemoryProcess.h"
 #include "CloseProcess.h"
+#include "CompareImageProcess.h"
 
 std::shared_ptr<ImageProcess> ImageProcessor::Parse(const std::string & inputString) {
     picojson::value json;
@@ -53,8 +54,14 @@ std::shared_ptr<ImageProcess> ImageProcessor::Parse(const std::string & inputStr
         auto frame = (int)GetMember<double>(object, "frame", 0);
 
         return std::shared_ptr<ImageProcess>(new FrameImageProcess(shared_from_this(), from, to, frame));
+    } else if(processString == "compare") {
+        auto from1 = GetMember<std::string>(object, "from1", "");
+        auto from2 = GetMember<std::string>(object, "from2", "");
+
+        return std::shared_ptr<ImageProcess>(new CompareImageProcess(shared_from_this(), from1, from2));
     } else if(processString == "video") {
         auto format = GetMember<VideoFormat>(object, "format", VideoFormat::Mp4);
+
         return std::shared_ptr<ImageProcess>(new VideoImageProcess(shared_from_this(), from, to, format));
     } else if (processString == "clear") {
         return std::shared_ptr<ImageProcess>(new ClearMemoryProcess(shared_from_this()));

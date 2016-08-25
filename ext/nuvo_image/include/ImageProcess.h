@@ -79,29 +79,64 @@ private:
 
 class ImageProcess {
 public:
-    ImageProcess(std::shared_ptr<ImageProcessor> processor,const std::string & from, const std::string & to)
-        :processor(processor), from(from), to(to)
+    ImageProcess(const std::shared_ptr<ImageProcessor> & processor)
+        :processor(processor)
+    {}
+
+    virtual picojson::object Process() = 0;
+protected:
+    virtual const std::string GetName() = 0;
+
+    const ImageProcessInput ReadFrom(const std::string & fromString, const int fromType);
+    void WriteTo(const std::string & toString, const int toType, const ImageProcessInput & output);
+
+
+    std::shared_ptr<ImageProcessor> processor;
+};
+
+class InOutProcess: public ImageProcess{
+public:
+    InOutProcess(const std::shared_ptr<ImageProcessor> & processor, const std::string & from, const std::string & to)
+        :ImageProcess(processor), from(from), to(to)
     {}
 
     picojson::object Process();
 
 protected:
-    virtual const ImageProcessInput Process(const ImageProcessInput & input, picojson::object & result) = 0;
-    virtual const std::string GetName() = 0;
+    virtual const ImageProcessInput Process(const ImageProcessInput &input, picojson::object & result) = 0;
+
     virtual const int GetFromType() = 0;
     virtual const int GetToType() = 0;
 
-    bool RequireFrom() { return GetFromType() != ProcessInputType::InvalidInput;}
-    bool RequireTo() { return GetToType() != ProcessInputType::InvalidInput; }
-    bool HasFrom() { return !from.empty();}
-    bool HasTo() { return !to.empty(); }
-
-    const ImageProcessInput ReadFrom();
-    void WriteTo(const ImageProcessInput & input);
-
-    std::shared_ptr<ImageProcessor> processor;
     std::string from;
     std::string to;
+};
+
+
+class TwoImageToNullProcess: public ImageProcess {
+public:
+    TwoImageToNullProcess(const std::shared_ptr<ImageProcessor> & processor, const std::string & from1, const std::string & from2)
+            :ImageProcess(processor), from1(from1), from2(from2)
+    {}
+
+    picojson::object Process();
+protected:
+    virtual void Process(const ImageProcessInput & input1, const ImageProcessInput & input2, picojson::object & result) = 0;
+
+    std::string from1;
+    std::string from2;
+};
+
+class NullToNullProcess: public ImageProcess {
+public:
+    NullToNullProcess(const std::shared_ptr<ImageProcessor> & processor)
+            :ImageProcess(processor)
+    {}
+
+    picojson::object Process();
+protected:
+    virtual void Process(picojson::object & result) = 0;
+
 };
 
 #endif

@@ -172,6 +172,22 @@ describe NuvoImage::Process do
     end
   end
 
+  describe '#compare' do
+    before do
+      @miku = subject.read(File.dirname(__FILE__) + '/images/miku.gif')
+      @mikus = [:low, :medium, :high, :very_high].map do |quality|
+        subject.lossy(@miku, File.dirname(__FILE__) + "/images/test/miku_#{quality}.jpg", format: :jpeg, quality: quality)
+        [quality, subject.read(File.dirname(__FILE__) + "/images/test/miku_#{quality}.jpg")]
+      end
+    end
+
+    it 'should work' do
+      @mikus.each do |quality, image|
+        subject.compare(@miku, image)
+      end
+    end
+  end
+
   describe '#video' do
     before do
       @todd = subject.read(File.dirname(__FILE__) + '/images/todd.gif')

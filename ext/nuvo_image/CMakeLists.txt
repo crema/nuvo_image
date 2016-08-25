@@ -130,22 +130,10 @@ include_directories(include
         ${EXTERNAL_LIB_DIR}/giflib-5.1.4/include
         ${EXTERNAL_LIB_DIR}/opencv3.1.0/include)
 
-set(SOURCE_FILES
-        src/main.cpp
-        src/exif.cpp
-        src/Gif.cpp
-        src/Enums.cpp
-        src/ImageProcessor.cpp
-        src/ImageProcess.cpp
-        src/ReadImageProcess.cpp
-        src/CropImageProcess.cpp
-        src/ResizeImageProcess.cpp
-        src/LossyImageProcess.cpp
-        src/FrameImageProcess.cpp
-        src/VideoImageProcess.cpp
-        src/ClearMemoryProcess.cpp)
+file(GLOB INCLUDE_FILES include/*.h)
+file(GLOB SOURCE_FILES src/*.cpp)
 
-add_executable(nuvo_image ${SOURCE_FILES})
+add_executable(nuvo_image ${INCLUDE_FILES} ${SOURCE_FILES})
 
 if(WITH_MOZJPEG)
     add_dependencies(opencv mozjpeg)

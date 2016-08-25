@@ -58,6 +58,11 @@ module NuvoImage
       VideoResult.new(result[:to], result[:size], result[:format])
     end
 
+    def compare(image1, image2)
+      result = call process: :compare, from1: image1.id, from2: image2.id
+      result[:ssim]
+    end
+
     def clear
       result = call process: :clear
       result[:result]

@@ -4,10 +4,10 @@
 #include "Enums.h"
 #include "ImageProcess.h"
 
-class VideoImageProcess: public ImageProcess {
+class VideoImageProcess: public InOutProcess {
 public:
     VideoImageProcess(std::shared_ptr<ImageProcessor> processor, const std::string & from, const std::string & to, const VideoFormat format)
-            :ImageProcess(processor, from, to), format(format)
+            :InOutProcess(processor, from, to), format(format)
     {}
 
 private:

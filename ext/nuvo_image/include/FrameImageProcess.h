@@ -9,10 +9,10 @@
 #include "OpenCV.h"
 #include "ImageProcess.h"
 
-class FrameImageProcess : public ImageProcess {
+class FrameImageProcess : public InOutProcess {
 public:
     FrameImageProcess(std::shared_ptr<ImageProcessor> processor, const std::string & from, const std::string to, int frame)
-            :ImageProcess(processor, from, to), frame(frame)
+            :InOutProcess(processor, from, to), frame(frame)
     {}
 
 protected:
