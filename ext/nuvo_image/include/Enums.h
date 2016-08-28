@@ -52,9 +52,15 @@ enum Flatten {
 
 
 enum LossyImageFormat {
-    InvalidImageFormat = -1,
+    InvalidLossyImageFormat = -1,
     Jpeg,
-    WebP
+    LossyWebP
+};
+
+enum LosslessImageFormat {
+    InvalidLosslessImageFormat = -1,
+    Png,
+    LosslessWebP
 };
 
 enum VideoFormat {
@@ -68,6 +74,7 @@ extern bool TryParse(const std::string & str, Gravity & out);
 extern bool TryParse(const std::string & str, Quality & out);
 extern bool TryParse(const std::string & str, Interpolation & out);
 extern bool TryParse(const std::string & str, LossyImageFormat & out);
+extern bool TryParse(const std::string & str, LosslessImageFormat & out);
 extern bool TryParse(const std::string & str, VideoFormat & out);
 
 extern const std::string ToString(const Flatten flatten);
@@ -75,6 +82,7 @@ extern const std::string ToString(const Gravity gravity);
 extern const std::string ToString(const Quality quality);
 extern const std::string ToString(const Interpolation interpolation);
 extern const std::string ToString(const LossyImageFormat format);
+extern const std::string ToString(const LosslessImageFormat format);
 extern const std::string ToString(const VideoFormat format);
 
 #endif //NUVO_IMAGE_ENUMS_H

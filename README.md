@@ -188,9 +188,22 @@ NuvoImage.process do |process|
 end
 ```
 
+###### compare(image1, image2)
+
+이미지를 비교한다.  ssim 결과값을 반환한다
+
+```ruby
+NuvoImage.process do |process|
+    image1 = process.read('test.png')  # => #<struct NuvoImage::Process::ReadResult id="temp-0", width=1500, height=2181, size=1834587>
+    image2 = process.read('test.png')  # => #<struct NuvoImage::Process::ReadResult id="temp-1", width=1500, height=2181, size=1834587>
+    process.compare(image1, image2) # => 1
+end
+```
+
+
 ###### lossy(image, filename, format: :jpeg, quality: :high, min: 50, max: 100, search: 3)
 
-이미지를 jpeg 로 압축하여 저장한다 
+이미지를 손실 포맷으로 압축하여 저장한다 
 
 - `image`: 저장할 이미지. read, crop, resize 의 반환값을 사용가능하다 
 - `filename`: 저장할 파일이름 
@@ -209,7 +222,22 @@ end
 ```ruby
 NuvoImage.process do |process|
     image = process.read('test.png')  # => #<struct NuvoImage::Process::ReadResult id="temp-0", width=1500, height=2181, size=1834587, frames=nil>
-    process.lossy(image, 'test.jpg', format: :jpeg) # => #<struct NuvoImage::Process::LossyResult id="test.jpg", size=128230, quality=50>
+    process.lossy(image, 'test.jpg', format: :jpeg) # => #<struct NuvoImage::Process::LossyResult id="test.jpg", size=128230, quality=50 format="jpg">
+end
+```
+
+###### lossless(image, filename, format: :png)
+
+이미지를 무손실 포맷으로 압축하여 저장한다 
+
+- `image`: 저장할 이미지. read, crop, resize 의 반환값을 사용가능하다 
+- `filename`: 저장할 파일이름 
+- `format`: 저장할 파일 포맷, `:png`, `:webp`
+
+```ruby
+NuvoImage.process do |process|
+    image = process.read('test.png')  # => #<struct NuvoImage::Process::ReadResult id="temp-0", width=1500, height=2181, size=1834587, frames=nil>
+    process.lossless(image, 'test2.png', format: :jpeg) # => #<struct NuvoImage::Process::LosslessResult id="test2.png" size=1834587, format="png">
 end
 ```
 
@@ -224,6 +252,6 @@ end
 ```ruby
 NuvoImage.process do |process|
     image = process.read('test.gif')  # => #<struct NuvoImage::Process::ReadResult id="temp-1", width=320, height=240, size=3854587, frames=12>
-    process.video(image, 'test.mp4', format: :mp4) # => #<struct NuvoImage::Process::VideoResult id="temp-2", size=2601023 >
+    process.video(image, 'test.mp4', format: :mp4) # => #<struct NuvoImage::Process::VideoResult id="test.mp4", size=2601023 >
 end
 ```

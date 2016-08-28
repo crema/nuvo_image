@@ -24,6 +24,11 @@ describe NuvoImage::Process do
       @todd.width.must_equal 320
       @todd.height.must_equal 240
       @todd.size.must_equal 472_973
+
+      @ia = subject.read(File.dirname(__FILE__) + '/images/IA.png')
+      @ia.width.must_equal 750
+      @ia.height.must_equal 1091
+      @ia.size.must_equal 562_086
     end
 
     after do
@@ -163,6 +168,28 @@ describe NuvoImage::Process do
             lossy_size = lossy_by_quality.size
             lossy_quality = lossy_by_quality.quality
           end
+        end
+      end
+    end
+
+    after do
+      subject.close
+    end
+  end
+
+  describe '#lossless' do
+    before do
+      @ia = subject.read(File.dirname(__FILE__) + '/images/IA.png', flatten: :none)
+      @miku = subject.read(File.dirname(__FILE__) + '/images/miku.gif')
+    end
+
+    it 'should work' do
+      {
+        ia: @ia,
+        miku: @miku
+      }.each do |name, image|
+        [ :png, :webp].each do |format|
+          subject.lossless(image, File.dirname(__FILE__) + "/images/test/#{name}.#{format}", format: format)
         end
       end
     end

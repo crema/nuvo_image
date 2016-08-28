@@ -76,7 +76,7 @@ void LossyImageProcess::Encode(const std::shared_ptr<std::vector<unsigned char>>
         imageParams.push_back(cv::IMWRITE_JPEG_QUALITY);
         imageParams.push_back(quality);
         cv::imencode(".jpg",image, *buffer, imageParams);
-    } else if (format == LossyImageFormat::WebP){
+    } else if (format == LossyImageFormat::LossyWebP){
         imageParams.push_back(cv::IMWRITE_WEBP_QUALITY);
         imageParams.push_back(quality);
         cv::imencode(".webp",image, *buffer, imageParams);
