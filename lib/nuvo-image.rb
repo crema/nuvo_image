@@ -1,0 +1,1 @@
+require 'nuvo_image'
