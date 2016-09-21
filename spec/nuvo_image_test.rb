@@ -143,14 +143,14 @@ describe NuvoImage::Process do
         sush: @sushi,
         miku: @miku
       }.each do |name, image|
-        [ :jpeg, :webp].each do |format|
+        [:jpeg, :webp].each do |format|
           lossy_size = 0
           lossy_quality = 0
           {
             low: 0.90,
             medium: 0.933,
             high: 0.966,
-            very_high: 0.999,
+            very_high: 0.999
           }.each do |quality, ssim|
             lossy_by_quality = subject.lossy(image, File.dirname(__FILE__) + "/images/test/#{name}_#{quality}.#{format}", format: format, quality: quality)
             lossy_by_ssim = subject.lossy(image, File.dirname(__FILE__) + "/images/test/#{name}_#{ssim}.#{format}", format: format, quality: ssim)
@@ -188,7 +188,7 @@ describe NuvoImage::Process do
         ia: @ia,
         miku: @miku
       }.each do |name, image|
-        [ :png, :webp].each do |format|
+        [:png, :webp].each do |format|
           subject.lossless(image, File.dirname(__FILE__) + "/images/test/#{name}.#{format}", format: format)
         end
       end
@@ -209,7 +209,7 @@ describe NuvoImage::Process do
     end
 
     it 'should work' do
-      @mikus.each do |quality, image|
+      @mikus.each do |_quality, image|
         subject.compare(@miku, image)
       end
     end
