@@ -9,7 +9,7 @@ const ImageProcessInput ReadImageProcess::Process(const ImageProcessInput &input
     cv::Mat image;
 
     if(flatten == Flatten::None) {
-        image = cv::imdecode(*buffer, cv::IMREAD_COLOR);
+        image = cv::imdecode(*buffer, cv::IMREAD_UNCHANGED);
     } else {
         image = cv::imdecode(*buffer, cv::IMREAD_UNCHANGED);
 

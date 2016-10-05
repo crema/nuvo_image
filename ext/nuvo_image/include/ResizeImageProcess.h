@@ -5,12 +5,10 @@
 #include "Enums.h"
 #include "ImageProcess.h"
 
-bool TryParse(const std::string & str, Interpolation & value);
-
-class ResizeImageProcess: public ImageProcess{
+class ResizeImageProcess: public InOutProcess{
 public:
     ResizeImageProcess(std::shared_ptr<ImageProcessor> processor, const std::string & from, const std::string & to, int width, int height, Interpolation interpolation)
-        :ImageProcess(processor, from, to), width(width), height(height), interpolation(interpolation)
+        :InOutProcess(processor, from, to), width(width), height(height), interpolation(interpolation)
     {}
 
 protected:

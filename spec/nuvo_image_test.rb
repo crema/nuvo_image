@@ -7,6 +7,9 @@ describe NuvoImage::Process do
       `ruby extconf.rb`
       `make install`
     end
+    test_image_dir = File.join(File.dirname(__FILE__), 'images/test')
+    FileUtils.rm_rf(test_image_dir)
+    FileUtils.mkdir_p(test_image_dir)
   end
 
   subject {NuvoImage::Process.new}
@@ -24,6 +27,11 @@ describe NuvoImage::Process do
       @todd.width.must_equal 320
       @todd.height.must_equal 240
       @todd.size.must_equal 472_973
+
+      @ia = subject.read(File.dirname(__FILE__) + '/images/IA.png')
+      @ia.width.must_equal 750
+      @ia.height.must_equal 1091
+      @ia.size.must_equal 562_086
     end
 
     after do
@@ -138,14 +146,14 @@ describe NuvoImage::Process do
         sush: @sushi,
         miku: @miku
       }.each do |name, image|
-        [ :jpeg, :webp].each do |format|
+        [:jpeg, :webp].each do |format|
           lossy_size = 0
           lossy_quality = 0
           {
             low: 0.90,
             medium: 0.933,
             high: 0.966,
-            very_high: 0.999,
+            very_high: 0.999
           }.each do |quality, ssim|
             lossy_by_quality = subject.lossy(image, File.dirname(__FILE__) + "/images/test/#{name}_#{quality}.#{format}", format: format, quality: quality)
             lossy_by_ssim = subject.lossy(image, File.dirname(__FILE__) + "/images/test/#{name}_#{ssim}.#{format}", format: format, quality: ssim)
@@ -169,6 +177,44 @@ describe NuvoImage::Process do
 
     after do
       subject.close
+    end
+  end
+
+  describe '#lossless' do
+    before do
+      @ia = subject.read(File.dirname(__FILE__) + '/images/IA.png', flatten: :none)
+      @miku = subject.read(File.dirname(__FILE__) + '/images/miku.gif')
+    end
+
+    it 'should work' do
+      {
+        ia: @ia,
+        miku: @miku
+      }.each do |name, image|
+        [:png, :webp].each do |format|
+          subject.lossless(image, File.dirname(__FILE__) + "/images/test/#{name}.#{format}", format: format)
+        end
+      end
+    end
+
+    after do
+      subject.close
+    end
+  end
+
+  describe '#compare' do
+    before do
+      @miku = subject.read(File.dirname(__FILE__) + '/images/miku.gif')
+      @mikus = [:low, :medium, :high, :very_high].map do |quality|
+        subject.lossy(@miku, File.dirname(__FILE__) + "/images/test/miku_#{quality}.jpg", format: :jpeg, quality: quality)
+        [quality, subject.read(File.dirname(__FILE__) + "/images/test/miku_#{quality}.jpg")]
+      end
+    end
+
+    it 'should work' do
+      @mikus.each do |_quality, image|
+        subject.compare(@miku, image)
+      end
     end
   end
 

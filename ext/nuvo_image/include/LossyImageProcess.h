@@ -4,32 +4,7 @@
 #include "OpenCV.h"
 #include "ImageProcess.h"
 #include "Enums.h"
-
-struct QualitySSIM {
-public:
-    QualitySSIM(const int quality, const double ssim)
-        :quality(quality), ssim(ssim)
-    {}
-
-    static int InterpolationTargetSSIM(const QualitySSIM & min, const QualitySSIM & max, const double targetSSIM);
-
-    int quality;
-    double ssim;
-};
-
-struct SSIMData {
-public:
-    SSIMData() {}
-    SSIMData(const cv::Mat & mat);
-
-    static double GetSSIM(const SSIMData & a, const SSIMData & b);
-private:
-    cv::Mat image;
-    cv::Mat imageSquare;
-    cv::Mat imageBlur;
-    cv::Mat imageBlurSquare;
-    cv::Mat sigma;
-};
+#include "SSIM.h"
 
 class ImageQuality {
 public:
@@ -69,10 +44,10 @@ private:
     QualityType qualityType;
 };
 
-class LossyImageProcess: public ImageProcess {
+class LossyImageProcess: public InOutProcess {
 public:
     LossyImageProcess(std::shared_ptr<ImageProcessor> processor, const std::string & from, const std::string & to, const LossyImageFormat format, const ImageQuality & imageQuality, const int min, const int max, const int search)
-        :ImageProcess(processor, from, to), format(format), imageQuality(imageQuality), minQuality(min), maxQuality(max), searchCount(search)
+        :InOutProcess(processor, from, to), format(format), imageQuality(imageQuality), minQuality(min), maxQuality(max), searchCount(search)
     {}
 
 private:

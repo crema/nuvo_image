@@ -5,6 +5,7 @@ AllCops:
   Exclude:
     - '**/bin/*'
   TargetRubyVersion: 2.3
+  DisplayCopNames: true
 
 Lint/UnusedMethodArgument:
   Enabled: true
@@ -74,6 +75,9 @@ Style/IndentArray:
   Enabled: false
 
 Style/IndentAssignment:
+  Enabled: false
+
+Style/NumericPredicate:
   Enabled: false
 
 Style/SignalException:

@@ -4,19 +4,17 @@
 #include "OpenCV.h"
 #include "ImageProcess.h"
 
-class CloseProcess : public ImageProcess {
+class CloseProcess : public NullToNullProcess {
 public:
     CloseProcess(std::shared_ptr<ImageProcessor> processor)
-            :ImageProcess(processor, "", "")
+            :NullToNullProcess(processor)
     {}
 
 protected:
-    const ImageProcessInput Process(const ImageProcessInput &input, picojson::object & result){
+    void Process(picojson::object & result){
         exit(0);
     }
     const std::string GetName() { return "close";}
-    const int GetFromType() { return ProcessInputType::InvalidInput; }
-    const int GetToType() { return ProcessInputType::InvalidInput; }
 };
 
 

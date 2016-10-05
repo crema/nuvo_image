@@ -4,17 +4,18 @@
 #include "OpenCV.h"
 #include "ImageProcess.h"
 
-class ClearMemoryProcess : public ImageProcess {
+class ClearMemoryProcess : public NullToNullProcess {
 public:
     ClearMemoryProcess(std::shared_ptr<ImageProcessor> processor)
-        :ImageProcess(processor, "", "")
+        :NullToNullProcess(processor)
     {}
 
 protected:
-    const ImageProcessInput Process(const ImageProcessInput &input, picojson::object & result);
+    void Process(picojson::object & result){
+        processor->Clear();
+        result["result"] = picojson::value(true);
+    }
     const std::string GetName() { return "clear";}
-    const int GetFromType() { return ProcessInputType::InvalidInput; }
-    const int GetToType() { return ProcessInputType::InvalidInput; }
 };
 
 

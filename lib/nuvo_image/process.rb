@@ -10,6 +10,7 @@ module NuvoImage
     ResizeResult = Struct.new(:id, :width, :height, :interpolation, :frames)
     FrameResult = Struct.new(:id, :width, :height, :frame, :frames)
     LossyResult = Struct.new(:id, :size, :quality, :format)
+    LosslessResult = Struct.new(:id, :size, :format)
     VideoResult = Struct.new(:id, :size, :format)
 
     def initialize
@@ -48,6 +49,11 @@ module NuvoImage
       LossyResult.new(result[:to], result[:size], result[:quality], result[:format])
     end
 
+    def lossless(image, filename, format: :png )
+      result = call process: :lossless, from: image.id, to: filename, format: format
+      LosslessResult.new(result[:to], result[:size], result[:format])
+    end
+
     def frame(image, frame)
       result = call process: :frame, from: image.id, frame: frame
       FrameResult.new(result[:to], result[:width], result[:height], result[:frame], result[:frames])
@@ -56,6 +62,11 @@ module NuvoImage
     def video(image, filename, format: :mp4)
       result = call process: :video, from: image.id, to: filename, format: format
       VideoResult.new(result[:to], result[:size], result[:format])
+    end
+
+    def compare(image1, image2)
+      result = call process: :compare, from1: image1.id, from2: image2.id
+      result[:ssim]
     end
 
     def clear

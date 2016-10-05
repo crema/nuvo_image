@@ -84,7 +84,6 @@ inline bool ImageProcessor::TryGet<Gravity>(const picojson::value & value, Gravi
     return TryParse(value.get<std::string>(), out);
 }
 
-
 template <>
 inline bool ImageProcessor::TryGet<Interpolation>(const picojson::value & value, Interpolation & out) {
     if(!value.is<std::string>()) {
@@ -102,13 +101,20 @@ inline bool ImageProcessor::TryGet<LossyImageFormat>(const picojson::value & val
 }
 
 template <>
-inline bool ImageProcessor::TryGet<VideoFormat>(const picojson::value & value, VideoFormat & out) {
+inline bool ImageProcessor::TryGet<LosslessImageFormat>(const picojson::value & value, LosslessImageFormat & out) {
     if(!value.is<std::string>()) {
         return false;
     }
     return TryParse(value.get<std::string>(), out);
 }
 
+template <>
+inline bool ImageProcessor::TryGet<VideoFormat>(const picojson::value & value, VideoFormat & out) {
+    if(!value.is<std::string>()) {
+        return false;
+    }
+    return TryParse(value.get<std::string>(), out);
+}
 
 template <>
 inline bool ImageProcessor::TryGet<ImageQuality>(const picojson::value & value, ImageQuality & out) {

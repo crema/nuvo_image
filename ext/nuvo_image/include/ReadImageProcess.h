@@ -5,10 +5,10 @@
 #include "ImageProcess.h"
 #include "exif.h"
 
-class ReadImageProcess:public ImageProcess {
+class ReadImageProcess:public InOutProcess {
 public:
     ReadImageProcess(std::shared_ptr<ImageProcessor> processor, const std::string & from, const std::string & to, bool autoOrient, Flatten flatten)
-        :ImageProcess(processor, from, to ), autoOrient(autoOrient), flatten(flatten)
+        :InOutProcess(processor, from, to ), autoOrient(autoOrient), flatten(flatten)
     {}
 
 protected:

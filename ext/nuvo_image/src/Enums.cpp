@@ -91,10 +91,23 @@ bool TryParse(const std::string & str, LossyImageFormat & out) {
     if( converted == "jpg" || converted == "jpeg") {
         out = LossyImageFormat::Jpeg;
     } else if(converted == "webp") {
-        out = LossyImageFormat::WebP;
+        out = LossyImageFormat::LossyWebP;
     }
-    return out != LossyImageFormat::InvalidImageFormat;
+    return out != LossyImageFormat::InvalidLossyImageFormat;
 }
+
+bool TryParse(const std::string & str, LosslessImageFormat & out) {
+    std::string converted = str;
+    std::transform(converted.begin(), converted.end(), converted.begin(), tolower);
+
+    if( converted == "png") {
+        out = LosslessImageFormat::Png;
+    } else if(converted == "webp") {
+        out = LosslessImageFormat::LosslessWebP;
+    }
+    return out != LosslessImageFormat::InvalidLosslessImageFormat;
+}
+
 
 bool TryParse(const std::string & str, VideoFormat & out) {
     std::string converted = str;
@@ -180,13 +193,23 @@ const std::string ToString(const LossyImageFormat format){
     switch (format){
         case LossyImageFormat::Jpeg:
             return "Jpeg";
-        case LossyImageFormat::WebP:
+        case LossyImageFormat::LossyWebP:
             return "WebP";
         default:
             return "invalid";
     }
 }
 
+const std::string ToString(const LosslessImageFormat format){
+    switch (format){
+        case LosslessImageFormat::Png:
+            return "Png";
+        case LosslessImageFormat::LosslessWebP:
+            return "WebP";
+        default:
+            return "invalid";
+    }
+}
 
 const std::string ToString(const VideoFormat format){
     switch (format){

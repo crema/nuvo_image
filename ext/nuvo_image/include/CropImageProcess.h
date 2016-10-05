@@ -5,10 +5,10 @@
 #include "ImageProcess.h"
 #include "Enums.h"
 
-class CropImageProcess: public ImageProcess {
+class CropImageProcess: public InOutProcess {
 public:
     CropImageProcess(std::shared_ptr<ImageProcessor> processor, const std::string & from, const std::string & to, int width, int heigh, Gravity gravity)
-        :ImageProcess(processor, from, to), width(width), height(heigh), gravity(gravity)
+        :InOutProcess(processor, from, to), width(width), height(heigh), gravity(gravity)
     {}
 
 protected:
