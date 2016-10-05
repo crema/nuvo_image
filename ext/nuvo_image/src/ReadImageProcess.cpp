@@ -35,8 +35,14 @@ const ImageProcessInput ReadImageProcess::Process(const ImageProcessInput &input
             if(autoOrient) {
                 cv::Mat oriented;
                 auto orientation = exif.Orientation;
-                if(TryRotateOrientation(image, oriented, orientation)){
+                bool transposed = false;
+                if(TryRotateOrientation(image, oriented, orientation, transposed)) {
                     image = oriented;
+                    if(transposed) {
+                        auto tmp = result["width"];
+                        result["width"] = result["height"];
+                        result["height"] = tmp;
+                    }
                 }
                 result["orientation"] = picojson::value((double)orientation);
             }
@@ -103,9 +109,10 @@ bool ReadImageProcess::TryReadExif(const std::shared_ptr<std::vector<unsigned ch
     return true;
 }
 
-bool ReadImageProcess::TryRotateOrientation(const cv::Mat &src, cv::Mat & oriented, int orientation) {
+bool ReadImageProcess::TryRotateOrientation(const cv::Mat &src, cv::Mat &oriented, int orientation, bool &transposed) {
     // http://www.impulseadventure.com/photo/exif-orientation.html
-    cv::Mat transposed;
+    cv::Mat transposedImage;
+    transposed = false;
 
     switch(orientation){
         case 2:
@@ -119,18 +126,22 @@ bool ReadImageProcess::TryRotateOrientation(const cv::Mat &src, cv::Mat & orient
             break;
         case 5:
             cv::transpose(src, oriented);
+            transposed = true;
             break;
         case 6:
-            cv::transpose(src, transposed);
-            cv::flip(transposed, oriented, 1);
+            cv::transpose(src, transposedImage);
+            transposed = true;
+            cv::flip(transposedImage, oriented, 1);
             break;
         case 7:
-            cv::transpose(src, transposed);
-            cv::flip(transposed, oriented, -1);
+            cv::transpose(src, transposedImage);
+            transposed = true;
+            cv::flip(transposedImage, oriented, -1);
             break;
         case 8:
-            cv::transpose(src, transposed);
-            cv::flip(transposed, oriented, 0);
+            cv::transpose(src, transposedImage);
+            transposed = true;
+            cv::flip(transposedImage, oriented, 0);
             break;
     }
     if(oriented.empty()){

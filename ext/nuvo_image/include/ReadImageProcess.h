@@ -21,7 +21,7 @@ private:
 
     bool TryFlatten(const cv::Mat & src, cv::Mat & dest);
     bool TryReadExif(const std::shared_ptr<std::vector<unsigned char>> & buffer, easyexif::EXIFInfo & exif);
-    bool TryRotateOrientation(const cv::Mat & src, cv::Mat & dest, const int orientation);
+    bool TryRotateOrientation(const cv::Mat& src, cv::Mat &dest, const int orientation, bool &transposed);
     bool autoOrient;
     Flatten flatten;
 };
