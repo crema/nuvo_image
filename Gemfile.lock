@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    nuvo-image (0.5.2)
+    nuvo-image (0.5.3)
 
 GEM
   remote: https://rubygems.org/
