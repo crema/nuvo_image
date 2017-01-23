@@ -21,3 +21,4 @@
 **/*-prefix
 **/external/lib
 **/external/src
+.byebug_history

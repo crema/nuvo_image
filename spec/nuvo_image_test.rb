@@ -37,6 +37,11 @@ describe NuvoImage::Process do
       bag.width.must_equal 552
       bag.height.must_equal 414
       bag.size.must_equal 62_735
+
+      untouched = subject.read(File.dirname(__FILE__) + '/images/Untouched.jpg')
+      untouched.width.must_equal 3096
+      untouched.height.must_equal 4128
+      untouched.size.must_equal 2_753_095
     end
 
     after do
