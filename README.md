@@ -54,6 +54,9 @@ sudo apt-get install libgtk2.0-dev libpng12-dev libtiff4-dev libjasper-dev libwe
 **mac**
 ```
 brew install gtk+ jpeg libpng libtiff jasper webp x264 libvpx
+brew uninstall imagemagick
+brew install imagemagick@6
+brew link imagemagick@6 --force
 ```
 
 ## Installation
@@ -61,7 +64,7 @@ brew install gtk+ jpeg libpng libtiff jasper webp x264 libvpx
 ### Gemfile
 
 ```ruby
-gem 'nuvo-image', :github => 'crema/nuvo-image'
+gem 'nuvo-image', git: 'https://github.com/crema/nuvo-image', tag: '0.5.3'
 ```
 
 ```
