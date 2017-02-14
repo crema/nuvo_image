@@ -8,16 +8,11 @@
 
 ### cmake
 
-**Ubuntu 14.04**
+**Ubuntu**
 ```
 sudo add-apt-repository ppa:george-edison55/cmake-3.x
 sudo apt-get update
 sudo apt-get install cmake
-```
-
-**Ubuntu 16.04**
-```
-sudo apt install cmake
 ```
 
 **mac**
