@@ -8,7 +8,7 @@
 
 ### cmake
 
-**linux**
+**Ubuntu 14.04**
 ```
 sudo add-apt-repository ppa:george-edison55/cmake-3.x
 sudo apt-get update
@@ -20,7 +20,7 @@ brew install cmake
 ```
 
 ### gcc6
-**linux**
+**Ubuntu**
 ```
 sudo add-apt-repository ppa:ubuntu-toolchain-r/test
 sudo apt-get update
@@ -34,7 +34,7 @@ brew install gcc
 
 ### NASM/YASM
 
-**linux**
+**Ubuntu**
 ```
 sudo apt-get install nasm yasm
 ```
@@ -46,9 +46,14 @@ brew install nasm yasm
 
 ### media libraries
 
-**linux**
+**Ubuntu 14.04**
 ```
 sudo apt-get install libgtk2.0-dev libpng12-dev libtiff4-dev libjasper-dev libwebp-dev libx264-dev libvpx-dev
+```
+
+**Ubuntu 16.04**
+```
+sudo apt install libgtk2.0-dev libpng12-dev libtiff5-dev libjasper-dev libwebp-dev libx264-dev libvpx-dev
 ```
 
 **mac**
