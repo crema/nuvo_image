@@ -1,0 +1,6 @@
+bundle exec rake build --trace
+cd ext/nuvo_image/build
+bundle exec ruby extconf.rb
+make
+cd ../../..
+bundle exec rake test
