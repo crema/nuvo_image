@@ -27,7 +27,7 @@ brew install cmake nasm yasm webp x264 libvpx mozjpeg
 ### Gemfile
 
 ```ruby
-gem 'nuvo-image', git: 'https://github.com/crema/nuvo-image', tag: '0.5.3'
+gem 'nuvo-image', git: 'https://github.com/crema/nuvo-image', tag: '0.5.4'
 ```
 
 ## Usage
