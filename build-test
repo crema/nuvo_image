@@ -1,7 +1,7 @@
-git clean -xdf
 bundle exec rake build --trace
 cd ext/nuvo_image/build
 bundle exec ruby extconf.rb
 make
+make install
 cd ../../..
 bundle exec rake test

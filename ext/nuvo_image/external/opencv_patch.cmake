@@ -1,4 +1,3 @@
-
 find_library(X264_LIBRARIES x264)
 find_library(VPX_LIBRARIES vpx)
 

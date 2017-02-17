@@ -7,8 +7,9 @@ GEM
   remote: https://rubygems.org/
   specs:
     ast (2.3.0)
+    byebug (9.0.6)
     minitest (5.10.1)
-    parser (2.3.3.1)
+    parser (2.4.0.0)
       ast (~> 2.2)
     powerpack (0.1.1)
     rainbow (2.2.1)
@@ -27,10 +28,11 @@ PLATFORMS
 
 DEPENDENCIES
   bundler
+  byebug
   minitest
   nuvo-image!
   rake
   rubocop
 
 BUNDLED WITH
-   1.13.7
+   1.14.4

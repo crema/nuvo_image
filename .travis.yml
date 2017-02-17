@@ -1,16 +1,14 @@
-sudo: true
-language: ruby c++
+sudo: required
+dist: trusty
+group: stable
+language: ruby
 rvm:
   - 2.3.1
+cache: bundler
 before_script:
   - sudo ln /dev/null /dev/raw1394
 script:
-  - bundle exec rake build --trace
-  - cd ext/nuvo_image/build
-  - bundle exec ruby extconf.rb
-  - make
-  - cd ../../..
-  - bundle exec rake test
+  - ./build-test
 addons:
   apt:
     packages:
@@ -20,10 +18,6 @@ addons:
       - cmake-data
       - nasm
       - yasm
-      - libgtk2.0-dev
-      - libpng12-dev
-      - libtiff4-dev
-      - libjasper-dev
       - libwebp-dev
       - libx264-dev
       - libvpx-dev

@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/crema/nuvo-image.svg?branch=develop)](https://travis-ci.org/crema/nuvo-image)
+[![Build Status](https://travis-ci.org/crema/nuvo-image.svg?branch=master)](https://travis-ci.org/crema/nuvo-image)
 
 # NuvoImage
 
@@ -6,60 +6,20 @@
 
 ## Requirement
 
-### cmake
+### Ubuntu
 
-**Ubuntu**
-```
+```bash
 sudo add-apt-repository ppa:george-edison55/cmake-3.x
-sudo apt-get update
-sudo apt-get install cmake
-```
-
-**mac**
-```
-brew install cmake
-```
-
-### gcc6
-**Ubuntu**
-```
 sudo add-apt-repository ppa:ubuntu-toolchain-r/test
 sudo apt-get update
-sudo apt-get install g++-6
+
+sudo apt-get install cmake g++-6 nasm yasm libwebp-dev libx264-dev libvpx-dev
 ```
 
-**mac**
-```
-brew install gcc
-```
+### macOS
 
-### NASM/YASM
-
-**Ubuntu**
-```
-sudo apt-get install nasm yasm
-```
-
-**mac**
-```
-brew install nasm yasm
-```
-
-### media libraries
-
-**Ubuntu 14.04**
-```
-sudo apt-get install libgtk2.0-dev libpng12-dev libtiff4-dev libjasper-dev libwebp-dev libx264-dev libvpx-dev
-```
-
-**Ubuntu 16.04**
-```
-sudo apt install libgtk2.0-dev libpng12-dev libtiff5-dev libjasper-dev libwebp-dev libx264-dev libvpx-dev
-```
-
-**mac**
-```
-brew install gtk+ jpeg libpng libtiff jasper webp x264 libvpx
+```bash
+brew install cmake nasm yasm webp x264 libvpx mozjpeg
 ```
 
 ## Installation
@@ -70,46 +30,9 @@ brew install gtk+ jpeg libpng libtiff jasper webp x264 libvpx
 gem 'nuvo-image', git: 'https://github.com/crema/nuvo-image', tag: '0.5.3'
 ```
 
-```
-bundle install
-```
-
-### Travis
-다음의 내용을 추가하자
-```
-sudo: true
-dist: trusty
-before_script:
-  - sudo ln /dev/null /dev/raw1394
-addons:
-  apt:
-    packages:
-      - build-essential
-      - g++-6
-      - cmake
-      - cmake-data
-      - nasm
-      - yasm
-      - libgtk2.0-dev
-      - libpng12-dev
-      - libtiff4-dev
-      - libjasper-dev
-      - libwebp-dev
-      - libx264-dev
-      - libvpx-dev
-    sources:
-      - ubuntu-toolchain-r-test
-      - george-edison55-precise-backports
-```
-
 ## Usage
 
-
-### Ruby API
-
-
-module NuvoImage
-----------------
+### module NuvoImage
 
 ##### class methods
 

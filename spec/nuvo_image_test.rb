@@ -3,10 +3,6 @@ require 'nuvo_image'
 
 describe NuvoImage::Process do
   before do
-    Dir.chdir(File.join(File.dirname(__FILE__), '../ext/nuvo_image/build')) do
-      `ruby extconf.rb`
-      `make install`
-    end
     test_image_dir = File.join(File.dirname(__FILE__), 'images/test')
     FileUtils.rm_rf(test_image_dir)
     FileUtils.mkdir_p(test_image_dir)

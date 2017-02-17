@@ -1,0 +1,19 @@
+# cmake
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+
+# vscode cmake tools
+CMakeTools/
+
+external/lib
+external/src
+
+# Clion
+cmake-build-debug

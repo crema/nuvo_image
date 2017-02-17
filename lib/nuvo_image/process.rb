@@ -15,9 +15,13 @@ module NuvoImage
 
     def initialize
       nuvo_image_process = File.join(File.dirname(__FILE__), '/../../ext/nuvo_image/bin/nuvo_image')
-      library_path = File.join(File.dirname(__FILE__), '../../ext/nuvo_image/external/lib/opencv3.1.0/lib')
+      library_path = File.join(File.dirname(__FILE__), '../../ext/nuvo_image/external/lib/opencv-3.2.0/lib')
 
-      env = RUBY_PLATFORM.include?('darwin') ? {'DYLD_LIBRARY_PATH'=>library_path} : {'LD_LIBRARY_PATH'=>library_path}
+      env = if RUBY_PLATFORM.include?('darwin')
+              {'DYLD_FALLBACK_LIBRARY_PATH' => library_path}
+            else
+              {'LD_LIBRARY_PATH' => library_path}
+            end
       @stdin, @stdout, @thread = Open3.popen2(env, nuvo_image_process)
     end
 
@@ -49,7 +53,7 @@ module NuvoImage
       LossyResult.new(result[:to], result[:size], result[:quality], result[:format])
     end
 
-    def lossless(image, filename, format: :png )
+    def lossless(image, filename, format: :png)
       result = call process: :lossless, from: image.id, to: filename, format: format
       LosslessResult.new(result[:to], result[:size], result[:format])
     end
