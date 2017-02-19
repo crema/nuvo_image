@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/crema/nuvo-image.svg?branch=master)](https://travis-ci.org/crema/nuvo-image)
+[![CircleCI](https://circleci.com/gh/crema/nuvo-image.svg?style=svg)](https://circleci.com/gh/crema/nuvo-image)
 
 # NuvoImage
 
@@ -13,13 +13,13 @@ sudo add-apt-repository ppa:george-edison55/cmake-3.x
 sudo add-apt-repository ppa:ubuntu-toolchain-r/test
 sudo apt-get update
 
-sudo apt-get install cmake g++-6 nasm yasm libwebp-dev libx264-dev libvpx-dev
+sudo apt-get install cmake g++-6 nasm yasm libwebp-dev libx264-dev
 ```
 
 ### macOS
 
 ```bash
-brew install cmake nasm yasm webp x264 libvpx mozjpeg
+brew install cmake nasm yasm webp x264 mozjpeg
 ```
 
 ## Installation
@@ -178,7 +178,7 @@ end
 
 - `image`: 저장할 이미지. 반드시 여러 프레임인 이미지여야 한다
 - `filename`: 저장할 파일이름
-- `format`: 저장할 파일 포맷, `:mp4`, `:webm`
+- `format`: 저장할 파일 포맷, `:mp4`
 
 ```ruby
 NuvoImage.process do |process|

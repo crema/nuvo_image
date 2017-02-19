@@ -21,19 +21,12 @@ const ImageProcessInput VideoImageProcess::Process(const ImageProcessInput &inpu
 
     if(format == VideoFormat::Mp4) {
         if(!writer.open(to,
-                    cv::VideoWriter::fourcc('X','2','6','4'),
+                    0x21, // cv::VideoWriter::fourcc('X','2','6','4')
                     fps,
                     cv::Size(gif.GetWidth(), gif.GetHeight()))) {
             throw std::runtime_error("cant open x264");
         }
 
-    } else if (format == VideoFormat::WebM){
-        if(!writer.open(to,
-                    cv::VideoWriter::fourcc('V','P','8','0'),
-                    fps,
-                    cv::Size(gif.GetWidth(), gif.GetHeight()))) {
-            throw std::runtime_error("cant open vp8");
-        }
     } else {
         throw std::runtime_error("invalid video format");
     }

@@ -17,15 +17,53 @@ set(EXTERNAL_DIR ${CMAKE_SOURCE_DIR}/external)
 set(EXTERNAL_SRC_DIR ${EXTERNAL_DIR}/src)
 set(EXTERNAL_LIB_DIR ${EXTERNAL_DIR}/lib)
 
-set(GIFLIB_CONFIGURE
-        --enable-shared=no
-        --prefix=${EXTERNAL_LIB_DIR}/giflib-5.1.4)
+set(FFMPEG_CONFIGURE
+        --disable-audiotoolbox
+        --disable-bzlib
+        --disable-doc
+        --disable-iconv
+        --disable-lzma
+        --disable-network
+        --disable-sdl
+        --disable-vda
+        --disable-videotoolbox
+        --disable-xlib
+        --disable-zlib
+        --enable-avresample
+        --enable-gpl
+        --enable-libx264
+        --enable-nonfree
+        --enable-pic
+)
+
+set(FFMPEG_CONFIGURE ${FFMPEG_CONFIGURE}
+        --disable-bsfs
+        --disable-decoders
+        --disable-demuxers
+        --disable-encoders
+        --disable-filters
+        --disable-indevs
+        --disable-muxers
+        --disable-outdevs
+        --disable-parsers
+        --disable-programs
+        --disable-protocols
+        --enable-encoder=libx264
+        --enable-muxer=h264
+        --enable-muxer=mp4
+        --enable-parser=h264
+        --enable-protocol=file
+)
+
+set(FFMPEG_CONFIGURE ${FFMPEG_CONFIGURE}
+        --prefix=${EXTERNAL_LIB_DIR}/ffmpeg-3.2.4
+)
 
 ExternalProject_Add(
-        giflib
-        URL ${EXTERNAL_DIR}/giflib-5.1.4.tar.bz2
-        SOURCE_DIR ${EXTERNAL_SRC_DIR}/giflib-5.1.4
-        CONFIGURE_COMMAND ${EXTERNAL_SRC_DIR}/giflib-5.1.4/configure ${GIFLIB_CONFIGURE}
+        ffmpeg
+        URL ${EXTERNAL_DIR}/ffmpeg-3.2.4.tar.bz2
+        SOURCE_DIR ${EXTERNAL_SRC_DIR}/ffmpeg-3.2.4
+        CONFIGURE_COMMAND ${EXTERNAL_SRC_DIR}/ffmpeg-3.2.4/configure ${FFMPEG_CONFIGURE}
         BUILD_IN_SOURCE 1
 )
 
@@ -45,82 +83,23 @@ if (UNIX AND NOT APPLE)
         )
 endif ()
 
-set(FFMPEG_CONFIGURE
-        --disable-audiotoolbox
-        --disable-videotoolbox
-        --disable-vda
-        --disable-iconv
-        --disable-network
-        --disable-zlib
-        --disable-xlib
-        --disable-lzma
-        --disable-sdl
-        --disable-bzlib
-        --disable-doc
-        --enable-nonfree
-        --enable-pic
-        --enable-gpl
-        --enable-static
-        --disable-shared
-        --enable-avresample
-        --enable-libvpx
-        --enable-libx264)
-
-set(FFMPEG_CONFIGURE ${FFMPEG_CONFIGURE}
-        --disable-decoders)
-
-set(FFMPEG_CONFIGURE ${FFMPEG_CONFIGURE}
-        --disable-encoders
-        --enable-encoder=libvpx_vp8
-        --enable-encoder=libx264)
-
-set(FFMPEG_CONFIGURE ${FFMPEG_CONFIGURE}
-        --disable-parsers
-        --enable-parser=h264
-        --enable-parser=vp8)
-
-set(FFMPEG_CONFIGURE ${FFMPEG_CONFIGURE}
-        --disable-demuxers)
-
-set(FFMPEG_CONFIGURE ${FFMPEG_CONFIGURE}
-        --disable-muxers
-        --enable-muxer=mp4
-        --enable-muxer=h264
-        --enable-muxer=webm)
-
-set(FFMPEG_CONFIGURE ${FFMPEG_CONFIGURE}
-        --disable-protocols
-        --enable-protocol=file)
-
-set(FFMPEG_CONFIGURE ${FFMPEG_CONFIGURE}
-        --disable-filters)
-
-set(FFMPEG_CONFIGURE ${FFMPEG_CONFIGURE}
-        --disable-bsfs)
-
-set(FFMPEG_CONFIGURE ${FFMPEG_CONFIGURE}
-        --disable-indevs)
-
-set(FFMPEG_CONFIGURE ${FFMPEG_CONFIGURE}
-        --disable-outdevs)
-
-set(FFMPEG_CONFIGURE ${FFMPEG_CONFIGURE}
-        --prefix=${EXTERNAL_LIB_DIR}/ffmpeg-3.2.4)
-
-ExternalProject_Add(
-        ffmpeg
-        URL ${EXTERNAL_DIR}/ffmpeg-3.2.4.tar.bz2
-        SOURCE_DIR ${EXTERNAL_SRC_DIR}/ffmpeg-3.2.4
-        CONFIGURE_COMMAND ${EXTERNAL_SRC_DIR}/ffmpeg-3.2.4/configure ${FFMPEG_CONFIGURE}
-        BUILD_IN_SOURCE 1
-)
-
 ExternalProject_Add(
         opencv
         URL ${EXTERNAL_DIR}/opencv-3.2.0.zip
         SOURCE_DIR ${EXTERNAL_SRC_DIR}/opencv-3.2.0
-        PATCH_COMMAND cat ${EXTERNAL_DIR}/opencv_patch.cmake >> ${EXTERNAL_SRC_DIR}/opencv-3.2.0/cmake/OpenCVFindLibsVideo.cmake
         CMAKE_ARGS -C${EXTERNAL_DIR}/opencv_config.cmake
+        BUILD_IN_SOURCE 1
+)
+
+set(GIFLIB_CONFIGURE
+        --enable-shared=no
+        --prefix=${EXTERNAL_LIB_DIR}/giflib-5.1.4)
+
+ExternalProject_Add(
+        giflib
+        URL ${EXTERNAL_DIR}/giflib-5.1.4.tar.bz2
+        SOURCE_DIR ${EXTERNAL_SRC_DIR}/giflib-5.1.4
+        CONFIGURE_COMMAND ${EXTERNAL_SRC_DIR}/giflib-5.1.4/configure ${GIFLIB_CONFIGURE}
         BUILD_IN_SOURCE 1
 )
 

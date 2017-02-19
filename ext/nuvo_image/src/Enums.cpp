@@ -115,10 +115,8 @@ bool TryParse(const std::string & str, VideoFormat & out) {
 
     if( converted == "mp4") {
         out = VideoFormat::Mp4;
-    } else if(converted == "webm") {
-        out = VideoFormat::WebM;
     }
-    return out != VideoFormat ::InvalidVideoFormat;
+    return out != VideoFormat::InvalidVideoFormat;
 }
 
 const std::string ToString(const Flatten flatten) {

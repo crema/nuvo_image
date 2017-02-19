@@ -8,19 +8,19 @@ cache: bundler
 before_script:
   - sudo ln /dev/null /dev/raw1394
 script:
-  - ./build-test
+  - ./build-ext
+  - bundle exec rake test
 addons:
   apt:
     packages:
       - build-essential
-      - g++-6
       - cmake
       - cmake-data
-      - nasm
-      - yasm
+      - g++-6
       - libwebp-dev
       - libx264-dev
-      - libvpx-dev
+      - nasm
+      - yasm
     sources:
-      - ubuntu-toolchain-r-test
       - george-edison55-precise-backports
+      - ubuntu-toolchain-r-test

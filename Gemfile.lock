@@ -9,6 +9,8 @@ GEM
     ast (2.3.0)
     byebug (9.0.6)
     minitest (5.10.1)
+    minitest-ci (3.1.0)
+      minitest (~> 5.0, >= 5.0.6)
     parser (2.4.0.0)
       ast (~> 2.2)
     powerpack (0.1.1)
@@ -30,6 +32,7 @@ DEPENDENCIES
   bundler
   byebug
   minitest
+  minitest-ci
   nuvo-image!
   rake
   rubocop

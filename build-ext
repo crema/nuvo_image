@@ -4,4 +4,3 @@ bundle exec ruby extconf.rb
 make
 make install
 cd ../../..
-bundle exec rake test

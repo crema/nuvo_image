@@ -1,6 +1,10 @@
 require 'minitest/autorun'
 require 'nuvo_image'
 
+def image_path(filename)
+  File.join(File.dirname(__FILE__), 'images', filename)
+end
+
 describe NuvoImage::Process do
   before do
     test_image_dir = File.join(File.dirname(__FILE__), 'images/test')
@@ -12,32 +16,26 @@ describe NuvoImage::Process do
 
   describe '#read' do
     it 'should work' do
-      sushi = subject.read(File.dirname(__FILE__) + '/images/sushi.jpg')
-      sushi.width.must_equal 960
-      sushi.height.must_equal 960
-      sushi.size.must_equal 116_306
-      sushi.frames.must_be_nil
-
-      todd = subject.read(File.dirname(__FILE__) + '/images/todd.gif')
-      todd.frames.must_equal 21
-      todd.width.must_equal 320
-      todd.height.must_equal 240
-      todd.size.must_equal 472_973
-
-      ia = subject.read(File.dirname(__FILE__) + '/images/IA.png')
-      ia.width.must_equal 750
-      ia.height.must_equal 1091
-      ia.size.must_equal 562_086
-
-      bag = subject.read(File.dirname(__FILE__) + '/images/bag-exif.jpg')
-      bag.width.must_equal 552
-      bag.height.must_equal 414
-      bag.size.must_equal 62_735
-
-      untouched = subject.read(File.dirname(__FILE__) + '/images/Untouched.jpg')
-      untouched.width.must_equal 3096
-      untouched.height.must_equal 4128
-      untouched.size.must_equal 2_753_095
+      images = [
+        # [filename, width, height, size, frames]
+        ['sushi.jpg', 960, 960, 116_306, nil],
+        ['todd.gif', 320, 240, 472_973, 21],
+        ['IA.png', 750, 1091, 562_086, nil],
+        ['bag-exif.jpg', 552, 414, 62_735, nil],
+        ['Untouched.jpg', 3096, 4128, 2_753_095, nil],
+        ['black_pink.jpg', 260, 370, 162_246, 2] # gif but have .jpg extension
+      ]
+      images.each do |filename, width, height, size, frames|
+        i = subject.read image_path(filename)
+        i.width.must_equal width
+        i.height.must_equal height
+        i.size.must_equal size
+        if frames.nil?
+          i.frames.must_be_nil
+        else
+          i.frames.must_equal frames
+        end
+      end
     end
 
     after do
@@ -47,8 +45,9 @@ describe NuvoImage::Process do
 
   describe '#crop' do
     before do
-      @sushi = subject.read(File.dirname(__FILE__) + '/images/sushi.jpg')
-      @todd = subject.read(File.dirname(__FILE__) + '/images/todd.gif')
+      @sushi = subject.read image_path('sushi.jpg')
+      @todd = subject.read image_path('todd.gif')
+      @black_pink = subject.read image_path('black_pink.jpg')
     end
 
     it 'should work' do
@@ -85,6 +84,23 @@ describe NuvoImage::Process do
         [cropped.left, cropped.top, cropped.width, cropped.height].must_equal result
         cropped.frames.must_equal 21
       end
+
+      {
+        Center: [80, 160, 100, 50],
+        North: [80, 0, 100, 50],
+        South: [80, 320, 100, 50],
+        East: [160, 160, 100, 50],
+        West: [0, 160, 100, 50],
+        NorthEast: [160, 0, 100, 50],
+        NorthWest: [0, 0, 100, 50],
+        SouthEast: [160, 320, 100, 50],
+        SouthWest: [0, 320, 100, 50]
+      }.each do |gravity, result|
+        cropped = subject.crop(@black_pink, 100, 50, gravity: gravity)
+        cropped.gravity.must_equal gravity
+        [cropped.left, cropped.top, cropped.width, cropped.height].must_equal result
+        cropped.frames.must_equal 2
+      end
     end
 
     after do
@@ -94,25 +110,30 @@ describe NuvoImage::Process do
 
   describe '#resize' do
     before do
-      @sushi = subject.read(File.dirname(__FILE__) + '/images/sushi.jpg')
-      @todd = subject.read(File.dirname(__FILE__) + '/images/todd.gif')
+      @sushi = subject.read image_path('sushi.jpg')
+      @todd = subject.read image_path('todd.gif')
+      @black_pink = subject.read image_path('black_pink.jpg')
     end
 
     it 'should work' do
-      [:nearest, :linear, :cubic, :area, :lanczos].each do |interpolation|
-        resized = subject.resize(@sushi, 100, 50, interpolation: interpolation)
-        resized.width.must_equal 100
-        resized.height.must_equal 50
-        resized.interpolation.must_equal interpolation
-        resized.frames.must_be_nil
-      end
-
-      [:nearest, :linear, :cubic, :area, :lanczos].each do |interpolation|
-        resized = subject.resize(@todd, 100, 50, interpolation: interpolation)
-        resized.width.must_equal 100
-        resized.height.must_equal 50
-        resized.interpolation.must_equal interpolation
-        resized.frames.must_equal 21
+      interpolations = [:nearest, :linear, :cubic, :area, :lanczos]
+      images = [
+        [@sushi, nil],
+        [@todd, 21],
+        [@black_pink, 2]
+      ]
+      images.each do |image, frames|
+        interpolations.each do |interpolation|
+          resized = subject.resize(image, 100, 50, interpolation: interpolation)
+          resized.width.must_equal 100
+          resized.height.must_equal 50
+          resized.interpolation.must_equal interpolation
+          if frames
+            resized.frames.must_equal frames
+          else
+            resized.frames.must_be_nil
+          end
+        end
       end
     end
 
@@ -123,7 +144,8 @@ describe NuvoImage::Process do
 
   describe '#frame' do
     before do
-      @todd = subject.read(File.dirname(__FILE__) + '/images/todd.gif')
+      @todd = subject.read image_path('todd.gif')
+      @black_pink = subject.read image_path('black_pink.jpg')
     end
 
     it 'should work' do
@@ -132,6 +154,14 @@ describe NuvoImage::Process do
         framed.frame.must_equal frame
         framed.width.must_equal 320
         framed.height.must_equal 240
+        framed.frames.must_be_nil
+      end
+
+      (0..@black_pink.frames - 1).each do |frame|
+        framed = subject.frame(@black_pink, frame)
+        framed.frame.must_equal frame
+        framed.width.must_equal 260
+        framed.height.must_equal 370
         framed.frames.must_be_nil
       end
     end
@@ -143,14 +173,16 @@ describe NuvoImage::Process do
 
   describe '#lossy' do
     before do
-      @sushi = subject.read(File.dirname(__FILE__) + '/images/sushi.jpg')
-      @miku = subject.read(File.dirname(__FILE__) + '/images/miku.gif')
+      @sushi = subject.read image_path('sushi.jpg')
+      @miku = subject.read image_path('miku.gif')
+      @black_pink = subject.read image_path('black_pink.jpg')
     end
 
     it 'should work' do
       {
         sush: @sushi,
-        miku: @miku
+        miku: @miku,
+        black_pink: @black_pink
       }.each do |name, image|
         [:jpeg, :webp].each do |format|
           lossy_size = 0
@@ -161,12 +193,12 @@ describe NuvoImage::Process do
             high: 0.966,
             very_high: 0.999
           }.each do |quality, ssim|
-            lossy_by_quality = subject.lossy(image, File.dirname(__FILE__) + "/images/test/#{name}_#{quality}.#{format}", format: format, quality: quality)
-            lossy_by_ssim = subject.lossy(image, File.dirname(__FILE__) + "/images/test/#{name}_#{ssim}.#{format}", format: format, quality: ssim)
+            lossy_by_quality = subject.lossy(image, image_path("test/#{name}_#{quality}.#{format}"), format: format, quality: quality)
+            lossy_by_ssim = subject.lossy(image, image_path("test/#{name}_#{ssim}.#{format}"), format: format, quality: ssim)
             assert lossy_by_quality.size >= lossy_size, 'must less size'
             assert lossy_by_quality.quality >= lossy_quality, 'must less quality'
 
-            lossy_by_fixed_quality = subject.lossy(image, File.dirname(__FILE__) + "/images/test/#{name}_#{lossy_by_quality.quality}.#{format}", format: format, quality: quality)
+            lossy_by_fixed_quality = subject.lossy(image, image_path("test/#{name}_#{lossy_by_quality.quality}.#{format}"), format: format, quality: quality)
 
             lossy_by_quality.quality.must_equal lossy_by_ssim.quality
             lossy_by_quality.size.must_equal lossy_by_ssim.size
@@ -188,17 +220,19 @@ describe NuvoImage::Process do
 
   describe '#lossless' do
     before do
-      @ia = subject.read(File.dirname(__FILE__) + '/images/IA.png', flatten: :none)
-      @miku = subject.read(File.dirname(__FILE__) + '/images/miku.gif')
+      @ia = subject.read(image_path('IA.png'), flatten: :none)
+      @miku = subject.read image_path('miku.gif')
+      @black_pink = subject.read image_path('black_pink.jpg')
     end
 
     it 'should work' do
       {
         ia: @ia,
-        miku: @miku
+        miku: @miku,
+        black_pink: @black_pink
       }.each do |name, image|
         [:png, :webp].each do |format|
-          subject.lossless(image, File.dirname(__FILE__) + "/images/test/#{name}.#{format}", format: format)
+          subject.lossless(image, image_path("test/#{name}.#{format}"), format: format)
         end
       end
     end
@@ -210,10 +244,11 @@ describe NuvoImage::Process do
 
   describe '#compare' do
     before do
-      @miku = subject.read(File.dirname(__FILE__) + '/images/miku.gif')
+      @miku = subject.read image_path('miku.gif')
       @mikus = [:low, :medium, :high, :very_high].map do |quality|
-        subject.lossy(@miku, File.dirname(__FILE__) + "/images/test/miku_#{quality}.jpg", format: :jpeg, quality: quality)
-        [quality, subject.read(File.dirname(__FILE__) + "/images/test/miku_#{quality}.jpg")]
+        output_path = image_path("test/miku_#{quality}.jpg")
+        subject.lossy(@miku, output_path, format: :jpeg, quality: quality)
+        [quality, subject.read(output_path)]
       end
     end
 
@@ -226,20 +261,20 @@ describe NuvoImage::Process do
 
   describe '#video' do
     before do
-      @todd = subject.read(File.dirname(__FILE__) + '/images/todd.gif')
-      @miku = subject.read(File.dirname(__FILE__) + '/images/miku.gif')
+      @todd = subject.read image_path('todd.gif')
+      @miku = subject.read image_path('miku.gif')
+      @black_pink = subject.read image_path('black_pink.jpg')
     end
 
     it 'should work' do
-      mp4 = subject.video(@todd, File.dirname(__FILE__) + '/images/test/todd.mp4', format: :mp4)
-      wemb = subject.video(@todd, File.dirname(__FILE__) + '/images/test/todd.webm', format: :webm)
-      assert mp4.size > 0, 'must greater than 0'
-      assert wemb.size > 0, 'must greater than 0'
-
-      mp4 = subject.video(@miku, File.dirname(__FILE__) + '/images/test/miku.mp4', format: :mp4)
-      wemb = subject.video(@miku, File.dirname(__FILE__) + '/images/test/miku.webm', format: :webm)
-      assert mp4.size > 0, 'must greater than 0'
-      assert wemb.size > 0, 'must greater than 0'
+      {
+        todd: @todd,
+        miku: @miku,
+        black_pink: @black_pink
+      }.each do |name, image|
+        mp4 = subject.video(image, image_path("test/#{name}.mp4"), format: :mp4)
+        mp4.size.must_be :>, 0
+      end
     end
 
     after do
