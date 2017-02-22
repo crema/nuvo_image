@@ -92,6 +92,7 @@ ExternalProject_Add(
 )
 
 set(GIFLIB_CONFIGURE
+        have_xmlto=no
         --enable-shared=no
         --prefix=${EXTERNAL_LIB_DIR}/giflib-5.1.4)
 
