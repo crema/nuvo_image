@@ -35,7 +35,6 @@ set(FFMPEG_CONFIGURE
         --enable-nonfree
         --enable-pic
 )
-
 set(FFMPEG_CONFIGURE ${FFMPEG_CONFIGURE}
         --disable-bsfs
         --disable-decoders
@@ -54,11 +53,9 @@ set(FFMPEG_CONFIGURE ${FFMPEG_CONFIGURE}
         --enable-parser=h264
         --enable-protocol=file
 )
-
 set(FFMPEG_CONFIGURE ${FFMPEG_CONFIGURE}
         --prefix=${EXTERNAL_LIB_DIR}/ffmpeg-3.2.4
 )
-
 ExternalProject_Add(
         ffmpeg
         URL ${EXTERNAL_DIR}/ffmpeg-3.2.4.tar.bz2
@@ -72,8 +69,8 @@ if (UNIX AND NOT APPLE)
                 --enable-shared=no
                 --without-turbojpeg
                 --with-pic
-                --prefix=${EXTERNAL_LIB_DIR}/mozjpeg-3.1)
-
+                --prefix=${EXTERNAL_LIB_DIR}/mozjpeg-3.1
+        )
         ExternalProject_Add(
                 mozjpeg
                 URL ${EXTERNAL_DIR}/mozjpeg-3.1-release-source.tar.gz
@@ -94,8 +91,8 @@ ExternalProject_Add(
 set(GIFLIB_CONFIGURE
         have_xmlto=no
         --enable-shared=no
-        --prefix=${EXTERNAL_LIB_DIR}/giflib-5.1.4)
-
+        --prefix=${EXTERNAL_LIB_DIR}/giflib-5.1.4
+)
 ExternalProject_Add(
         giflib
         URL ${EXTERNAL_DIR}/giflib-5.1.4.tar.bz2
