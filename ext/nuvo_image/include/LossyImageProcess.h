@@ -57,7 +57,7 @@ private:
     const int GetToType() { return ProcessInputType::File; }
 
     int GetQuality(const std::shared_ptr<std::vector<unsigned char>> & buffer, const cv::Mat & image);
-    double GetSimmByQuality(const std::shared_ptr<std::vector<unsigned char>> & buffer, const SSIMData & ssimData, const cv::Mat & image, const int quality);
+    double GetSsimByQuality(const std::shared_ptr<std::vector<unsigned char>> & buffer, const SSIMData & ssimData, const cv::Mat & image, const int quality);
     void Encode(const std::shared_ptr<std::vector<unsigned char>> & buffer, const cv::Mat &source, const int quality);
 
 

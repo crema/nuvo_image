@@ -34,12 +34,12 @@ int LossyImageProcess::GetQuality(const std::shared_ptr<std::vector<unsigned cha
 
     SSIMData imageSSIMData = SSIMData(image);
 
-    QualitySSIM min(minQuality, GetSimmByQuality(buffer, imageSSIMData, image, minQuality));
+    QualitySSIM min(minQuality, GetSsimByQuality(buffer, imageSSIMData, image, minQuality));
     if(min.ssim >= qualitySSIM) {
         return min.quality;
     }
 
-    QualitySSIM max(maxQuality, GetSimmByQuality(buffer, imageSSIMData, image, maxQuality));
+    QualitySSIM max(maxQuality, GetSsimByQuality(buffer, imageSSIMData, image, maxQuality));
     if(max.ssim <= qualitySSIM) {
         return max.quality;
     }
@@ -47,7 +47,7 @@ int LossyImageProcess::GetQuality(const std::shared_ptr<std::vector<unsigned cha
     QualitySSIM current(maxQuality, 0);
     for(int i = 0; i< searchCount; ++i) {
         current.quality = QualitySSIM::InterpolationTargetSSIM(min, max, qualitySSIM);
-        current.ssim = GetSimmByQuality(buffer, imageSSIMData, image, current.quality);
+        current.ssim = GetSsimByQuality(buffer, imageSSIMData, image, current.quality);
 
         if(max.quality - min.quality < 1 || std::abs(qualitySSIM - current.ssim) < 0.001) {
             return current.quality;
@@ -62,7 +62,7 @@ int LossyImageProcess::GetQuality(const std::shared_ptr<std::vector<unsigned cha
     return current.quality;
 }
 
-double LossyImageProcess::GetSimmByQuality(const std::shared_ptr<std::vector<unsigned char>> & buffer, const SSIMData &ssimData, const cv::Mat &image, const int quality) {
+double LossyImageProcess::GetSsimByQuality(const std::shared_ptr<std::vector<unsigned char>> & buffer, const SSIMData &ssimData, const cv::Mat &image, const int quality) {
     Encode(buffer, image, quality);
     cv::Mat lossy = cv::imdecode(*buffer, cv::IMREAD_COLOR);
     SSIMData lossySSIMData(lossy);
