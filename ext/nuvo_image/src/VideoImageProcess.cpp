@@ -51,7 +51,7 @@ const ImageProcessInput VideoImageProcess::Process(const ImageProcessInput& inpu
   auto size = (int)file.tellg();
   file.seekg(0, std::ios::beg);
 
-  std::shared_ptr<std::vector<unsigned char>> buffer(new std::vector<unsigned char>(size));
+  auto buffer = std::make_shared<std::vector<unsigned char>>(size);
   file.close();
   return ImageProcessInput(buffer, true);
 }

@@ -90,7 +90,7 @@ void LossyImageProcess::Encode(const std::shared_ptr<std::vector<unsigned char>>
 }
 
 const ImageProcessInput LossyImageProcess::Process(const ImageProcessInput& input, picojson::object& result) {
-  std::shared_ptr<std::vector<unsigned char>> buffer(new std::vector<unsigned char>());
+  auto buffer = std::make_shared<std::vector<unsigned char>>();
   int quality = maxQuality;
 
   if (input.GetType() == ProcessInputType::Image) {

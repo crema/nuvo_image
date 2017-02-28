@@ -14,7 +14,7 @@ void PrintErrorToJson(const std::string& error) {
 }
 
 int main(int argc, char* argv[]) {
-  std::shared_ptr<ImageProcessor> processor(new ImageProcessor());
+  auto processor = std::make_shared<ImageProcessor>();
 
   while (true) {
     std::string inputString;

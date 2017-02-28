@@ -35,17 +35,18 @@ cv::Mat Gif::ReadFrame(GifFileType* gif, int index, int transparentColor, Flatte
 
   auto gifImage = &gif->SavedImages[index];
 
-  auto row = gif->Image.Top; /* Image Position relative to Screen. */
-  auto col = gif->Image.Left;
-  auto width = gif->Image.Width;
-  auto height = gif->Image.Height;
+  const auto row = gif->Image.Top; /* Image Position relative to Screen. */
+  const auto col = gif->Image.Left;
+  const auto width = gif->Image.Width;
+  const auto bottom = row + gif->Image.Height;
 
   auto colorMap = gifImage->ImageDesc.ColorMap == nullptr ? gif->SColorMap : gifImage->ImageDesc.ColorMap;
 
   unsigned char* srcPtr = gifImage->RasterBits;
 
-  for (int i = 0; i < height; i++) {
-    auto destPtr = mat.data + mat.step * row++ + mat.channels() * col;
+  for (int i = row; i < bottom; ++i) {
+    auto destPtr = mat.data + mat.step * i + mat.channels() * col;
+
     for (int x = 0; x < width; ++x) {
       SetPixel(destPtr, srcPtr, colorMap, transparentColor);
       destPtr += mat.channels();

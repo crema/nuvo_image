@@ -1,7 +1,7 @@
 #include "LosslessImageProcess.h"
 
 const ImageProcessInput LosslessImageProcess::Process(const ImageProcessInput& input, picojson::object& result) {
-  std::shared_ptr<std::vector<unsigned char>> buffer(new std::vector<unsigned char>());
+  auto buffer = std::make_shared<std::vector<unsigned char>>();
 
   if (input.GetType() == ProcessInputType::Image) {
     Encode(buffer, input.GetMat());

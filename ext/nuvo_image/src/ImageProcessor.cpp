@@ -30,20 +30,19 @@ std::shared_ptr<ImageProcess> ImageProcessor::Parse(const std::string& inputStri
     auto autoOrient = GetMember<bool>(object, "auto_orient", false);
     auto flatten = GetMember<Flatten>(object, "flatten", Flatten::None);
 
-    return std::shared_ptr<ImageProcess>(new ReadImageProcess(shared_from_this(), from, to, autoOrient, flatten));
+    return std::make_shared<ReadImageProcess>(shared_from_this(), from, to, autoOrient, flatten);
   } else if (processString == "crop") {
     auto width = (int)GetMember<double>(object, "width");
     auto height = (int)GetMember<double>(object, "height");
     auto gravity = GetMember<Gravity>(object, "gravity", Gravity::Center);
 
-    return std::shared_ptr<ImageProcess>(new CropImageProcess(shared_from_this(), from, to, width, height, gravity));
+    return std::make_shared<CropImageProcess>(shared_from_this(), from, to, width, height, gravity);
   } else if (processString == "resize") {
     auto width = (int)GetMember<double>(object, "width");
     auto height = (int)GetMember<double>(object, "height");
     auto interpolation = GetMember<Interpolation>(object, "interpolation", Interpolation::Area);
 
-    return std::shared_ptr<ImageProcess>(
-        new ResizeImageProcess(shared_from_this(), from, to, width, height, interpolation));
+    return std::make_shared<ResizeImageProcess>(shared_from_this(), from, to, width, height, interpolation);
   } else if (processString == "lossy") {
     auto format = GetMember<LossyImageFormat>(object, "format", LossyImageFormat::Jpeg);
     auto quality = GetMember<ImageQuality>(object, "quality", ImageQuality(95));
@@ -51,28 +50,27 @@ std::shared_ptr<ImageProcess> ImageProcessor::Parse(const std::string& inputStri
     auto max = (int)GetMember<double>(object, "max", 95);
     auto search = (int)GetMember<double>(object, "search", 5);
 
-    return std::shared_ptr<ImageProcess>(
-        new LossyImageProcess(shared_from_this(), from, to, format, quality, min, max, search));
+    return std::make_shared<LossyImageProcess>(shared_from_this(), from, to, format, quality, min, max, search);
   } else if (processString == "lossless") {
     auto format = GetMember<LosslessImageFormat>(object, "format", LosslessImageFormat::Png);
-    return std::shared_ptr<ImageProcess>(new LosslessImageProcess(shared_from_this(), from, to, format));
+    return std::make_shared<LosslessImageProcess>(shared_from_this(), from, to, format);
   } else if (processString == "frame") {
     auto frame = (int)GetMember<double>(object, "frame", 0);
 
-    return std::shared_ptr<ImageProcess>(new FrameImageProcess(shared_from_this(), from, to, frame));
+    return std::make_shared<FrameImageProcess>(shared_from_this(), from, to, frame);
   } else if (processString == "compare") {
     auto from1 = GetMember<std::string>(object, "from1", "");
     auto from2 = GetMember<std::string>(object, "from2", "");
 
-    return std::shared_ptr<ImageProcess>(new CompareImageProcess(shared_from_this(), from1, from2));
+    return std::make_shared<CompareImageProcess>(shared_from_this(), from1, from2);
   } else if (processString == "video") {
     auto format = GetMember<VideoFormat>(object, "format", VideoFormat::Mp4);
 
-    return std::shared_ptr<ImageProcess>(new VideoImageProcess(shared_from_this(), from, to, format));
+    return std::make_shared<VideoImageProcess>(shared_from_this(), from, to, format);
   } else if (processString == "clear") {
-    return std::shared_ptr<ImageProcess>(new ClearMemoryProcess(shared_from_this()));
+    return std::make_shared<ClearMemoryProcess>(shared_from_this());
   } else if (processString == "close") {
-    return std::shared_ptr<ImageProcess>(new CloseProcess(shared_from_this()));
+    return std::make_shared<CloseProcess>(shared_from_this());
   }
 
   throw std::runtime_error("invalid input");

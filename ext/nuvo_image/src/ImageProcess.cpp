@@ -16,7 +16,7 @@ const ImageProcessInput ImageProcess::ReadFrom(const std::string& fromString, co
     auto size = (int)file.tellg();
     file.seekg(0, std::ios::beg);
 
-    std::shared_ptr<std::vector<unsigned char>> buffer(new std::vector<unsigned char>(size));
+    auto buffer = std::make_shared<std::vector<unsigned char>>(size);
     file.read((char*)buffer->data(), size);
 
     input = ImageProcessInput(buffer);
