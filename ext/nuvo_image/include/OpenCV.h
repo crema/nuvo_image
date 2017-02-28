@@ -10,4 +10,4 @@
 #include <opencv2/videoio/videoio.hpp>
 #include <opencv2/imgcodecs.hpp>
 
-#endif //NUVO_IMAGE_OPENCV_H
+#endif  // NUVO_IMAGE_OPENCV_H

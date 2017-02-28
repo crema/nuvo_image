@@ -1,61 +1,57 @@
+#include "VideoImageProcess.h"
+#include <cstdio>
 #include <fstream>
 #include <iostream>
-#include <cstdio>
 #include <string>
-#include "VideoImageProcess.h"
 
+const ImageProcessInput VideoImageProcess::Process(const ImageProcessInput& input, picojson::object& result) {
+  Gif gif = input.GetGif();
+  cv::VideoWriter writer;
 
-const ImageProcessInput VideoImageProcess::Process(const ImageProcessInput &input, picojson::object &result) {
+  int minDelay = 9999;
 
-    Gif gif = input.GetGif();
-    cv::VideoWriter writer;
+  for (int i = 0; i < gif.GetFrameCount(); ++i) {
+    minDelay = std::min(gif.GetFrame(i).GetDelay(), minDelay);
+  }
 
-    int minDelay = 9999;
+  auto fps = 100.0 / minDelay;
 
-    for(int i = 0; i < gif.GetFrameCount(); ++i) {
-        minDelay = std::min(gif.GetFrame(i).GetDelay(), minDelay);
+  if (format == VideoFormat::Mp4) {
+    if (!writer.open(to,
+                     0x21,  // cv::VideoWriter::fourcc('X','2','6','4')
+                     fps, cv::Size(gif.GetWidth(), gif.GetHeight()))) {
+      throw std::runtime_error("cant open x264");
     }
 
-    auto fps = 100.0 / minDelay;
+  } else {
+    throw std::runtime_error("invalid video format");
+  }
 
+  auto delayPerFrame = 1000 / fps;
 
-    if(format == VideoFormat::Mp4) {
-        if(!writer.open(to,
-                    0x21, // cv::VideoWriter::fourcc('X','2','6','4')
-                    fps,
-                    cv::Size(gif.GetWidth(), gif.GetHeight()))) {
-            throw std::runtime_error("cant open x264");
-        }
+  for (int i = 0; i < gif.GetFrameCount(); ++i) {
+    auto frame = gif.GetFrame(i);
+    auto frameCount = (int)round(frame.GetDelay() * 10 / delayPerFrame);
 
-    } else {
-        throw std::runtime_error("invalid video format");
+    for (int j = 0; j < frameCount; ++j) {
+      writer.write(frame.GetMat());
     }
+  }
 
-    auto delayPerFrame = 1000/fps;
+  writer.release();
 
-    for(int i = 0; i < gif.GetFrameCount(); ++i) {
-        auto frame = gif.GetFrame(i);
-        auto frameCount = (int)round(frame.GetDelay() * 10/ delayPerFrame);
+  result["format"] = picojson::value(ToString(format));
 
-        for(int j=0; j < frameCount; ++j) {
-            writer.write(frame.GetMat());
-        }
-    }
+  std::ifstream file(to, std::ios::in | std::ios::binary);
 
-    writer.release();
+  if (!file.good()) {
+    throw std::runtime_error("can not open file: " + to);
+  }
+  file.seekg(0, std::ios::end);
+  auto size = (int)file.tellg();
+  file.seekg(0, std::ios::beg);
 
-    result["format"] = picojson::value(ToString(format));
-
-    std::ifstream file(to, std::ios::in | std::ios::binary);
-
-    if(!file.good()) {
-        throw std::runtime_error("can not open file: " + to);
-    }
-    file.seekg(0, std::ios::end);
-    auto size = (int)file.tellg();
-    file.seekg(0, std::ios::beg);
-
-    std::shared_ptr<std::vector<unsigned char>> buffer(new std::vector<unsigned char>(size));
-    file.close();
-    return ImageProcessInput(buffer, true);
+  std::shared_ptr<std::vector<unsigned char>> buffer(new std::vector<unsigned char>(size));
+  file.close();
+  return ImageProcessInput(buffer, true);
 }

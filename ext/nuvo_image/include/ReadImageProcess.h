@@ -5,25 +5,27 @@
 #include "ImageProcess.h"
 #include "exif.h"
 
-class ReadImageProcess:public InOutProcess {
-public:
-    ReadImageProcess(std::shared_ptr<ImageProcessor> processor, const std::string & from, const std::string & to, bool autoOrient, Flatten flatten)
-        :InOutProcess(processor, from, to ), autoOrient(autoOrient), flatten(flatten)
-    {}
+class ReadImageProcess : public InOutProcess {
+ public:
+  ReadImageProcess(std::shared_ptr<ImageProcessor> processor,
+                   const std::string& from,
+                   const std::string& to,
+                   bool autoOrient,
+                   Flatten flatten)
+      : InOutProcess(processor, from, to), autoOrient(autoOrient), flatten(flatten) {}
 
-protected:
-    const ImageProcessInput Process(const ImageProcessInput &input, picojson::object & result);
-    const std::string GetName() { return "read";}
-    const int GetFromType() { return ProcessInputType::File; }
-    const int GetToType() { return ProcessInputType::Image | ProcessInputType::Animation; }
+ protected:
+  const ImageProcessInput Process(const ImageProcessInput& input, picojson::object& result);
+  const std::string GetName() { return "read"; }
+  const int GetFromType() { return ProcessInputType::File; }
+  const int GetToType() { return ProcessInputType::Image | ProcessInputType::Animation; }
 
-private:
-
-    bool TryFlatten(const cv::Mat & src, cv::Mat & dest);
-    bool TryReadExif(const std::shared_ptr<std::vector<unsigned char>> & buffer, easyexif::EXIFInfo & exif);
-    bool TryRotateOrientation(const cv::Mat& src, cv::Mat &dest, const int orientation, bool &transposed);
-    bool autoOrient;
-    Flatten flatten;
+ private:
+  bool TryFlatten(const cv::Mat& src, cv::Mat& dest);
+  bool TryReadExif(const std::shared_ptr<std::vector<unsigned char>>& buffer, easyexif::EXIFInfo& exif);
+  bool TryRotateOrientation(const cv::Mat& src, cv::Mat& dest, const int orientation, bool& transposed);
+  bool autoOrient;
+  Flatten flatten;
 };
 
 #endif

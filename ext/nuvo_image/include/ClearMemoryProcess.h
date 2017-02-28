@@ -5,18 +5,15 @@
 #include "ImageProcess.h"
 
 class ClearMemoryProcess : public NullToNullProcess {
-public:
-    ClearMemoryProcess(std::shared_ptr<ImageProcessor> processor)
-        :NullToNullProcess(processor)
-    {}
+ public:
+  ClearMemoryProcess(std::shared_ptr<ImageProcessor> processor) : NullToNullProcess(processor) {}
 
-protected:
-    void Process(picojson::object & result){
-        processor->Clear();
-        result["result"] = picojson::value(true);
-    }
-    const std::string GetName() { return "clear";}
+ protected:
+  void Process(picojson::object& result) {
+    processor->Clear();
+    result["result"] = picojson::value(true);
+  }
+  const std::string GetName() { return "clear"; }
 };
 
-
-#endif //NUVO_IMAGE_CLEARMEMORYPROCESS_H
+#endif  // NUVO_IMAGE_CLEARMEMORYPROCESS_H
