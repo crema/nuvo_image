@@ -43,34 +43,13 @@ cv::Mat Gif::ReadFrame(GifFileType *gif, int index, int transparentColor, Flatte
     auto colorMap = gifImage->ImageDesc.ColorMap == nullptr ? gif->SColorMap : gifImage->ImageDesc.ColorMap;
 
     unsigned  char * srcPtr = gifImage->RasterBits;
-    unsigned  char * srcEndPtr = gifImage->RasterBits + gifImage->ImageDesc.Width * gifImage->ImageDesc.Height;
 
-    if(gifImage->ImageDesc.Interlace){
-        int interlacedOffset[] = { 0, 4, 2, 1 }; /* The way Interlaced image should. */
-        int interlacedJumps[] = { 8, 8, 4, 2 }; /* be read - offsets and jumps... */
-
-        while( srcPtr < srcEndPtr){
-            for (int count,i = 0; i < 4; i++){
-                for (int j = row + interlacedOffset[i]; j < row + height;
-                     j += interlacedJumps[i]) {
-
-                    auto destPtr = mat.data + mat.step * j + mat.channels() * col;
-                    for (int x = 0; x< width; ++x){
-                        SetPixel(destPtr, srcPtr, colorMap, transparentColor);
-                        destPtr += mat.channels();
-                        srcPtr++;
-                    }
-                }
-            }
-        }
-    } else {
-        for (int i = 0; i < height; i++) {
-            auto destPtr = mat.data + mat.step * row++ + mat.channels() * col;
-            for (int x = 0; x< width; ++x){
-                SetPixel(destPtr, srcPtr, colorMap, transparentColor);
-                destPtr += mat.channels();
-                srcPtr++;
-            }
+    for (int i = 0; i < height; i++) {
+        auto destPtr = mat.data + mat.step * row++ + mat.channels() * col;
+        for (int x = 0; x< width; ++x){
+            SetPixel(destPtr, srcPtr, colorMap, transparentColor);
+            destPtr += mat.channels();
+            srcPtr++;
         }
     }
 
