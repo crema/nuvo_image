@@ -11,21 +11,34 @@
 #include "OpenCV.h"
 #include "Enums.h"
 
+class GifFrame {
+public:
+  GifFrame(const cv::Mat& mat, const int delay) : mat(mat), delay(delay) {}
+
+  const cv::Mat& GetMat() const { return mat; }
+
+  const int GetDelay() const { return delay; }
+
+private:
+  cv::Mat mat;
+  int delay;
+};
+
+class GifBuffer {
+public:
+  GifBuffer(unsigned char* buffer, int length) : buffer(buffer), length(length), position(0) {}
+
+  static int ReadFromData(GifFileType* gif, GifByteType* bytes, int size);
+  int Read(GifByteType* bytes, int size);
+
+private:
+  unsigned char* buffer;
+  int position;
+  int length;
+};
+
 class Gif {
  public:
-  class GifFrame {
-   public:
-    GifFrame(const cv::Mat& mat, const int delay) : mat(mat), delay(delay) {}
-
-    const cv::Mat& GetMat() const { return mat; }
-
-    const int GetDelay() const { return delay; }
-
-   private:
-    cv::Mat mat;
-    int delay;
-  };
-
   static bool TryReadFromBuffer(const std::shared_ptr<std::vector<unsigned char>>& buffer,
                                 Gif& gif,
                                 Flatten flatten = Flatten::White);
@@ -53,20 +66,7 @@ class Gif {
   }
 
  private:
-  class GifBuffer {
-   public:
-    GifBuffer(unsigned char* buffer, int length) : buffer(buffer), length(length), position(0) {}
-
-    static int ReadFromData(GifFileType* gif, GifByteType* bytes, int size);
-    int Read(GifByteType* bytes, int size);
-
-   private:
-    unsigned char* buffer;
-    int position;
-    int length;
-  };
-
-  static cv::Mat ReadFrame(GifFileType* gif, int index, int transparentColor, Flatten flatten);
+  static cv::Mat ReadFrame(cv::Mat prevMat, GifFileType* gif, int index, int transparentColor);
   static void SetPixel(unsigned char* dest, const unsigned char* src, ColorMapObject* colorMap, int transparentColor);
 
   std::shared_ptr<std::vector<GifFrame>> frames;

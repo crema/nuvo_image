@@ -23,7 +23,8 @@ describe NuvoImage::Process do
         ['IA.png', 750, 1091, 562_086, nil],
         ['bag-exif.jpg', 552, 414, 62_735, nil],
         ['Untouched.jpg', 3096, 4128, 2_753_095, nil],
-        ['black_pink.jpg', 260, 370, 162_246, 2] # gif but have .jpg extension
+        ['black_pink.jpg', 260, 370, 162_246, 2], # gif but have .jpg extension
+        ['rainbow_socks.jpg', 260, 370, 107_417, 10] # gif but have .jpg extension
       ]
       images.each do |filename, width, height, size, frames|
         i = subject.read image_path(filename)
@@ -48,6 +49,7 @@ describe NuvoImage::Process do
       @sushi = subject.read image_path('sushi.jpg')
       @todd = subject.read image_path('todd.gif')
       @black_pink = subject.read image_path('black_pink.jpg')
+      @rainbow_socks = subject.read image_path('rainbow_socks.jpg')
     end
 
     it 'should work' do
@@ -101,6 +103,23 @@ describe NuvoImage::Process do
         [cropped.left, cropped.top, cropped.width, cropped.height].must_equal result
         cropped.frames.must_equal 2
       end
+
+      {
+        Center: [80, 160, 100, 50],
+        North: [80, 0, 100, 50],
+        South: [80, 320, 100, 50],
+        East: [160, 160, 100, 50],
+        West: [0, 160, 100, 50],
+        NorthEast: [160, 0, 100, 50],
+        NorthWest: [0, 0, 100, 50],
+        SouthEast: [160, 320, 100, 50],
+        SouthWest: [0, 320, 100, 50]
+      }.each do |gravity, result|
+        cropped = subject.crop(@rainbow_socks, 100, 50, gravity: gravity)
+        cropped.gravity.must_equal gravity
+        [cropped.left, cropped.top, cropped.width, cropped.height].must_equal result
+        cropped.frames.must_equal 10
+      end
     end
 
     after do
@@ -113,6 +132,7 @@ describe NuvoImage::Process do
       @sushi = subject.read image_path('sushi.jpg')
       @todd = subject.read image_path('todd.gif')
       @black_pink = subject.read image_path('black_pink.jpg')
+      @rainbow_socks = subject.read image_path('rainbow_socks.jpg')
     end
 
     it 'should work' do
@@ -120,7 +140,8 @@ describe NuvoImage::Process do
       images = [
         [@sushi, nil],
         [@todd, 21],
-        [@black_pink, 2]
+        [@black_pink, 2],
+        [@rainbow_socks, 10]
       ]
       images.each do |image, frames|
         interpolations.each do |interpolation|
@@ -146,6 +167,7 @@ describe NuvoImage::Process do
     before do
       @todd = subject.read image_path('todd.gif')
       @black_pink = subject.read image_path('black_pink.jpg')
+      @rainbow_socks = subject.read image_path('rainbow_socks.jpg')
     end
 
     it 'should work' do
@@ -164,6 +186,14 @@ describe NuvoImage::Process do
         framed.height.must_equal 370
         framed.frames.must_be_nil
       end
+
+      (0..@rainbow_socks.frames - 1).each do |frame|
+        framed = subject.frame(@rainbow_socks, frame)
+        framed.frame.must_equal frame
+        framed.width.must_equal 260
+        framed.height.must_equal 370
+        framed.frames.must_be_nil
+      end
     end
 
     after do
@@ -176,13 +206,15 @@ describe NuvoImage::Process do
       @sushi = subject.read image_path('sushi.jpg')
       @miku = subject.read image_path('miku.gif')
       @black_pink = subject.read image_path('black_pink.jpg')
+      @rainbow_socks = subject.read image_path('rainbow_socks.jpg')
     end
 
     it 'should work' do
       {
         sush: @sushi,
         miku: @miku,
-        black_pink: @black_pink
+        black_pink: @black_pink,
+        rainbow_socks: @rainbow_socks
       }.each do |name, image|
         [:jpeg, :webp].each do |format|
           lossy_size = 0
@@ -223,13 +255,15 @@ describe NuvoImage::Process do
       @ia = subject.read(image_path('IA.png'), flatten: :none)
       @miku = subject.read image_path('miku.gif')
       @black_pink = subject.read image_path('black_pink.jpg')
+      @rainbow_socks = subject.read image_path('rainbow_socks.jpg')
     end
 
     it 'should work' do
       {
         ia: @ia,
         miku: @miku,
-        black_pink: @black_pink
+        black_pink: @black_pink,
+        rainbow_socks: @rainbow_socks
       }.each do |name, image|
         [:png, :webp].each do |format|
           subject.lossless(image, image_path("test/#{name}.#{format}"), format: format)
@@ -264,13 +298,15 @@ describe NuvoImage::Process do
       @todd = subject.read image_path('todd.gif')
       @miku = subject.read image_path('miku.gif')
       @black_pink = subject.read image_path('black_pink.jpg')
+      @rainbow_socks = subject.read image_path('rainbow_socks.jpg')
     end
 
     it 'should work' do
       {
         todd: @todd,
         miku: @miku,
-        black_pink: @black_pink
+        black_pink: @black_pink,
+        rainbow_socks: @rainbow_socks
       }.each do |name, image|
         mp4 = subject.video(image, image_path("test/#{name}.mp4"), format: :mp4)
         mp4.size.must_be :>, 0

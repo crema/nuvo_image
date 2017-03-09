@@ -13,7 +13,7 @@ const ImageProcessInput ResizeImageProcess::Process(const ImageProcessInput& inp
 
     for (int i = 0; i < gif.GetFrameCount(); ++i) {
       auto frame = gif.GetFrame(i);
-      resized.AddFrame(Gif::GifFrame(ResizeMat(frame.GetMat()), frame.GetDelay()));
+      resized.AddFrame(GifFrame(ResizeMat(frame.GetMat()), frame.GetDelay()));
     }
     result["frames"] = picojson::value((double)gif.GetFrameCount());
     return ImageProcessInput(resized);

@@ -12,10 +12,18 @@ bool Gif::TryReadFromBuffer(const std::shared_ptr<std::vector<unsigned char>>& b
   if (DGifSlurp(gifFile) != GIF_OK)
     return false;
 
+  cv::Mat mat(gifFile->SHeight, gifFile->SWidth, CV_8UC3);
+
+  if (flatten == Flatten::Black) {
+    mat.setTo(cv::Scalar(0, 0, 0));
+  } else if (flatten == Flatten::White) {
+    mat.setTo(cv::Scalar(255, 255, 255));
+  }
+
   for (int i = 0; i < gifFile->ImageCount; ++i) {
     GraphicsControlBlock gcb;
     DGifSavedExtensionToGCB(gifFile, i, &gcb);
-    auto mat = ReadFrame(gifFile, i, gcb.TransparentColor, flatten);
+    mat = ReadFrame(mat, gifFile, i, gcb.TransparentColor);
 
     gif.frames->push_back(GifFrame(mat, gcb.DelayTime));
   }
@@ -24,23 +32,18 @@ bool Gif::TryReadFromBuffer(const std::shared_ptr<std::vector<unsigned char>>& b
   return true;
 }
 
-cv::Mat Gif::ReadFrame(GifFileType* gif, int index, int transparentColor, Flatten flatten) {
-  cv::Mat mat(gif->SHeight, gif->SWidth, CV_8UC3);
+cv::Mat Gif::ReadFrame(cv::Mat prevMat, GifFileType* gifFile, int index, int transparentColor) {
+  auto mat = prevMat.clone();
 
-  if (flatten == Flatten::Black) {
-    mat.setTo(cv::Scalar(0, 0, 0));
-  } else if (flatten == Flatten::White) {
-    mat.setTo(cv::Scalar(255, 255, 255));
-  }
+  auto gifImage = &gifFile->SavedImages[index];
+  auto& imageDesc = gifImage->ImageDesc;
 
-  auto gifImage = &gif->SavedImages[index];
+  const auto row = imageDesc.Top; /* Image Position relative to Screen. */
+  const auto col = imageDesc.Left;
+  const auto width = imageDesc.Width;
+  const auto bottom = row + imageDesc.Height;
 
-  const auto row = gif->Image.Top; /* Image Position relative to Screen. */
-  const auto col = gif->Image.Left;
-  const auto width = gif->Image.Width;
-  const auto bottom = row + gif->Image.Height;
-
-  auto colorMap = gifImage->ImageDesc.ColorMap == nullptr ? gif->SColorMap : gifImage->ImageDesc.ColorMap;
+  auto colorMap = imageDesc.ColorMap == nullptr ? gifFile->SColorMap : imageDesc.ColorMap;
 
   unsigned char* srcPtr = gifImage->RasterBits;
 
@@ -66,11 +69,11 @@ void Gif::SetPixel(unsigned char* dest, const unsigned char* src, ColorMapObject
   dest[2] = colorEntry.Red;
 }
 
-int Gif::GifBuffer::ReadFromData(GifFileType* gif, GifByteType* bytes, int size) {
+int GifBuffer::ReadFromData(GifFileType* gif, GifByteType* bytes, int size) {
   return ((GifBuffer*)gif->UserData)->Read(bytes, size);
 }
 
-int Gif::GifBuffer::Read(GifByteType* bytes, int size) {
+int GifBuffer::Read(GifByteType* bytes, int size) {
   if (length - position < size)
     size = length - position;
 

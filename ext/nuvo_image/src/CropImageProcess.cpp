@@ -39,7 +39,7 @@ const ImageProcessInput CropImageProcess::Process(const ImageProcessInput& input
 
     for (int i = 0; i < gif.GetFrameCount(); ++i) {
       auto frame = gif.GetFrame(i);
-      cropped.AddFrame(Gif::GifFrame(frame.GetMat()(rect), frame.GetDelay()));
+      cropped.AddFrame(GifFrame(frame.GetMat()(rect), frame.GetDelay()));
     }
 
     result["frames"] = picojson::value((double)gif.GetFrameCount());
