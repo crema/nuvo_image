@@ -23,7 +23,7 @@ bool Gif::TryReadFromBuffer(const std::shared_ptr<std::vector<unsigned char>>& b
   for (int i = 0; i < gifFile->ImageCount; ++i) {
     GraphicsControlBlock gcb;
     DGifSavedExtensionToGCB(gifFile, i, &gcb);
-    mat = ReadFrame(mat, gifFile, i, gcb.TransparentColor);
+    mat = ReadFrame(mat.clone(), gifFile, i, gcb.TransparentColor);
 
     gif.frames->push_back(GifFrame(mat, gcb.DelayTime));
   }
@@ -32,9 +32,7 @@ bool Gif::TryReadFromBuffer(const std::shared_ptr<std::vector<unsigned char>>& b
   return true;
 }
 
-cv::Mat Gif::ReadFrame(cv::Mat prevMat, GifFileType* gifFile, int index, int transparentColor) {
-  auto mat = prevMat.clone();
-
+cv::Mat Gif::ReadFrame(cv::Mat mat, GifFileType* gifFile, int index, int transparentColor) {
   auto gifImage = &gifFile->SavedImages[index];
   auto& imageDesc = gifImage->ImageDesc;
 
