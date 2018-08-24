@@ -9,17 +9,16 @@
 ### Ubuntu
 
 ```bash
-sudo add-apt-repository ppa:george-edison55/cmake-3.x
 sudo add-apt-repository ppa:ubuntu-toolchain-r/test
 sudo apt-get update
 
-sudo apt-get install cmake g++-6 nasm yasm libwebp-dev libx264-dev
+sudo apt-get install automake cmake g++-6 nasm yasm libwebp-dev libx264-dev
 ```
 
 ### macOS
 
 ```bash
-brew install cmake nasm yasm webp x264 mozjpeg
+brew install automake cmake nasm yasm webp x264 mozjpeg
 ```
 
 ## Installation
