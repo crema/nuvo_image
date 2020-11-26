@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/crema/nuvo-image.svg?branch=master)](https://travis-ci.com/github/crema/nuvo-image)
+[![Build Status](https://travis-ci.com/crema/nuvo_image.svg?branch=master)](https://travis-ci.com/github/crema/nuvo_image)
 
 # NuvoImage
 
@@ -23,7 +23,7 @@ brew install automake cmake nasm yasm webp x264 mozjpeg
 ### Gemfile
 
 ```ruby
-gem 'nuvo-image', git: 'https://github.com/crema/nuvo-image', tag: '0.5.10'
+gem 'nuvo_image', git: 'https://github.com/crema/nuvo_image', tag: '0.5.11'
 ```
 
 ## Usage
