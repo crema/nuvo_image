@@ -23,7 +23,7 @@ brew install automake cmake nasm yasm webp x264 mozjpeg
 ### Gemfile
 
 ```ruby
-gem 'nuvo_image', git: 'https://github.com/crema/nuvo_image', tag: '0.5.11'
+gem 'nuvo_image', git: 'https://github.com/crema/nuvo_image', tag: '0.5.12'
 ```
 
 ## Usage
